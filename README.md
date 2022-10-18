@@ -1,4 +1,4 @@
-# learn
+# Learn
 Đây là dự án lập trình php dựa trên nền tảng CI (Codeignitor)
 Dựa trên mã nguồn mở ospos
 
