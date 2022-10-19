@@ -1,5 +1,6 @@
 node_modules
 tmp
+database
 application/config/email.php
 application/config/database.php
 application/sessions/*

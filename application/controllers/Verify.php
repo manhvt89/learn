@@ -16,21 +16,24 @@ class Verify extends CI_Controller
 
 	public function check()
 	{
-		$_sUuID = $this->input->post('sale_uuid');
+		$_sSUuID = $this->input->post('sale_uuid');
 		$_nQ1 = $this->input->post('q1');
 		$_nQ2 = $this->input->post('q2');
 		$_nQ3 = $this->input->post('q3');
 		$_nConfirm = $this->input->post('confirm');
 		$_sCUuID = $this->input->post('c_uuid');
 		
-		$sale_info = $this->Sale->get_info_by_uuid($_sUuID)->row_array();
-		$iCustomer_ID = $sale_info['customer_id'];
+		$sale_info = $this->Sale->get_info_by_uuid($_sSUuID)->row_array();
+		if (!empty($sale_info)) {
+			$iCustomer_ID = $sale_info['customer_id'];
+			//$customer_info = $this->Customer->get_info($iCustomer_ID);
 
-		$this->Sale->update_confirm($_sUuID,$_nConfirm);
-		//$customer_info = $this->Customer->get_info($iCustomer_ID);
-		//$sale_info = $this->Sale->get_info($sale_id)->row_array();
-		
-		redirect('verify/info/'.$_sCUuID);
+			$this->Sale->update_confirm($_nConfirm, $_nQ1, $_nQ2, $_nQ3, $sale_info);
+			//$customer_info = $this->Customer->get_info($iCustomer_ID);
+			//$sale_info = $this->Sale->get_info($sale_id)->row_array();
+
+			redirect('verify/info/'.$_sCUuID);
+		}
 	}
 
 	public function info($sCUUID=0)
@@ -60,7 +63,7 @@ class Verify extends CI_Controller
 				$sSubString = substr($sale_info['phone_number'], -6);
 				$_sToken = md5($sSubString); //Mã hóa token md5
 				$data['token'] = $_sToken;
-				var_dump($sale_info);
+				//var_dump($sale_info);
 				$this->load->view('verify/confirm', $data);
 			}
 		} else {
@@ -72,9 +75,13 @@ class Verify extends CI_Controller
 				{
 					$_sUuID = $this->input->post('sale_uuid');
 					$sale_info = $this->Sale->get_info_by_uuid($_sUuID)->row_array();
-					$_sToken = '';
-					$sSubString = substr($sale_info['phone_number'], -6);
-					$_sToken = md5($sSubString); //Mã hóa token md5
+					if (!empty($sale_info)) {
+						$_sToken = '';
+						$sSubString = substr($sale_info['phone_number'], -6);
+						$_sToken = md5($sSubString); //Mã hóa token md5
+					} else {
+						$_sToken = md5(''); //Mã hóa token md5
+					}
 					$data['token'] = $_sToken;
 					$data['sale_uuid'] = $_sUuID;
 					$this->load->view('verify/confirm',$data);
@@ -113,7 +120,7 @@ class Verify extends CI_Controller
 
 		if(md5($token) != $sale_token)
 		{
-			$this->form_validation->set_message('uuid_check', 'Token bạn nhận chưa đúng, nếu chắc chắn đúng 6 số cuối số điện thoại vui lòng liên hệ HOTLINE');
+			$this->form_validation->set_message('uuid_check', 'Token bạn nhập chưa đúng, nếu chắc chắn đúng 6 số cuối số điện thoại vui lòng liên hệ HOTLINE');
 			return FALSE;
 		}
 

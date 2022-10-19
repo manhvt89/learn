@@ -470,7 +470,7 @@
 	<main role="main" class="container">
         <div class="jumbotron">
             <!-- User Story #1: I can see a title with id="title" in H1 sized text. -->
-            <h1 class="text-center" id="title">Điểm tích của bạn: 125.366</h1>
+            <h1 class="text-center" id="title">Điểm tích của bạn: <?=to_currency_no_money($customer->points)?></h1>
             <!-- User Story #2: I can see a short explanation with id="description" in P sized text. -->
             <p id="description">
 				Cảm ơn bạn đã dùng dịch vụ của chúng tôi. Bạn có thể sử dụng điểm tích lũy này để đổi lấy các thẻ giảm giá lần tiếp theo;<br/>

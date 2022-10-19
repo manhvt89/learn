@@ -1058,7 +1058,6 @@ class Sale extends CI_Model
 				sales.code as code,
 				sales.confirm as confirm,
 				sales.sale_uuid as sale_uuid,
-				customer.account_number as account_number,
 				DATE(sales.sale_time) AS sale_date,
 				sales.sale_time AS sale_time,
 				sales.comment AS comment,
@@ -1066,6 +1065,8 @@ class Sale extends CI_Model
 				sales.employee_id AS employee_id,
 				sales.customer_id AS customer_id,
 				sales.ctv_id AS sale_man_id,
+				sales.kxv_id as kxv_id,
+				sales.doctor_id as doctor_id,
 				CONCAT(customer_p.first_name, " ", customer_p.last_name) AS customer_name,
 				customer_p.first_name AS first_name,
 				customer_p.last_name AS last_name,
@@ -1073,6 +1074,8 @@ class Sale extends CI_Model
 				customer_p.comments AS comments,
 				customer.customer_uuid AS c_uuid,
 				customer_p.phone_number AS phone_number,
+				customer.account_number as account_number,
+				customer.points as points,
 				' . "
 				IFNULL(ROUND($sale_total, $decimals), ROUND($sale_subtotal, $decimals)) AS amount_due,
 				payments.sale_payment_amount AS amount_tendered,
@@ -1096,16 +1099,61 @@ class Sale extends CI_Model
 		return $this->db->get();
 	}
 
-	public function update_confirm($sale_uuid, $confirm)
+	public function update_confirm($confirm, $q1,$q2,$q3, $sale_info)
 	{
-	
+		$this->db->trans_start(); // start Transaction
 		$success = 0;
+		$rate = 0.1; // load in setting;
+		//var_dump($sale_info); die();
+		$point = bcmul($rate,$sale_info['amount_due']);
 		$sale_data['confirm'] = $confirm;
-		//Run these queries as a transaction, we want to make sure we do all or nothing
+		$sale_uuid = $sale_info['sale_uuid'];
+		//1. Update the sale with sale_uuid
 		$this->db->where('sale_uuid', $sale_uuid);
 		$success = $this->db->update('sales', $sale_data);
 
-		return $success;
+		//2. Update point of customer
+
+		$customer_info['points'] = $sale_info['points'] + $point;
+		$this->db->where('person_id',$sale_info['customer_id']);
+		$this->db->update('customers',$customer_info);
+
+
+		//3. Insert ospos_short_survey table
+
+		$_aServey = array(
+			'customer_id'=>$sale_info['customer_id'],
+			'sale_id' =>$sale_info['sale_id'],
+			'sale_uuid' => $sale_uuid,
+			'nvbh_id' =>$sale_info['sale_man_id'],
+			'kxv_id' =>$sale_info['kxv_id'],
+			'created_date' => time(),
+			'q1' => $q1,
+			'q2' => $q2,
+			'q3' => $q3
+		);
+		// Insert Short_Survey
+		$this->db->insert('short_survey', $_aServey);
+
+
+		//4. insert ospos_history_points
+
+		$_aHistoryPoint = array(
+			'customer_id' =>$sale_info['customer_id'],
+			'sale_id' => $sale_info['sale_id'],
+			'sale_uuid' => $sale_info['sale_uuid'],
+			'created_date' =>time(),
+			'point' =>$point,
+			'type' => 1,
+			'note' =>'+ '.$point . ' boi '. $sale_info['sale_uuid']
+		);
+		// Insert ospos_history_points
+		$this->db->insert('history_points', $_aHistoryPoint);
+
+		
+		$this->db->trans_complete(); // execute transaction
+	
+		return $this->db->trans_status(); // end Transaction
 	}
 }
 ?>

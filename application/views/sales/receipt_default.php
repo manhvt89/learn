@@ -202,6 +202,7 @@
 	<div class="barcode">
 	</div>
 	<div class="qrcode" style="text-align: center;">
+			<span><?php echo $footer_string ?></span>
 			<img src='data:image/png;base64,<?php echo $qrcode_string; ?>' />
 			<?php echo $url_string; ?>
 	</div>

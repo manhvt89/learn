@@ -1,2 +1,9 @@
 
-Hướng dẫn sử dụng
+Update
+
+19/10/2022
+- Update QRCode on <i class="fas fa-money-bill    ">Bill</i>
+- Update Sales models
+- Update Verify controller 
+- Update receipt_default on view/sales
+- Update doctor and kxv 
