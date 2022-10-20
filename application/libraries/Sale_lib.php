@@ -8,6 +8,118 @@ class Sale_lib
 	{
 		$this->CI =& get_instance();
 	}
+	// Begin Add properties of cart by ManhVT
+
+	public function set_points($fPoint)
+	{
+		$this->CI->session->set_userdata('points', $fPoint);
+	}
+
+	public function get_points()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$points = $this->CI->session->userdata('points');
+
+    	return empty($points) ? '' : $points;
+	}
+
+	public function clear_points()
+	{
+		$this->CI->session->unset_userdata('points');
+	}
+
+	/////////////////
+	public function set_item_name($sItemName)
+	{
+		$this->CI->session->set_userdata('item_name', $sItemName);
+	}
+
+	public function get_item_name()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$item_name = $this->CI->session->userdata('item_name');
+
+    	return empty($item_name) ? '' : $item_name;
+	}
+
+	public function clear_item_name()
+	{
+		$this->CI->session->unset_userdata('item_name');
+	}
+    ///////////////////////
+	public function set_item_category($sItemCategory)
+	{
+		$this->CI->session->set_userdata('item_category', $sItemCategory);
+	}
+
+	public function get_item_category()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$item_category = $this->CI->session->userdata('item_category');
+
+    	return empty($item_category) ? '' : $item_category;
+	}
+
+	public function clear_item_category()
+	{
+		$this->CI->session->unset_userdata('item_category');
+	}
+	//////////////////////////////
+	public function set_item_supplier_id($sItemSupplierId)
+	{
+		$this->CI->session->set_userdata('item_supplier_id', $sItemSupplierId);
+	}
+
+	public function get_item_supplier_id()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$item_supplier_id = $this->CI->session->userdata('item_supplier_id');
+
+    	return empty($item_supplier_id) ? '' : $item_supplier_id;
+	}
+
+	public function clear_item_supplier_id()
+	{
+		$this->CI->session->unset_userdata('item_supplier_id');
+	}
+	//////////////////////////////
+	public function set_item_number($sItemNumber)
+	{
+		$this->CI->session->set_userdata('item_number', $sItemNumber);
+	}
+
+	public function get_item_number()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$item_number = $this->CI->session->userdata('item_number');
+
+    	return empty($item_number) ? '' : $item_number;
+	}
+
+	public function clear_item_number()
+	{
+		$this->CI->session->unset_userdata('item_number');
+	}
+	///////////////////////////
+	public function set_item_description($sItemDescription)
+	{
+		$this->CI->session->set_userdata('item_description', $sItemDescription);
+	}
+
+	public function get_item_description()
+	{
+		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
+		$item_description = $this->CI->session->userdata('item_description');
+
+    	return empty($item_description) ? '' : $item_description;
+	}
+
+	public function clear_item_description()
+	{
+		$this->CI->session->unset_userdata('item_description');
+	}
+	// END: Add properties of cart by ManhVT
+	/**-------------- */
 
 	public function set_ctv($ctv_data)
 	{
@@ -400,6 +512,7 @@ class Sale_lib
 		$total = $this->get_item_total($quantity, $price, $discount);
         $discounted_total = $this->get_item_total($quantity, $price, $discount, TRUE);
 		//Item already exists and is not serialized, add to quantity
+
 		if(!$itemalreadyinsale || $item_info->is_serialized)
 		{
             $item = array($insertkey => array(
@@ -409,6 +522,8 @@ class Sale_lib
                     'line' => $insertkey,
                     'name' => $item_info->name,
                     'item_number' => $item_info->item_number,
+					'item_category'=>$item_info->category,
+					'item_supplier_id'=>$item_info->supplier_id,
                     'description' => $description != NULL ? $description : $item_info->description,
                     'serialnumber' => $serialnumber != NULL ? $serialnumber : '',
                     'allow_alt_description' => $item_info->allow_alt_description,
@@ -602,6 +717,13 @@ class Sale_lib
 		$this->clear_suspend_id();
 		$this->clear_test_id();
 		$this->clear_partner_id();
+		//add clear five Item below:
+		$this->clear_item_name();
+		$this->clear_item_category();
+		$this->clear_item_number();
+		$this->clear_item_supplier_id();
+		$this->clear_item_description();
+		$this->clear_points();
 	}
 	
 	public function is_customer_taxable()

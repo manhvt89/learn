@@ -141,6 +141,7 @@ class Sales extends Secure_Controller
 		if($this->Customer->exists($customer_id))
 		{
 			$this->sale_lib->set_customer($customer_id);
+			$this->sale_lib->set_points($this->Customer->get_info($customer_id)->points);
 
 			$discount_percent = $this->Customer->get_info($customer_id)->discount_percent;
 
@@ -806,6 +807,7 @@ class Sales extends Secure_Controller
 		if($customer_id != -1)
 		{
 			$customer_info = $this->Customer->get_info($customer_id);
+			//var_dump($customer_info); die();
 			$data['customer'] = $customer_info->last_name . ' ' . $customer_info->first_name;
 			$data['account_number'] = $customer_info->account_number;
 			$data['first_name'] = $customer_info->first_name;
@@ -813,6 +815,8 @@ class Sales extends Secure_Controller
 			$data['customer_email'] = $customer_info->email;
 			$data['customer_address'] = $customer_info->address_1;
 			$data['phone_number'] = $customer_info->phone_number;
+			//$data['points'] = $customer_info->points; get from session
+			$data['points'] = $this->sale_lib->get_points();
 			if(!empty($customer_info->zip) or !empty($customer_info->city))
 			{
 				$data['customer_location'] = $customer_info->zip . ' ' . $customer_info->city;				
@@ -884,6 +888,8 @@ class Sales extends Secure_Controller
 	{		
 		$data['sale_id'] = $this->sale_lib->get_sale_id();
 		$data['cart'] = $this->sale_lib->get_cart();
+		$data['points'] = $this->sale_lib->get_points();
+		//var_dump($data['cart']);die();
 		$data['modes'] = array('sale' => $this->lang->line('sales_sale'), 'return' => $this->lang->line('sales_return'));
 		$data['mode'] = $this->sale_lib->get_mode();
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('sales');

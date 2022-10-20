@@ -586,6 +586,7 @@ class Sale extends CI_Model
 
 	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$sale_id = FALSE)
 	{
+		//var_dump($items);die();
 		if(count($items) == 0)
 		{
 			return -1;
@@ -682,7 +683,12 @@ class Sale extends CI_Model
 				'discount_percent'	=> $item['discount'],
 				'item_cost_price'	=> $cur_item_info->cost_price,
 				'item_unit_price'	=> $item['price'],
-				'item_location'		=> $item['item_location']
+				'item_location'		=> $item['item_location'],
+				'item_name'			=>$item['name'],
+				'item_category'     => $item['item_category'],
+				'item_supplier_id'  =>$item['item_supplier_id'],
+				'item_number'		=>$item['item_number'],
+				'item_description'	=>$item['description']
 			);
 
 			$this->db->insert('sales_items', $sales_items_data);
@@ -814,9 +820,10 @@ class Sale extends CI_Model
 		return $this->db->get();
 	}
 
-	public function get_payment_options($giftcard = TRUE)
+	public function get_payment_options($giftcard = TRUE, $cfPoint = TRUE)
 	{
 		$payments = array();
+		/*
 		
 		if($this->config->item('payment_options_order') == 'debitcreditcash')
 		{
@@ -837,7 +844,15 @@ class Sale extends CI_Model
 			$payments[$this->lang->line('sales_credit')] = $this->lang->line('sales_credit');
 		}
 
-		$payments[$this->lang->line('sales_check')] = $this->lang->line('sales_check');
+		//$payments[$this->lang->line('sales_check')] = $this->lang->line('sales_check');
+		*/
+		$payments[$this->lang->line('sales_debit')] = $this->lang->line('sales_debit');
+		//$payments[$this->lang->line('sales_credit')] = $this->lang->line('sales_credit');
+		$payments[$this->lang->line('sales_cash')] = $this->lang->line('sales_cash');
+		if($cfPoint)
+		{
+			$payments[$this->lang->line('sales_point')] = $this->lang->line('sales_point');
+		}
 
 		if($giftcard)
 		{

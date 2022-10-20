@@ -130,12 +130,6 @@ if (isset($success))
 					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex)); ?>
 					<span class="ui-helper-hidden-accessible" role="status"></span>
 				</li>
-				<li class="pull-right">
-					<button id='new_item_button' class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new='<?php echo $this->lang->line('common_new') ?>' data-btn-submit='<?php echo $this->lang->line('common_submit')?>' data-href='<?php echo site_url("items/view"); ?>'
-							title='<?php echo $this->lang->line($controller_name . '_new_item'); ?>'>
-						<span class="glyphicon glyphicon-tag">&nbsp</span><?php echo $this->lang->line($controller_name. '_new_item'); ?>
-					</button>
-				</li>
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
@@ -144,7 +138,7 @@ if (isset($success))
 <!-- Sale Items List -->
 	<?php if($sale_id > 0): ?>
 		<?php //do nothing for payment update ?>
-		<table class="sales_table_100" id="register">
+		<table class="sales_table_100 edit" id="register">
 			<thead>
 			<tr>
 				<th style="width: 5%;"><?php echo $this->lang->line('common_delete'); ?></th>
@@ -264,7 +258,7 @@ if (isset($success))
 			</tbody>
 		</table>
 	<?php else: ?>
-		<table class="sales_table_100" id="register">
+		<table class="sales_table_100 add-new" id="register">
 		<thead>
 			<tr>
 				<th style="width: 5%;"><?php echo $this->lang->line('common_delete'); ?></th>
@@ -440,8 +434,11 @@ if (isset($success))
 				?>
 
 				<tr>
-					<th style='width: 55%;'><?php echo $this->lang->line("sales_customer_discount"); ?></th>
-					<th style="width: 45%; text-align: right;"><?php echo $customer_discount_percent . ' %'; ?></th>
+					<th style='width: 55%;'><?php echo $this->lang->line("sales_customer_point"); ?></th>
+					<th style="width: 45%; text-align: right;">
+						<?php echo to_currency_no_money($points); ?>
+						<input type="hidden" name="c_points" id="c_points" value="<?php echo $points; ?>" />
+					</th>
 				</tr>
 				<tr>
 					<th style='width: 55%;'><?php echo $this->lang->line("sales_customer_total"); ?></th>
@@ -1037,10 +1034,20 @@ $(document).ready(function()
 
 function check_payment_type_giftcard()
 {
+	var _iWei = 50000;
 	if ($("#payment_types").val() == "<?php echo $this->lang->line('sales_giftcard'); ?>")
 	{
 		$("#amount_tendered_label").html("<?php echo $this->lang->line('sales_giftcard_number'); ?>");
 		$("#amount_tendered:enabled").val('').focus();
+	}
+	else if($("#payment_types").val() == "<?php echo $this->lang->line('sales_point'); ?>"){
+		var _fPoints = parseFloat($("#c_points").val()).toFixed(0);
+		var _iDiv = Math.floor(_fPoints/_iWei);
+		var _iMaxPoint = _iDiv * _iWei
+		//alert(_fPoints);
+		$("#amount_tendered_label").html("<?php echo $this->lang->line('sales_amount_tendered'); ?>");
+		$("#amount_tendered:enabled").val(_iMaxPoint);
+		$("#c_points").val(_fPoints - _iMaxPoint);
 	}
 	else
 	{
