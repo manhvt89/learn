@@ -45,26 +45,30 @@ class Verify extends CI_Controller
 		$this->load->view('verify/info', $data);
 	}
 
-	public function confirm($uuid=0)
+	public function confirm($uuid='')
 	{
 		
-		if($uuid != 0)
+		if($uuid != '')
 		{
 			$data['sale_uuid'] = $uuid;
+			//echo $data['sale_uuid'];
 			//$this->load->view('login');
 			$sale_info = $this->Sale->get_info_by_uuid($uuid)->row_array();
-			//var_dump($sale_info);die();
-			if($sale_info['confirm'] > 0)
+			if(empty($sale_info))
 			{
-				redirect('verify/info/'.$sale_info['c_uuid']);
+				//khonglam gi
 			} else {
-		
-				$_sToken = '';
-				$sSubString = substr($sale_info['phone_number'], -6);
-				$_sToken = md5($sSubString); //Mã hóa token md5
-				$data['token'] = $_sToken;
-				//var_dump($sale_info);
-				$this->load->view('verify/confirm', $data);
+				//var_dump($sale_info);die();
+				if ($sale_info['confirm'] > 0) {
+					redirect('verify/info/'.$sale_info['c_uuid']);
+				} else {
+					$_sToken = '';
+					$sSubString = substr($sale_info['phone_number'], -6);
+					$_sToken = md5($sSubString); //Mã hóa token md5
+					$data['token'] = $_sToken;
+					//var_dump($sale_info);
+					$this->load->view('verify/confirm', $data);
+				}
 			}
 		} else {
 			
