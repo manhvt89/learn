@@ -584,7 +584,7 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $sale_id = FALSE)
+	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$sale_id = FALSE)
 	{
 		if(count($items) == 0)
 		{
@@ -600,6 +600,8 @@ class Sale extends CI_Model
 			'status'=>$status,
 			'test_id'=>$test_id,
 			'ctv_id' =>$ctv_id,
+			'kxv_id' => $kxv_id,
+			'doctor_id'=>$doctor_id,
 			'code'=>'STD' . time()
 		);
 		//var_dump($sales_data);die();

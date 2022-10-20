@@ -442,8 +442,15 @@ class Sales extends Secure_Controller
 
 			$customer_id = $this->sale_lib->get_customer();
 			$test_id = $this->sale_lib->get_test_id();
+			$kxv_id = 0;
+			$doctor_id = 0;
 			if(!isset($test_id)){
 				$test_id = 0;
+
+			} else {
+				$test_info = $this->Testex->get_info($test_id);
+				$kxv_id = $test_info->kxv_id;
+				$doctor_id = 0;
 			}
 			$customer_info = $this->_load_customer_data($customer_id, $data);
 			$invoice_number = $this->_substitute_invoice_number($customer_info);
@@ -468,7 +475,9 @@ class Sales extends Secure_Controller
 															$suspended_sale_id,
 															$ctv_id,
 															$status,
-															$test_id);
+															$test_id,
+															$kxv_id,
+															$doctor_id);
 				$data['sale_id'] = 'POS ' . $data['sale_id_num'];
 				$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 				$data['code'] = $sale_info['code'];
@@ -582,7 +591,7 @@ class Sales extends Secure_Controller
 																$data['payments'][$this->lang->line('sales_paid_money')],
 																$amount_change,
 																$suspended_sale_id,
-																$ctv_id);
+																$ctv_id,0,0);
 					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 				}
@@ -1213,7 +1222,7 @@ class Sales extends Secure_Controller
 		$this->sale_lib->clear_all();
 	}
 
-	public function test($customer_id,$principle_id=0,$partner_id=0){
+	public function test($customer_id=0,$principle_id=0,$partner_id=0){
 
 		$this->sale_lib->clear_all($customer_id);
 		if($this->Customer->exists($customer_id))
