@@ -343,6 +343,7 @@ class Sale_lib
 			$_fPoints = bcadd($this->get_points(),$_aThePayment['payment_amount']);
 			//echo $_fPoints;die();
 			$this->set_points($_fPoints);
+			$this->set_paid_points(0);
 		}
 		$this->set_payments($_aaFullPayments);
 	}
@@ -748,6 +749,7 @@ class Sale_lib
 		$this->clear_item_supplier_id();
 		$this->clear_item_description();
 		$this->clear_points();
+		$this->clear_paid_points();
 	}
 	
 	public function is_customer_taxable()
@@ -1054,6 +1056,27 @@ class Sale_lib
 	{
 		$this->CI->session->unset_userdata('_acustomer');
 	}
+
+	public function set_paid_points($_point)
+	{
+		$this->CI->session->set_userdata('_fpoint', $_point);
+	}
+
+	public function get_paid_points()
+	{
+		if (!empty($this->CI->session->userdata('_fpoint'))) {
+			return $this->CI->session->userdata('_fpoint');
+		} else{
+			return 0;
+		}
+	}
+
+	public function clear_paid_points()
+	{
+		$this->CI->session->unset_userdata('_fpoint');
+	}
+
+
 
 }
 

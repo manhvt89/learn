@@ -1038,19 +1038,24 @@ function check_payment_type_giftcard()
 	if ($("#payment_types").val() == "<?php echo $this->lang->line('sales_giftcard'); ?>")
 	{
 		$("#amount_tendered_label").html("<?php echo $this->lang->line('sales_giftcard_number'); ?>");
+		$('#amount_tendered').prop('readonly', false);
 		$("#amount_tendered:enabled").val('').focus();
 	}
 	else if($("#payment_types").val() == "<?php echo $this->lang->line('sales_point'); ?>"){
+		
 		var _fPoints = parseFloat($("#c_points").val()).toFixed(0);
+		//alert(_fPoints);
 		var _iDiv = Math.floor(_fPoints/_iWei);
 		var _iMaxPoint = _iDiv * _iWei
 		//alert(_fPoints);
 		$("#amount_tendered_label").html("<?php echo $this->lang->line('sales_amount_tendered'); ?>");
 		$("#amount_tendered:enabled").val(_iMaxPoint);
-		$("#c_points").val(_fPoints - _iMaxPoint);
+		$('#amount_tendered').prop('readonly', true);
+		//$("#c_points").val(_fPoints - _iMaxPoint);
 	}
 	else
 	{
+		$('#amount_tendered').prop('readonly', false);
 		$("#amount_tendered_label").html("<?php echo $this->lang->line('sales_amount_tendered'); ?>");
 		$("#amount_tendered:enabled").val('');
 	}

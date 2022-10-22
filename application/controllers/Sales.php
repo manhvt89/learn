@@ -260,6 +260,10 @@ class Sales extends Secure_Controller
 			{
 				$amount_tendered = $this->input->post('amount_tendered');
 				$this->sale_lib->add_payment($payment_type, $amount_tendered,'',0);
+				if($payment_type == $this->lang->line('sales_point')) // Nếu sử dụng points
+				{
+					$this->sale_lib->set_paid_points($amount_tendered);
+				}
 			}
 		}
 
@@ -606,7 +610,12 @@ class Sales extends Secure_Controller
 																$data['payments'][$this->lang->line('sales_paid_money')],
 																$amount_change,
 																$suspended_sale_id,
-																$ctv_id,0,0);
+																$ctv_id,
+																0,
+																0,
+																0,
+																0,
+																$this->sale_lib->get_paid_points());
 					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 				}
@@ -672,10 +681,12 @@ class Sales extends Secure_Controller
 						$data['qrcode_string'] = $this->ciqrcode->generate($params);
 						$data['url_string'] = $qr_url_data;
 						$data['footer_string'] = 'Quét mã QR để nhận quà';
+						$data['sale_uuid'] = $sale_info['sale_uuid'];
 					} else {
 						$data['footer_string'] = '';
 						$data['qrcode_string'] = '';
 						$data['url_string'] = '';
+						$data['sale_uuid'] = '';
 					}
 
 					$this->load->view('sales/receipt', $data);

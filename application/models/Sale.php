@@ -584,7 +584,7 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$sale_id = FALSE)
+	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$sale_id = FALSE)
 	{
 		//var_dump($items);die();
 		if(count($items) == 0)
@@ -603,6 +603,7 @@ class Sale extends CI_Model
 			'ctv_id' =>$ctv_id,
 			'kxv_id' => $kxv_id,
 			'doctor_id'=>$doctor_id,
+			'paid_points'=>$points,
 			'code'=>'STD' . time()
 		);
 		//var_dump($sales_data);die();
@@ -640,7 +641,9 @@ class Sale extends CI_Model
 			$this->db->insert('sales_payments', $sales_payments_data);
 			$payment_id = $this->db->insert_id();
 
-			if($payment['payment_type'] == 'Tiền mặt') { // If tiền mặt then insert accounting
+			//if($payment['payment_type'] == 'Tiền mặt') { // If tiền mặt then insert accounting
+			if($payment['payment_type'] == $this->lang->line("sales_cash")) { // If tiền mặt then insert accounting
+				 
 				$data_total = array(
 					'creator_personal_id' => $employee_id,
 					'personal_id' => $customer_id, // this is a customer
@@ -666,7 +669,35 @@ class Sale extends CI_Model
 
 					$this->Accounting->save_payout($out_data);
 				}
-			}
+			} 
+			
+		}
+
+		if($points > 0) // Nếu sử dụng điểm thanh toán
+		{
+			//1. Update ppoint cua kh
+			// Lấy thông tin của khách hàng này
+			//$customer_info = $cus_obj;
+			//var_dump($customer_info);die();
+			$customer_info['points'] = $cus_obj->points - $points;
+			$this->db->where('person_id',$customer_id);
+			$this->db->update('customers',$customer_info);
+
+			//2. insert ospos_history_points
+			//$sale_info = $this->Sale->get_info($sale_id)->row_array();
+			//var_dump($sale_id ); die();
+			$_aHistoryPoint = array(
+				'customer_id' =>$customer_id,
+				'sale_id' => $sale_id,
+				'sale_uuid' => '',
+				'created_date' =>time(),
+				'point' =>$points,
+				'type' => 1,
+				'note' =>'- '.$points . ' TT đơn hàng ID '. $sale_id
+			);
+			// Insert ospos_history_points
+			$this->db->insert('history_points', $_aHistoryPoint);
+			
 		}
 
 		foreach($items as $line=>$item)
@@ -732,7 +763,7 @@ class Sale extends CI_Model
 				}
 			}
 		}
-		echo $suspended_sale_id;
+		//echo $suspended_sale_id;
 		if($suspended_sale_id) {
 			$this->Sale_suspended->locksuspend($suspended_sale_id);
 		}
@@ -1084,6 +1115,7 @@ class Sale extends CI_Model
 				sales.ctv_id AS sale_man_id,
 				sales.kxv_id as kxv_id,
 				sales.doctor_id as doctor_id,
+				sales.paid_points as paid_points,
 				CONCAT(customer_p.first_name, " ", customer_p.last_name) AS customer_name,
 				customer_p.first_name AS first_name,
 				customer_p.last_name AS last_name,
@@ -1122,7 +1154,8 @@ class Sale extends CI_Model
 		$success = 0;
 		$rate = 0.1; // load in setting;
 		//var_dump($sale_info); die();
-		$point = bcmul($rate,$sale_info['amount_due']);
+		$_paidAmount = bcsub($sale_info['amount_due'],$sale_info['paid_points']);
+		$point = bcmul($rate,$_paidAmount );
 		$sale_data['confirm'] = $confirm;
 		$sale_uuid = $sale_info['sale_uuid'];
 		//1. Update the sale with sale_uuid

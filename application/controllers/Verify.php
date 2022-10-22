@@ -27,7 +27,7 @@ class Verify extends CI_Controller
 		if (!empty($sale_info)) {
 			$iCustomer_ID = $sale_info['customer_id'];
 			//$customer_info = $this->Customer->get_info($iCustomer_ID);
-
+			//var_dump($sale_info);die();
 			$this->Sale->update_confirm($_nConfirm, $_nQ1, $_nQ2, $_nQ3, $sale_info);
 			//$customer_info = $this->Customer->get_info($iCustomer_ID);
 			//$sale_info = $this->Sale->get_info($sale_id)->row_array();
