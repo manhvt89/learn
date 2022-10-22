@@ -104,7 +104,8 @@ $(document).ready(function()
 	<?php echo anchor("sales", '<span class="glyphicon glyphicon-shopping-cart">&nbsp</span>' . $this->lang->line('sales_register'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_sales_button')); ?>
 	<?php echo anchor("sales/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_takings_button')); ?>
 </div>
-
+<?php if($sale_uuid != '' ): ?>
 <?php $this->load->view("sales/" . $this->config->item('receipt_template')); ?>
+<?php endif;?>
 
 <?php $this->load->view("partial/footer"); ?>

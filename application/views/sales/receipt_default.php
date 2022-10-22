@@ -170,9 +170,9 @@
 				$splitpayment = explode(':', $payment['payment_type']);
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
 				?>
-				<tr class="total_paid">
-					<td colspan="4" style="text-align:right;"><?php echo $this->lang->line('sales_paid_rev'); ?> </td>
-					<td class="total-value" data-th="<?php echo $this->lang->line('sales_paid_rev'); ?> "><?php echo number_format($payment['payment_amount'] * 1); ?></td>
+				<tr class="total_paid 890809">
+					<td colspan="4" style="text-align:right;"><?php echo $payment['payment_type']; //echo $this->lang->line('sales_paid_rev'); ?> </td>
+					<td class="total-value" data-th="<?php echo $payment['payment_type'];//echo $this->lang->line('sales_paid_rev'); ?> "><?php echo number_format($payment['payment_amount'] * 1); ?></td>
 				</tr>
 				<?php
 			}

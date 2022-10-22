@@ -140,16 +140,29 @@ class Sales extends Secure_Controller
 		$customer_id = $this->input->post('customer');
 		if($this->Customer->exists($customer_id))
 		{
+			$_oCustomerInfor = $this->Customer->get_info($customer_id);
+			//var_dump((array)$_oCustomerInfor); die();
 			$this->sale_lib->set_customer($customer_id);
-			$this->sale_lib->set_points($this->Customer->get_info($customer_id)->points);
+			$this->sale_lib->set_points($_oCustomerInfor->points);
+			//$this->sale_lib->set_customer_name($_oCustomerInfor->last_name . ' ' . $_oCustomerInfor->first_name);
+			//$this->sale_lib->set_customer_cellphone($_oCustomerInfor->phone_number);
+			$this->sale_lib->set_obj_customer($_oCustomerInfor);
 
-			$discount_percent = $this->Customer->get_info($customer_id)->discount_percent;
+			$discount_percent = $_oCustomerInfor->discount_percent;
 
 			// apply customer default discount to items that have 0 discount
 			if($discount_percent != '')
 			{	
 				$this->sale_lib->apply_customer_discount($discount_percent);
 			}
+			$cust_totals = $this->Customer->get_totals($customer_id);
+			if (!empty($cust_totals)) {		
+
+				$this->sale_lib->set_customer_total($cust_totals->total);
+			} else{
+				$this->sale_lib->set_customer_total(0);
+			}
+
 		}
 		
 		$this->_reload();
@@ -368,6 +381,7 @@ class Sales extends Secure_Controller
 		$this->sale_lib->clear_test_id();
 		$this->sale_lib->clear_partner_id();
 		$this->sale_lib->clear_suspend_id();
+		$this->sale_lib->empty_payments();
 		$this->_reload();
 	}
 
@@ -802,36 +816,52 @@ class Sales extends Secure_Controller
 
 	private function _load_customer_data($customer_id, &$data, $totals = FALSE)
 	{	
-		$customer_info = '';
-
+		$customer_info = array();
+		
 		if($customer_id != -1)
 		{
-			$customer_info = $this->Customer->get_info($customer_id);
-			//var_dump($customer_info); die();
-			$data['customer'] = $customer_info->last_name . ' ' . $customer_info->first_name;
-			$data['account_number'] = $customer_info->account_number;
-			$data['first_name'] = $customer_info->first_name;
-			$data['last_name'] = $customer_info->last_name;
-			$data['customer_email'] = $customer_info->email;
-			$data['customer_address'] = $customer_info->address_1;
-			$data['phone_number'] = $customer_info->phone_number;
-			//$data['points'] = $customer_info->points; get from session
-			$data['points'] = $this->sale_lib->get_points();
-			if(!empty($customer_info->zip) or !empty($customer_info->city))
+			//$customer_info = $this->Customer->get_info($customer_id);
+			$customer_info = $this->sale_lib->get_obj_customer();
+			if(empty($customer_info))
 			{
-				$data['customer_location'] = $customer_info->zip . ' ' . $customer_info->city;				
+				$customer_info = $this->Customer->get_info($customer_id);
 			}
-			else
-			{
+			if (!empty($customer_info)) {
+				$data['customer'] = $customer_info->last_name . ' ' . $customer_info->first_name;
+				$data['account_number'] = $customer_info->account_number;
+				$data['first_name'] = $customer_info->first_name;
+				$data['last_name'] = $customer_info->last_name;
+				$data['customer_email'] = $customer_info->email;
+				$data['customer_address'] = $customer_info->address_1;
+				$data['phone_number'] = $customer_info->phone_number;
+				//$data['points'] = $customer_info->points; get from session
+				$data['points'] = $this->sale_lib->get_points();
+				if (!empty($customer_info->zip) or !empty($customer_info->city)) {
+					$data['customer_location'] = $customer_info->zip . ' ' . $customer_info->city;
+				} else {
+					$data['customer_location'] = '';
+				}
+				$data['customer_account_number'] = $customer_info->account_number;
+				$data['customer_discount_percent'] = $customer_info->discount_percent;
+			} else {
+				$data['customer'] = '';
+				$data['account_number'] = '';
+				$data['first_name'] = '';
+				$data['last_name'] = '';
+				$data['customer_email'] = '';
+				$data['customer_address'] = '';
+				$data['phone_number'] = '';
+				//$data['points'] = $customer_info->points; get from session
+				$data['points'] = $this->sale_lib->get_points();
+				
 				$data['customer_location'] = '';
+				
+				$data['customer_account_number'] = '';
+				$data['customer_discount_percent'] = '';
 			}
-			$data['customer_account_number'] = $customer_info->account_number;
-			$data['customer_discount_percent'] = $customer_info->discount_percent;
 			if($totals)
 			{
-				$cust_totals = $this->Customer->get_totals($customer_id);
-
-				$data['customer_total'] = $cust_totals->total;
+				$data['customer_total'] = $this->sale_lib->get_customer_total();
 			}
 			$data['customer_info'] = implode("\n", array(
 				$data['customer'],
@@ -848,13 +878,14 @@ class Sales extends Secure_Controller
 	{
 		$this->sale_lib->clear_all();
 		$sale_info = $this->Sale->get_info($sale_id)->row_array();
+	if ($sale_info != null) {
 		$this->sale_lib->copy_entire_sale($sale_id);
 		$data = array();
 		$data['cart'] = $this->sale_lib->get_cart();
 		$data['payments'] = $this->sale_lib->get_payments();
 		$data['subtotal'] = $this->sale_lib->get_subtotal();
-		$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
-		$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
+		$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(true);
+		$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(true, true);
 		$data['taxes'] = $this->sale_lib->get_taxes();
 		$data['total'] = $this->sale_lib->get_total();
 		$data['discount'] = $this->sale_lib->get_discount();
@@ -880,7 +911,45 @@ class Sales extends Secure_Controller
 			$this->config->item('account_number')
 		));
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
-		$data['print_after_sale'] = FALSE;
+		$data['print_after_sale'] = false;
+	} else {
+		//$this->sale_lib->copy_entire_sale($sale_id);
+		$data = array();
+		$data['cart'] = '';
+		$data['payments'] = '';
+		$data['subtotal'] = '';
+		$data['discounted_subtotal'] = '';
+		$data['tax_exclusive_subtotal'] = '';
+		$data['taxes'] = '';
+		$data['total'] = '';
+		$data['discount'] = '';
+		$data['receipt_title'] = '';
+
+		$data['transaction_time'] = '';
+		$data['transaction_date'] = '';
+		$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
+		$data['amount_change'] = '';
+		$data['amount_due'] = '';
+		$employee_info = $this->Employee->get_info($this->sale_lib->get_employee());
+		$data['employee'] = $employee_info->last_name . ' ' . $employee_info->first_name;
+		$this->_load_customer_data($this->sale_lib->get_customer(), $data);
+
+		$data['sale_id_num'] = $sale_id;
+		$data['code'] = '';
+		$data['sale_id'] = 'POS ' . $sale_id;
+		$data['comments'] = '';
+		$data['invoice_number'] = '';
+		$data['sale_uuid'] = '';
+		$data['company_info'] = implode("\n", array(
+			$this->config->item('address'),
+			$this->config->item('phone'),
+			$this->config->item('account_number')
+		));
+		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+		$data['print_after_sale'] = false;
+
+	}
+
 		return $this->xss_clean($data);
 	}
 
@@ -889,7 +958,6 @@ class Sales extends Secure_Controller
 		$data['sale_id'] = $this->sale_lib->get_sale_id();
 		$data['cart'] = $this->sale_lib->get_cart();
 		$data['points'] = $this->sale_lib->get_points();
-		//var_dump($data['cart']);die();
 		$data['modes'] = array('sale' => $this->lang->line('sales_sale'), 'return' => $this->lang->line('sales_return'));
 		$data['mode'] = $this->sale_lib->get_mode();
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('sales');

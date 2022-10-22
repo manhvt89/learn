@@ -295,6 +295,12 @@ class Sale_lib
 						'payment_id'=>$payment_id));
 
 				$payments += $payment;
+				//add by ManhVT for resolute points
+				if($payment_type == $this->CI->lang->line('sales_point'))
+				{
+					$_fpoints = bcsub($this->get_points(),$payment_amount);
+					$this->set_points($_fpoints);
+				}
 
 			}
 
@@ -323,9 +329,22 @@ class Sale_lib
 	// Multiple Payments
 	public function delete_payment($payment_id)
 	{
-		$payments = $this->get_payments();
+		$_aaFullPayments = $this->get_payments();
+		$payments = $_aaFullPayments[$this->CI->lang->line('sales_paid_money')];
+
+		//$this->CI->lang->line('sales_reserve_money')
+		//var_dump($payments);die();
+		$_aThePayment = $payments[urldecode($payment_id)];
 		unset($payments[urldecode($payment_id)]);
-		$this->set_payments($payments);
+		$_aaFullPayments[$this->CI->lang->line('sales_paid_money')] = $payments;
+
+		if($_aThePayment['payment_type'] == $this->CI->lang->line('sales_point'))
+		{
+			$_fPoints = bcadd($this->get_points(),$_aThePayment['payment_amount']);
+			//echo $_fPoints;die();
+			$this->set_points($_fPoints);
+		}
+		$this->set_payments($_aaFullPayments);
 	}
 
 	// Multiple Payments
@@ -340,6 +359,7 @@ class Sale_lib
 		$subtotal = 0;
 		foreach($this->get_payments() as $payments)
 		{
+			//var_dump($payments);
 		    foreach($payments as $payment)
 			{
 				$subtotal = bcadd($payment['payment_amount'], $subtotal);
@@ -380,6 +400,10 @@ class Sale_lib
 	public function remove_customer()
 	{
 		$this->CI->session->unset_userdata('sales_customer');
+		$this->clear_customer_cellphone();
+		$this->clear_customer_total();
+		$this->clear_customer_name();
+		$this->clear_obj_customer();
 	}
 	
 	public function get_employee()
@@ -955,6 +979,82 @@ class Sale_lib
 	{
 		$this->CI->session->unset_userdata('sale_partner_id');
 	}
+
+	public function get_customer_total()
+	{
+		if (!empty($this->CI->session->userdata('customer_total'))) {
+			return $this->CI->session->userdata('customer_total');
+		} else{
+			return 0;
+		}
+	}
+
+	public function set_customer_total($customer_total)
+	{
+		$this->CI->session->set_userdata('customer_total', $customer_total);
+	}
+
+	public function clear_customer_total()
+	{
+		$this->CI->session->unset_userdata('customer_total');
+	}
+
+	public function get_customer_cellphone()
+	{
+		if (!empty($this->CI->session->userdata('customer_cellphone'))) {
+			return $this->CI->session->userdata('customer_cellphone');
+		} else{
+			return '';
+		}
+	}
+
+	public function set_customer_cellphone($customer_cellphone)
+	{
+		$this->CI->session->set_userdata('customer_cellphone', $customer_cellphone);
+	}
+
+	public function clear_customer_cellphone()
+	{
+		$this->CI->session->unset_userdata('customer_cellphone');
+	}
+
+	public function get_customer_name()
+	{
+		if (!empty($this->CI->session->userdata('customer_name'))) {
+			return $this->CI->session->userdata('customer_name');
+		} else{
+			return '';
+		}
+	}
+
+	public function set_customer_name($customer_name)
+	{
+		$this->CI->session->set_userdata('customer_name', $customer_name);
+	}
+	
+	public function clear_customer_name()
+	{
+		$this->CI->session->unset_userdata('customer_name');
+	}
+
+	public function get_obj_customer()
+	{
+		if (!empty($this->CI->session->userdata('_acustomer'))) {
+			return $this->CI->session->userdata('_acustomer');
+		} else{
+			return array();
+		}
+	}
+	public function set_obj_customer($aCustomer)
+	{
+		$this->CI->session->set_userdata('_acustomer', $aCustomer);
+	}
+
+	public function clear_obj_customer()
+	{
+		$this->CI->session->unset_userdata('_acustomer');
+	}
+
 }
 
 ?>

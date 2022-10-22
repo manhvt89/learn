@@ -325,6 +325,18 @@ class Employee extends Person
 			{
 				$this->session->set_userdata('person_id', $row->person_id);
 				$this->session->set_userdata('type', $row->type);
+				// Put ThUser to the session
+				$_oTheLoginedUser = $this->get_info($this->session->userdata('person_id')); //get user object to put session
+
+				$this->session->set_userdata('theUser', $_oTheLoginedUser); // Put the logined user to the session
+
+				// Put permission to session, it is deleting after logouted
+
+				$this->db->from('grants');				
+				$this->db->where('person_id', $this->session->userdata('person_id'));
+				//$this->db->where('person_id', 2);
+				$_aoGrants = $this->db->get()->result();				
+				$this->session->set_userdata('grants', $_aoGrants); // Put the _aoGrants to the session
 				return TRUE;
 			}
 
@@ -358,7 +370,8 @@ class Employee extends Person
 	{
 		if($this->is_logged_in())
 		{
-			return $this->get_info($this->session->userdata('person_id'));
+			return $this->session->userdata('theUser');
+			//return $this->get_info($this->session->userdata('person_id'));
 		}
 
 		return FALSE;
@@ -369,6 +382,18 @@ class Employee extends Person
 	 */
 	public function has_module_grant($permission_id, $person_id)
 	{
+		$_aoGrants = $this->session->userdata('grants');
+		if(empty($_aoGrants))
+		{
+			return FALSE;
+		}
+
+		if(count($_aoGrants) > 1)
+		{
+			return TRUE;
+		}
+		/* Disbale by ManhVT to support session.
+
 		$this->db->from('grants');
 		$this->db->like('permission_id', $permission_id, 'after');
 		$this->db->where('person_id', $person_id);
@@ -378,6 +403,7 @@ class Employee extends Person
 		{
 			return ($result_count != 0);
 		}
+		*/
 
 		return $this->has_subpermissions($permission_id);
 	}
@@ -403,10 +429,25 @@ class Employee extends Person
 		{
 			return TRUE;
 		}
-
+		$_aoGrants = $this->session->userdata('grants');
+		if(empty($_aoGrants))
+		{
+			return FALSE;
+		} else{
+			foreach($_aoGrants as $_oGrant)
+			{
+				if($_oGrant->permission_id == $permission_id)
+				{
+					return TRUE;
+				}
+			}
+		}
+		return FALSE;
+		/*
 		$query = $this->db->get_where('grants', array('person_id' => $person_id, 'permission_id' => $permission_id), 1);
 
 		return ($query->num_rows() == 1); 
+		*/
 	}
 
  	/*

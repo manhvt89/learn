@@ -9,7 +9,7 @@ class Secure_Controller extends CI_Controller
 	public function __construct($module_id = NULL, $submodule_id = NULL)
 	{
 		parent::__construct();
-		
+		//$this->session->sess_destroy();
 		$this->load->model('Employee');
 		$model = $this->Employee;
 
@@ -20,7 +20,7 @@ class Secure_Controller extends CI_Controller
 
 		$this->track_page($module_id, $module_id);
 
-		$logged_in_employee_info = $model->get_logged_in_employee_info();
+		$logged_in_employee_info = $model->get_logged_in_employee_info(); //get login_id in session
 		//var_dump($logged_in_employee_info->type);die();
 		if($logged_in_employee_info->type != 2)
 		{
