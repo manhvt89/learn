@@ -11,10 +11,16 @@ Update
 20/10/2022
 - Cho phép thanh toán bằng điểm
 - Điểm số lưu trữ trong session của đơn hàng; khi thông tin của khách hàng được thay đổi thì cũng load lại thông tin của khách hàng vào session. 
-Khi thanh toán = point thì point sẽ trừ điểm (points) trong session; khi xóa thanh toán sẽ + điểm vào (points);
+Khi thanh toán = point thì point sẽ trừ điểm (points) trong session; khi xóa thanh toán sẽ + điểm vào (points); -->OK
+
 - Tối ưu hóa lại, tất cả thông tin về đơn hàng được cho vào session (sales_lib);
     + Thông tin khách hàng: Chọn lại load lại;
     + Thông tin thanh toán ( các loại thanh toánh): Thêm vào thì bổ sung, xóa thì remove;
     + Thông tin về các sản phẩm
     + Tổng tiền
 - Sau khi kết thúc đơn hàng thì clear All;    
+
+22/10/2022
+theUser - information of the logined user. It is deleting after logout.
+person_id store in session
+type store in session
