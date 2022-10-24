@@ -247,45 +247,5 @@ class Verify extends CI_Controller
 		return $data;
 	}
 
-	private function _reload($data = array())
-	{
-
-        $data['test_id'] = $this->test_lib->get_test_id();
-	    $data['cart'] = $this->test_lib->get_cart();
-		$data['items_module_allowed'] = $this->Employee->has_grant('items', $this->Employee->get_logged_in_employee_info()->person_id);
-
-		$customer_info = $this->_load_customer_data($this->test_lib->get_customer(), $data, TRUE);
-		//$data['invoice_number'] = $this->_substitute_invoice_number($customer_info);
-		//$data['invoice_number_enabled'] = $this->sale_lib->is_invoice_number_enabled();
-
-		//$data['print_after_sale'] = $this->sale_lib->is_print_after_sale();
-
-		//$data['payments_cover_total'] = $this->sale_lib->get_amount_due() <= 0;
-        if(isset($data['test_id']))
-        {
-            $test = $this->Testex->get_info($data['test_id']);
-            if(isset($test)) {
-                //var_dump($test);
-                $data['toltal'] = explode(';', $test['toltal']);
-                $data['duration'] = $test['duration'];
-                $data['code'] = $test['code'];
-                $data['lens_type'] = explode(';', $test['lens_type']);
-                $data['type'] = $test['type'];
-                $data['note'] = $test['note'];
-                $data['test_time'] = date('d/m/Y H:m:s', $test['test_time']);
-                $data['contact_lens_type'] = explode(';',$test['contact_lens_type']);
-
-                $data['right_e'] = json_decode($test['right_e'],true);
-                $data['left_e'] = json_decode($test['left_e'],true);
-                $data['test_time'] = $test['test_time'];
-            }
-
-        }else{
-
-        }
-        $data = $this->xss_clean($data);
-		$this->load->view("test/register", $data);
-	}
-
 }
 ?>

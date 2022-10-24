@@ -10,7 +10,6 @@
         crossorigin="anonymous">
 	<!-- start css template tags -->
 	<style>
-	
 		/*
 		CSS-Tricks Example
 		by Chris Coyier
@@ -603,10 +602,11 @@
 				$only_sale_check |= $payment['payment_type'] == $this->lang->line('sales_check');
 				$splitpayment = explode(':', $payment['payment_type']);
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
+				$_sTitleDisplayPayment = $this->lang->line('sales_paid_rev').' ('.$payment['payment_type'].')';
 				?>
 				<tr class="total_paid">
-					<td colspan="4" style="text-align:right;"><?php echo $this->lang->line('sales_paid_rev'); ?> </td>
-					<td class="total-value" data-th="<?php echo $this->lang->line('sales_paid_rev'); ?> "><?php echo number_format($payment['payment_amount'] * 1); ?></td>
+					<td colspan="4" style="text-align:right;"><?php echo $_sTitleDisplayPayment; ?> </td>
+					<td class="total-value" data-th="<?php echo $_sTitleDisplayPayment; ?> "><?php echo number_format($payment['payment_amount'] * 1); ?></td>
 				</tr>
 				<?php
 			}
