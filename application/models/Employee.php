@@ -332,11 +332,48 @@ class Employee extends Person
 
 				// Put permission to session, it is deleting after logouted
 
-				$this->db->from('grants');				
-				$this->db->where('person_id', $this->session->userdata('person_id'));
+				//$this->db->from('grants');				
+				//$this->db->where('person_id', $this->session->userdata('person_id'));
+				
 				//$this->db->where('person_id', 2);
-				$_aoGrants = $this->db->get()->result();				
+				//$_aoGrants = $this->db->get()->result();	
+				$_grants = $this->Module->get_grants_of_the_user($this->session->userdata('person_id'));
+				$_aoGrants = $_grants->result();			
 				$this->session->set_userdata('grants', $_aoGrants); // Put the _aoGrants to the session
+
+				//load modules of use after login
+
+				$_aoAllowed_Modules = $this->Module->get_allowed_modules($this->session->userdata('person_id'))->result();
+				
+				if(empty($_aoAllowed_Modules))
+				{
+					$this->session->set_userdata('allowedmodules', array()); // Put the empty of array to the session
+				} else{
+					foreach ($_aoAllowed_Modules as $key=>$allowed_module) {
+						if (strpos($allowed_module->permission_key, '_')) {
+							unset($_aoAllowed_Modules[$key]);
+						}
+					}
+					$this->session->set_userdata('allowedmodules', $_aoAllowed_Modules); // Put the _aoAllowed_Modules to the session
+				}
+
+				$_aoRolesOfTheUser = $this->Module->get_roles_of_the_user($this->session->userdata('person_id'))->result();
+				if(empty($_aoRolesOfTheUser))
+				{
+					$this->session->set_userdata('RolesOfTheUser', array()); // Put the empty of array to the session
+				} else {
+					$this->session->set_userdata('RolesOfTheUser', $_aoRolesOfTheUser); // Put the _aoAllowed_Modules to the session
+				}
+
+				$_aoRoles = $this->Module->get_roles()->result();
+				if(empty($_aoRoles))
+				{
+					$this->session->set_userdata('Roles', array()); // Put the empty of array to the session
+				} else {
+					$this->session->set_userdata('Roles', $_aoRoles); // Put the _aoAllowed_Modules to the session
+				}
+				
+
 				return TRUE;
 			}
 
@@ -422,21 +459,22 @@ class Employee extends Person
 	/*
 	Determines whether the employee specified employee has access the specific module.
 	*/
-	public function has_grant($permission_id, $person_id)
+	public function has_grant($permission_key, $person_id)
 	{
 		//if no module_id is null, allow access
-		if($permission_id == null)
+		if($permission_key == null)
 		{
 			return TRUE;
 		}
 		$_aoGrants = $this->session->userdata('grants');
+		//var_dump($_aoGrants);die();
 		if(empty($_aoGrants))
 		{
 			return FALSE;
 		} else{
 			foreach($_aoGrants as $_oGrant)
 			{
-				if($_oGrant->permission_id == $permission_id)
+				if($_oGrant->permission_key == $permission_key)
 				{
 					return TRUE;
 				}
@@ -450,15 +488,44 @@ class Employee extends Person
 		*/
 	}
 
+	public function get_allowed_modules()
+	{
+		//var_dump($this->session->userdata('allowedmodules'));
+		if(empty($this->session->userdata('allowedmodules')))
+		{
+			return array();
+		}
+		return $this->session->userdata('allowedmodules');
+	} 
+
  	/*
 	Gets employee permission grants
 	*/
-	public function get_employee_grants($person_id)
+	public function get_employee_grants()
 	{
-		$this->db->from('grants');
-		$this->db->where('person_id', $person_id);
+		if(empty($this->session->userdata('grants')))
+		{
+			return array();
+		}
+		return $this->session->userdata('grants');
+	}
 
-		return $this->db->get()->result_array();
+	public function get_roles_of_the_user()
+	{
+		if(empty($this->session->userdata('RolesOfTheUser')))
+		{
+			return array();
+		}
+		return $this->session->userdata('RolesOfTheUser');
+	}
+
+	public function get_roles()
+	{
+		if(empty($this->session->userdata('Roles')))
+		{
+			return array();
+		}
+		return $this->session->userdata('Roles');
 	}
 }
 ?>

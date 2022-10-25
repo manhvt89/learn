@@ -22,9 +22,14 @@ class Stock_location extends CI_Model
     {
         $this->db->from('stock_locations');
         $this->db->join('permissions', 'permissions.location_id = stock_locations.location_id');
-		$this->db->join('grants', 'grants.permission_id = permissions.permission_id');
-        $this->db->where('person_id', $this->session->userdata('person_id'));
-        $this->db->like('permissions.permission_id', $module_id, 'after');
+		$this->db->join('grants', 'grants.permission_id = permissions.id');
+        // --> add by ManhVT 23/10/2022
+		$this->db->join('roles', 'roles.id = grants.role_id');
+		$this->db->join('user_roles', 'user_roles.role_id = roles.id');
+    	$this->db->where('user_id', $this->session->userdata('person_id'));
+		//$this->db->where('person_id', $this->session->userdata('person_id'));
+		// <-- end 
+        $this->db->like('permissions.id', $module_id, 'after');
         $this->db->where('deleted', 0);
 
         return $this->db->get();
@@ -59,8 +64,13 @@ class Stock_location extends CI_Model
 		$this->db->from('stock_locations');
 		$this->db->join('permissions', 'permissions.location_id = stock_locations.location_id');
 		$this->db->join('grants', 'grants.permission_id = permissions.permission_id');
-		$this->db->where('person_id', $this->session->userdata('person_id'));
-		$this->db->like('permissions.permission_id', $module_id, 'after');
+		// --> add by ManhVT 23/10/2022
+		$this->db->join('roles', 'roles.id = grants.role_id');
+		$this->db->join('user_roles', 'user_roles.role_id = roles.id');
+    	$this->db->where('user_id', $this->session->userdata('person_id'));
+		//$this->db->where('person_id', $this->session->userdata('person_id'));
+		// <-- end 
+		$this->db->like('permissions.id', $module_id, 'after');
 		$this->db->where('deleted', 0);
 		$this->db->where('stock_locations.location_id', $location_id);
 
@@ -71,8 +81,13 @@ class Stock_location extends CI_Model
     {
     	$this->db->from('stock_locations');
     	$this->db->join('permissions', 'permissions.location_id = stock_locations.location_id');
-		$this->db->join('grants', 'grants.permission_id = permissions.permission_id');
-    	$this->db->where('person_id', $this->session->userdata('person_id'));
+		$this->db->join('grants', 'grants.permission_id = permissions.id');
+		// --> add by ManhVT 23/10/2022
+		$this->db->join('roles', 'roles.id = grants.role_id');
+		$this->db->join('user_roles', 'user_roles.role_id = roles.id');
+    	$this->db->where('user_id', $this->session->userdata('person_id'));
+		//$this->db->where('person_id', $this->session->userdata('person_id'));
+		// <-- end 
     	$this->db->where('deleted', 0);
 		$this->db->limit(1);
 		$rs = $this->db->get()->row();

@@ -30,21 +30,20 @@ class Secure_Controller extends CI_Controller
 				redirect('no_access/' . $module_id . '/' . $submodule_id);
 			}
 			//Thêm bởi ManhjVT: Nếu không có quyền manager thì không thể hiển thị menu list all
-			$_aoAllowed_Modules = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
-			foreach($_aoAllowed_Modules as $key=>$value)
-			{
-				if(!$this->Employee->has_grant('customers_manager', $logged_in_employee_info->person_id) && $value->module_id == 'customers')
-				{
-					unset($_aoAllowed_Modules[$key]);
-				}
-			}
+			//$_aoAllowed_Modules = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
+			//var_dump($_aoAllowed_Modules);
+			$_aoAllowed_Modules = $model->get_allowed_modules();
 			$data['allowed_modules'] = $_aoAllowed_Modules;
 			//$data['allowed_modules'] = $this->Module->get_allowed_modules($logged_in_employee_info->person_id);
 		} else{
 			//echo $logged_in_employee_info->type;
 			//Nếu là bác sĩ, cấp quyền (Khám, Bệnh, Đơn Thuốc. Xem các đơn hàng liên quan đến đơn khám của bác sĩ.
-			$data['allowed_modules'] = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
+			//$data['allowed_modules'] = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
+			$_aoAllowed_Modules = $model->get_allowed_modules();
+			$data['allowed_modules'] = $_aoAllowed_Modules;
 		}
+
+		//var_dump($data['allowed_modules']);
 
 		// load up global data visible to all the loaded views
 		//$data['allowed_modules'] = $this->Module->get_allowed_modules($logged_in_employee_info->person_id);
