@@ -145,8 +145,8 @@ class Stock_location extends CI_Model
     private function _insert_new_permission($module, $location_id, $location_name)
     {
     	// insert new permission for stock location
-    	$permission_id = $module . '_' . $location_name;
-    	$permission_data = array('permission_id' => $permission_id, 'module_id' => $module, 'location_id' => $location_id);
+    	/* $permission_id = $module . '_' . $location_name;
+    	$permission_data = array('permission_key' => $permission_id, 'module_id' => $module, 'module_key' => $module,,'location_id' => $location_id);
     	$this->db->insert('permissions', $permission_data);
     	
     	// insert grants for new permission
@@ -156,7 +156,8 @@ class Stock_location extends CI_Model
     		$grants_data = array('permission_id' => $permission_id, 'person_id' => $employee['person_id']);
     		$this->db->insert('grants', $grants_data);
     	}
-    }
+		*/
+    } 
     
     /*
      Deletes one item

@@ -553,4 +553,65 @@ function mb_ucfirst($string, $encoding)
     $then = mb_substr($string, 1, $strlen - 1, $encoding);
     return mb_strtoupper($firstChar, $encoding) . $then;
 }
+
+function get_all_controllers()
+{
+    $CI =& get_instance();
+    $CI->load->helper('file');
+
+    $controllers = get_filenames( APPPATH . 'controllers/' ); 
+
+    foreach( $controllers as $k => $v )
+    {
+        if( strpos( $v, '.php' ) === FALSE)
+        {
+            unset( $controllers[$k] );
+        }
+    }
+    return $controllers; //Controllername.php
+}
+
+function get_all_actions_of_the_controller($controller) // This is controler like that Controllername.php
+{
+     //if (!@include(APPPATH . 'controllers/' . $controller)) {
+    if (!class_exists(str_replace( '.php', '', $controller ))) {
+        include_once APPPATH . 'controllers/' . $controller;
+    }
+    //}
+
+    //echo str_replace( '.php', '', $controller );
+    $methods = get_class_methods( str_replace( '.php', '', $controller ) );
+    if($methods == null)
+    {
+        return array();
+    }
+    return $methods;
+}
+
+function get_all_permissions_of_the_module($module_key) //controllername = module_key
+{
+    $controller = ucfirst($module_key).'.php';
+    $methods = get_all_actions_of_the_controller($controller);
+    //var_dump($methods);
+    $_astrReturn = array();
+    if(count($methods) == 0) return array();
+    foreach($methods as $method)
+    {
+        $_astrReturn[] = $module_key.'_'.$method; //controllername_action
+    }
+    return $_astrReturn;
+}
+
+function get_all_modules()
+{
+    $_aControllers = get_all_controllers();
+
+    //if($_aControllers) return array();
+    $_astrReturn = array();
+    foreach($_aControllers as $controller)
+    {
+        $_astrReturn[] = str_replace('.php','',strtolower($controller));
+    }
+    return $_astrReturn;
+}
 ?>

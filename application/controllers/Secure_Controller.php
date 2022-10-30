@@ -18,8 +18,20 @@ class Secure_Controller extends CI_Controller
 			redirect('login');
 		}
 
-		$this->track_page($module_id, $module_id);
+		//$this->router->fetch_class();
+		$action = $this->router->fetch_method();
 
+		$this->track_page($module_id, $action);
+		//echo $module_id . ' |' . $submodule_id;
+		$_astrManagedActions = $model->get_actions_by_module($module_id); // Cacs action duoc quan boi he thong phan quyen.
+		//var_dump($_astrManagedActions);die();
+		if(in_array($action,$_astrManagedActions))
+		{
+			if(!$model->has_grant($action ))
+			{
+				redirect('no_access/' . $module_id . '/' . $submodule_id);
+			}
+		}
 		$logged_in_employee_info = $model->get_logged_in_employee_info(); //get login_id in session
 		//var_dump($logged_in_employee_info->type);die();
 		if($logged_in_employee_info->type != 2)
@@ -51,6 +63,12 @@ class Secure_Controller extends CI_Controller
 		//var_dump ($data['allowed_modules']);
 		$data['user_info'] = $logged_in_employee_info;
 		$data['controller_name'] = $module_id;
+
+		$csrf = array(
+			'name' => $this->security->get_csrf_token_name(),
+			'hash' => $this->security->get_csrf_hash()
+		);
+		$data['csrf'] = $csrf;
 
 		$this->load->vars($data);
 	}

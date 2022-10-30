@@ -134,3 +134,14 @@ $config['KindOfLens'] = array(
     '1.67 HOYA - NULUX SFT SV'=>'1.67 HOYA - NULUX SFT SV',
     '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
     );
+
+$config['exclude_module'] = array(
+    'secure_controller',
+    'no_access',
+    'login',
+    'testex',
+    'home',
+    'persons',
+    'cron',
+    'verify'
+);

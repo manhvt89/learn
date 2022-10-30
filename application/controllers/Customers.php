@@ -88,11 +88,15 @@ class Customers extends Persons
         {
             $cities[$value] = $value;
         }
-        $data['city'] = $info->city;
+        $data['city'] = 'Bình Thuận';
         if($data['city'] == '' || $data['city'] == 'HN')
         {
-            $data['city'] = 'Hà Nội';
+            $data['city'] = 'Bình Thuận';
         }
+		if($info->age = '')
+		{
+			$info->age = 30;
+		}
 		$data['person_info'] = $info;
         $data['cities'] = $cities;
 		$data['total'] = $this->xss_clean($this->Customer->get_totals($customer_id)->total);

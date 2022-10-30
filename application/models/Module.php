@@ -115,7 +115,6 @@ class Module extends CI_Model
 	*/
 	public function get_roles_of_the_user( $user_id)
 	{
-
 		$this->db->from('roles');
 		$this->db->join('user_roles', 'user_roles.role_id = roles.id');
 		$this->db->where('user_id', $user_id);
@@ -134,5 +133,77 @@ class Module extends CI_Model
 		return $this->db->get();
 	}
 
+	public function add_module($aModule)
+	{
+		//name_lang_key        | desc_lang_key          | sort | module_key    | id | code | name | created_at | updated_at | deleted_at | module_uuid
+		if($this->get_the_module_by_key($aModule['module_key']))
+		{
+			return false; // Neu ton tai roi ko them nua, dam bao module_key la duy nhat
+		} else {
+			return $this->db->insert('modules', $aModule);
+		}
+	}
+
+	public function edit_module($aModule)
+	{
+		$this->db->where('id', $aModule['id']);
+		return $this->db->update('modules', $aModule);	
+	}
+
+	public function get_the_role_by_uuid($uuid)
+	{
+		$query = $this->db->get_where('roles', array('role_uuid' => $uuid), 1);
+		$row = null;
+		
+		if ($query->num_rows() == 1) {
+			$row = $query->row();
+		}
+
+		return $row; // return obj
+	}
+
+	/* 
+	
+	*/
+	public function get_grants_of_the_role($role_uuid)
+	{
+		$this->db->select('permissions.*');
+		$this->db->from('permissions');
+		$this->db->join('grants', 'permissions.id = grants.permission_id');
+		$this->db->join('roles', 'roles.id = grants.role_id');
+		$this->db->where('roles.role_uuid', $role_uuid);
+		//$this->db->distinct();
+		return $this->db->get();		
+	}
+
+	public function get_the_module_by_uuid($uuid)
+	{
+		$query = $this->db->get_where('modules', array('module_uuid' => $uuid), 1);
+		$row = null;
+		
+		if ($query->num_rows() == 1) {
+			$row = $query->row();
+		}
+
+		return $row; // return obj
+	}
+
+	public function get_all_permissions_by_module_key($module_key)
+	{
+		$this->db->from('permissions');
+		$this->db->where('permissions.module_key', $module_key);
+		return $this->db->get();
+	}
+
+	public function edit_permission($aPermission)
+	{
+		$this->db->where('id', $aPermission['id']);
+		return $this->db->update('permissions', $aPermission);
+	}
+
+	public function add_permission($aPermission)
+	{
+		return $this->db->insert('permissions', $aPermission);
+	}
 }
 ?>

@@ -338,13 +338,14 @@ class Employee extends Person
 				//$this->db->where('person_id', 2);
 				//$_aoGrants = $this->db->get()->result();	
 				$_grants = $this->Module->get_grants_of_the_user($this->session->userdata('person_id'));
-				$_aoGrants = $_grants->result();			
+				$_aoGrants = $_grants->result();		
+				//var_dump($_aoGrants);die();
 				$this->session->set_userdata('grants', $_aoGrants); // Put the _aoGrants to the session
 
 				//load modules of use after login
 
 				$_aoAllowed_Modules = $this->Module->get_allowed_modules($this->session->userdata('person_id'))->result();
-				
+				//var_dump($_aoAllowed_Modules);die();
 				if(empty($_aoAllowed_Modules))
 				{
 					$this->session->set_userdata('allowedmodules', array()); // Put the empty of array to the session
@@ -358,6 +359,7 @@ class Employee extends Person
 				}
 
 				$_aoRolesOfTheUser = $this->Module->get_roles_of_the_user($this->session->userdata('person_id'))->result();
+				//var_dump($_aoRolesOfTheUser);die();
 				if(empty($_aoRolesOfTheUser))
 				{
 					$this->session->set_userdata('RolesOfTheUser', array()); // Put the empty of array to the session
@@ -526,6 +528,25 @@ class Employee extends Person
 			return array();
 		}
 		return $this->session->userdata('Roles');
+	}
+
+	public function get_actions_by_module($module_key)
+	{
+		if(empty($this->session->userdata('grants')))
+		{
+			return array();
+		}
+		$_aoGrants = $this->session->userdata('grants');
+		$_astrReturn = array();
+		foreach($_aoGrants as $key=>$_oGrant)
+		{
+			if($_oGrant->module_key == $module_key)
+			{
+				$_astrReturn[] = $_oGrant->permission_key;
+			}
+		}
+		return $_astrReturn;
+		//return $this->session->userdata('grants');
 	}
 }
 ?>
