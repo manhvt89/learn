@@ -75,17 +75,47 @@ class Employees extends Persons
         }
         $data['cities'] = $cities;
 
-		$modules = array();
+		/* $modules = array();
 		foreach($this->Module->get_all_modules()->result() as $module)
 		{
-			$module->module_id = $this->xss_clean($module->module_id);
-			$module->grant = $this->xss_clean($this->Employee->has_grant($module->module_id, $person_info->person_id));
-			
+			$module->module_key = $this->xss_clean($module->module_key);
+			$module->grant = $this->xss_clean($this->Employee->has_grant($module->module_key, $person_info->person_id));
 			$modules[] = $module;
 		}
-		$data['all_modules'] = $modules;
+		$data['all_modules'] = $modules; */
 
-		$permissions = array();
+		$_aRoles = array();
+		$_aRoles = $this->Module->get_roles_of_the_user($person_info->person_id)->result();
+		$_aAllRoles = array();
+		$_aAllRoles = $this->Module->get_roles()->result();
+		//var_dump($_aAllRoles); die();
+		//var_dump($_aRoles);
+		if(!empty($_aAllRoles))
+		{
+			foreach($_aAllRoles as $key=>$value)
+			{
+				$value->flag = 0;
+				$_aAllRoles[$key] = $value;
+			}
+			//var_dump($_aAllRoles);
+			foreach ($_aAllRoles as $key=>$value) {
+				if(!empty($_aRoles))
+				{
+					foreach ($_aRoles as $k=>$v) {
+						if($value->role_uuid == $v->role_uuid)
+						{
+							$value->flag = 1;
+							$_aAllRoles[$key] = $value;
+						}
+					}
+				} 
+			}
+
+		}
+		//var_dump($_aAllRoles);
+		$data['allroles'] = $_aAllRoles;
+
+		/* $permissions = array();
 		foreach($this->Module->get_all_subpermissions()->result() as $permission)
 		{
 			$permission->module_id = $this->xss_clean($permission->module_id);
@@ -94,7 +124,7 @@ class Employees extends Persons
 			
 			$permissions[] = $permission;
 		}
-		$data['all_subpermissions'] = $permissions;
+		$data['all_subpermissions'] = $permissions; */
 
 		$this->load->view("employees/form", $data);
 	}
@@ -118,8 +148,8 @@ class Employees extends Persons
 			'country' => $this->input->post('country'),
 			'comments' => $this->input->post('comments'),
 		);
-		$grants_data = $this->input->post('grants') != NULL ? $this->input->post('grants') : array();
-		
+		//$grants_data = $this->input->post('grants') != NULL ? $this->input->post('grants') : array();
+		$roles_data = $this->input->post('role') != NULL ? $this->input->post('role') : array();
 		//Password has been changed OR first time password set
 		if($this->input->post('password') != '')
 		{
@@ -134,7 +164,7 @@ class Employees extends Persons
 			$employee_data = array('username' => $this->input->post('username'));
 		}
 		
-		if($this->Employee->save_employee($person_data, $employee_data, $grants_data, $employee_id))
+		if($this->Employee->save_employee($person_data, $employee_data, $roles_data, $employee_id))
 		{
 			$person_data = $this->xss_clean($person_data);
 			$employee_data = $this->xss_clean($employee_data);

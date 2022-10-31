@@ -65,9 +65,6 @@ input:checked + .slider:before {
 $(document).ready(function()
 {
     $('#table').bootstrapTable(); // khởi tạo bảng;
-
-   
-    
 });
 
 function save_name(ele)

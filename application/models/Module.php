@@ -163,7 +163,7 @@ class Module extends CI_Model
 	}
 
 	/* 
-	
+	Lây các quyền của nhóm quyền thông qua uuid của nhóm quyền (role)
 	*/
 	public function get_grants_of_the_role($role_uuid)
 	{
@@ -175,6 +175,17 @@ class Module extends CI_Model
 		//$this->db->distinct();
 		return $this->db->get();		
 	}
+	/**
+	 * Lấy tất cả các quyền trong hệ thống
+	 */
+	public function get_grants()
+	{
+		$this->db->select('permissions.*');
+		$this->db->from('permissions');
+		//$this->db->distinct();
+		return $this->db->get();		
+	}
+
 
 	public function get_the_module_by_uuid($uuid)
 	{
@@ -205,5 +216,18 @@ class Module extends CI_Model
 	{
 		return $this->db->insert('permissions', $aPermission);
 	}
+
+	public function add_permission_to_grants($_aT)
+	{
+		return $this->db->insert('grants', $_aT);
+	}
+
+	public function del_permission_to_grants($_aT)
+	{
+		$this->db->where('role_id',$_aT['role_id']);
+		$this->db->where('permission_id',$_aT['permission_id']);
+		return $this->db->delete('grants');
+	}
+
 }
 ?>

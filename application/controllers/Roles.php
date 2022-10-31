@@ -51,11 +51,36 @@ class Roles extends Secure_Controller
 		} else {
 			$_oTheRole = $this->Module->get_the_role_by_uuid($uuid);
 			$_aoPermissions = $this->Module->get_grants_of_the_role($uuid)->result();
+			$_aoAllPermissions = $this->Module->get_grants()->result();
+
+			if(count($_aoAllPermissions) > 0)
+			{
+
+				foreach ($_aoAllPermissions as $key=>$value) {
+					$value->flag = 0;
+					$_aoAllPermissions[$key] = $value;
+				}
+
+				foreach($_aoAllPermissions as $key=>$value)
+				{
+					if(count($_aoPermissions) > 0)
+					{
+						foreach($_aoPermissions as $k=>$v)
+						{
+							if($value->permission_key == $v->permission_key)
+							{
+								$value->flag = 1;
+								$_aoAllPermissions[$key] = $value;
+							}
+						}
+					}
+				}
+			}
 			
 			//$data['theRole'] = json_encode($_aoTmp);
 			$data['theRole'] = $_oTheRole;
-			$data['permissions'] = $_aoPermissions;
-			//var_dump($data['permissions'] );
+			$data['permissions'] = $_aoAllPermissions;
+			//var_dump($data['theRole'] );
 		}
 		$this->load->view('roles/view', $data);
 		
@@ -456,6 +481,27 @@ class Roles extends Secure_Controller
 			echo "Cập nhật thành công";
 		} else {
 			echo "Cập nhật thất bại";
+		}
+	}
+
+	public function switch_permission()
+	{
+		$role_id = $this->input->post('role_id');
+		$mode = $this->input->post('mode');
+		$permission_id = $this->input->post('permission_id');
+		$_aT = array(
+			'role_id'=>$role_id,
+			'permission_id'=>$permission_id
+		);
+		if($mode == 'false')
+		{
+			//delete permission
+			echo 'Deactive the permission';
+			$this->Module->del_permission_to_grants($_aT);
+		} else {
+			//insert permission
+			echo 'Active the permission';
+			$this->Module->add_permission_to_grants($_aT);
 		}
 	}
 

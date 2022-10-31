@@ -28,10 +28,10 @@ class Stock_location extends CI_Model
 		$this->db->join('user_roles', 'user_roles.role_id = roles.id');
     	$this->db->where('user_id', $this->session->userdata('person_id'));
 		//$this->db->where('person_id', $this->session->userdata('person_id'));
+		$this->db->like('permissions.module_id', $module_id, 'after');
 		// <-- end 
-        $this->db->like('permissions.id', $module_id, 'after');
+        //$this->db->like('permissions.id', $module_id, 'after');
         $this->db->where('deleted', 0);
-
         return $this->db->get();
     }
 

@@ -110,14 +110,14 @@ class Employee extends Person
 			if($success)
 			{
 				//First lets clear out any grants the employee currently has.
-				$success = $this->db->delete('grants', array('person_id' => $employee_id));
+				$success = $this->db->delete('user_roles', array('user_id' => $employee_id));
 				
 				//Now insert the new grants
 				if($success)
 				{
-					foreach($grants_data as $permission_id)
+					foreach($grants_data as $role_id)
 					{
-						$success = $this->db->insert('grants', array('permission_id' => $permission_id, 'person_id' => $employee_id));
+						$success = $this->db->insert('user_roles', array('role_id' => $role_id, 'user_id' => $employee_id));
 					}
 				}
 			}
@@ -350,12 +350,16 @@ class Employee extends Person
 				{
 					$this->session->set_userdata('allowedmodules', array()); // Put the empty of array to the session
 				} else{
+					$_aoAllowedmodules = array();
 					foreach ($_aoAllowed_Modules as $key=>$allowed_module) {
-						if (strpos($allowed_module->permission_key, '_')) {
-							unset($_aoAllowed_Modules[$key]);
+
+
+						if ($allowed_module->permission_key == $allowed_module->module_key.'_index' ) 
+						{
+							$_aoAllowedmodules[] = $allowed_module;
 						}
 					}
-					$this->session->set_userdata('allowedmodules', $_aoAllowed_Modules); // Put the _aoAllowed_Modules to the session
+					$this->session->set_userdata('allowedmodules', $_aoAllowedmodules); // Put the _aoAllowed_Modules to the session
 				}
 
 				$_aoRolesOfTheUser = $this->Module->get_roles_of_the_user($this->session->userdata('person_id'))->result();

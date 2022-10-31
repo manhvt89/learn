@@ -53,10 +53,6 @@ $(document).ready(function()
 {
 	
 	$('#mod_form').validate($.extend({
-		submitHandler:function(form)
-		{
-			
-		},
 		rules:
 		{
 			mod_name: "required",
