@@ -20,14 +20,15 @@ class Secure_Controller extends CI_Controller
 
 		//$this->router->fetch_class();
 		$action = $this->router->fetch_method();
-
+		//echo $action;
+		$task = $module_id."_".$action;
 		$this->track_page($module_id, $action);
 		//echo $module_id . ' |' . $submodule_id;
-		$_astrManagedActions = $model->get_actions_by_module($module_id); // Cacs action duoc quan boi he thong phan quyen.
+		$_astrManagedActions = $model->get_actions_by_module($module_id); // Cacs action duoc quan ly boi he thong phan quyen.
 		//var_dump($_astrManagedActions);die();
-		if(in_array($action,$_astrManagedActions))
+		if(in_array($task,$_astrManagedActions))
 		{
-			if(!$model->has_grant($action ))
+			if(!$model->has_grant($task))
 			{
 				redirect('no_access/' . $module_id . '/' . $submodule_id);
 			}

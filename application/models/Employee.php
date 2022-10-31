@@ -376,9 +376,17 @@ class Employee extends Person
 				{
 					$this->session->set_userdata('Roles', array()); // Put the empty of array to the session
 				} else {
-					$this->session->set_userdata('Roles', $_aoRoles); // Put the _aoAllowed_Modules to the session
+					$this->session->set_userdata('Roles', $_aoRoles); // Put the _aoRoles to the session
 				}
-				
+
+				$_aoAllGrants = $this->Module->get_grants()->result();
+				//var_dump($_aoAllGrants);
+				if(empty($_aoAllGrants))
+				{
+					$this->session->set_userdata('AllGrants', array()); // Put the empty of array to the session
+				} else {
+					$this->session->set_userdata('AllGrants', $_aoAllGrants); // Put the _aoAllGrants to the session
+				}
 
 				return TRUE;
 			}
@@ -465,7 +473,7 @@ class Employee extends Person
 	/*
 	Determines whether the employee specified employee has access the specific module.
 	*/
-	public function has_grant($permission_key, $person_id)
+	public function has_grant($permission_key, $person_id=0)
 	{
 		//if no module_id is null, allow access
 		if($permission_key == null)
@@ -536,12 +544,13 @@ class Employee extends Person
 
 	public function get_actions_by_module($module_key)
 	{
-		if(empty($this->session->userdata('grants')))
+		if(empty($this->session->userdata('AllGrants')))
 		{
 			return array();
 		}
-		$_aoGrants = $this->session->userdata('grants');
+		$_aoGrants = $this->session->userdata('AllGrants');
 		$_astrReturn = array();
+		//var_dump($_aoGrants); die();
 		foreach($_aoGrants as $key=>$_oGrant)
 		{
 			if($_oGrant->module_key == $module_key)
