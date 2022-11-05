@@ -16,7 +16,7 @@ class Items extends Secure_Controller
 
 		$data['table_headers'] = $this->xss_clean(get_items_manage_table_headers());
 
-		$data['table_headers'] = $this->xss_clean(get_items_manage_table_headers());
+		//$data['table_headers'] = $this->xss_clean(get_items_manage_table_headers());
 
 		
 		$data['stock_location'] = $this->xss_clean($this->item_lib->get_item_location());
@@ -27,6 +27,7 @@ class Items extends Secure_Controller
 			'low_inventory' => $this->lang->line('items_low_inventory_items'),
 			'is_deleted' => $this->lang->line('items_is_deleted'));
 
+		$data['hide_unitprice'] = $this->Employee->has_grant('items_unitprice_hide');
 		$this->load->view('items/manage', $data);
 	}
 
@@ -70,8 +71,13 @@ class Items extends Secure_Controller
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows));
 	}
 	
-	public function pic_thumb($pic_id)
+	public function pic_thumb($pic_id=null)
 	{
+		if($pic_id == null)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		$this->load->helper('file');
 		$this->load->library('image_lib');
 		$base_path = './uploads/item_pics/' . $pic_id;
@@ -147,8 +153,13 @@ class Items extends Secure_Controller
 		echo json_encode($suggestions);
 	}
 
-	public function get_row($item_ids)
+	public function get_row($item_ids='')
 	{
+		if($item_ids == '')
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		$item_infos = $this->Item->get_multiple_info(explode(":", $item_ids), $this->item_lib->get_item_location());
 
 		$result = array();
@@ -1325,6 +1336,12 @@ class Items extends Secure_Controller
 				echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('items_excel_import_nodata_wrongformat')));
 			}
 		}
+	}
+
+	// Added by ManhVT to support field permissions
+	public function unitprice_hide()
+	{
+		exit();
 	}
 
 }

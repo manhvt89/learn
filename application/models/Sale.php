@@ -364,7 +364,7 @@ class Sale extends CI_Model
 			$this->db->like('last_name', $search);
 			$this->db->or_like('first_name', $search);
 			$this->db->or_like('CONCAT(first_name, " ", last_name)', $search);
-			$this->db->or_like('company_name', $search);
+			//$this->db->or_like('company_name', $search);
 			$this->db->order_by('last_name', 'asc');
 
 			foreach($this->db->get()->result_array() as $result)

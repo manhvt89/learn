@@ -51,12 +51,12 @@ if (isset($success))
 				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
 							title='<?php echo $this->lang->line('sales_suspended_sales'); ?>'>
-						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspended_sales'); ?>
+						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?=$this->lang->line('sales_suspended_sales'); ?>
 					</button>
 				</li>
 
 				<?php
-				if ($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')))
+				if ($this->Employee->has_grant('sales_manage')) // Hiển thị danh sách đơn hàng;
 				{
 					?>
 					<li class="pull-right">
@@ -102,7 +102,7 @@ if (isset($success))
 					</li>
 
 					<?php
-					if ($this->Employee->has_grant('reports_sales', $this->session->userdata('person_id')))
+					if ($this->Employee->has_grant('sales_manage'))
 					{
 					?>
 						<li class="pull-right">
@@ -300,7 +300,7 @@ if (isset($success))
 
 							<?php
 							if ($items_module_allowed)
-							{
+							{ 
 							?>
 								<td><?php echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex));?></td>
 							<?php

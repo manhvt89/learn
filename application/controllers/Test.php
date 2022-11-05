@@ -15,9 +15,10 @@ class Test extends Secure_Controller
 		$this->logedUser_type = $this->session->userdata('type');
 		$this->logedUser_id = $this->session->userdata('person_id');
 
+
 	}
 
-	public function detail_test($sAccount_Number){
+	public function detail_test($sAccount_Number=0){
         $person_id = $this->session->userdata('person_id');
         $this->test_lib->remove_customer();
         $this->test_lib->empty_cart();
@@ -25,13 +26,7 @@ class Test extends Secure_Controller
 
 		if($this->logedUser_type != 2)
 		{
-			if(!$this->Employee->has_grant('test_manage', $person_id))
-			{
-				redirect('no_access/test/test_manage');
-			}
-			else
-			{
-				if($sAccount_Number) {
+			if($sAccount_Number) {
 
 					if ($this->Customer->account_number_exists($sAccount_Number)) {
 
@@ -41,8 +36,8 @@ class Test extends Secure_Controller
 					$this->_reload();
 				}else{
 					redirect('/test/index');
-				}
 			}
+			
 		} else {
 			if($sAccount_Number) {
 
@@ -65,19 +60,11 @@ class Test extends Secure_Controller
        // echo str_replace('S','', strtoupper('s-0.00'));
 		if($this->logedUser_type != 2)
 		{
-			if(!$this->Employee->has_grant('test_create', $person_id))
-			{
-				if(!$this->Employee->has_grant('test_manage', $person_id)) {
-					redirect('no_access/test/test_create');
-				}else{
-					redirect('/test/manage');
-				}
-			}else {
-				$this->test_lib->remove_customer();
-				$this->test_lib->empty_cart();
-				$this->test_lib->clear_test_id();
-				$this->_reload();
-			}
+			$this->test_lib->remove_customer();
+			$this->test_lib->empty_cart();
+			$this->test_lib->clear_test_id();
+			$this->_reload();
+			
 		} else {
 			//Nếu là bác sĩ 
 			$this->test_lib->remove_customer();
@@ -89,27 +76,19 @@ class Test extends Secure_Controller
 
 	public function manage()
 	{
-		$person_id = $this->session->userdata('person_id');
-
+		//$person_id = $this->session->userdata('person_id');
 		if($this->logedUser_type != 2)
 		{
-			if(!$this->Employee->has_grant('test_manage', $person_id))
-			{
-				redirect('no_access/test/test_manage');
+			$data['is_create'] = $this->Employee->has_grant('test_index');
+			if($this->Employee->has_grant('sales_index')) {
+				$data['table_headers'] = get_test_manage_table_headers(1);
+			}else{
+				$data['table_headers'] = get_test_manage_table_headers();
 			}
-			else
-			{
-				$data['is_create'] = $this->Employee->has_grant('test_create', $person_id);
-				if($this->Employee->has_grant('sales_create', $person_id)) {
-					$data['table_headers'] = get_test_manage_table_headers(1);
-				}else{
-					$data['table_headers'] = get_test_manage_table_headers();
-				}
-
 				// filters that will be loaded in the multiselect dropdown
-				$data['filters'] = null;
-				$this->load->view('test/manage', $data);
-			}
+			$data['filters'] = null;
+			$this->load->view('test/manage', $data);
+			
 		} else {
 			/*
 			** Chức năng này chỉ dành cho
@@ -167,7 +146,7 @@ class Test extends Secure_Controller
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows));
 	}
 
-	public function item_search()
+	private function item_search()
 	{
 		$suggestions = array();
 		$receipt = $search = $this->input->get('term') != '' ? $this->input->get('term') : NULL;
@@ -185,8 +164,9 @@ class Test extends Secure_Controller
 		echo json_encode($suggestions);
 	}
 
-	public function suggest_search()
+	function suggest_search()
 	{
+		exit();
 		$search = $this->input->post('term') != '' ? $this->input->post('term') : NULL;
 
 		$suggestions = $this->xss_clean($this->Sale->get_search_suggestions($search));
@@ -301,122 +281,6 @@ class Test extends Secure_Controller
         }
 
 	}
-
-	public function send_invoice($sale_id)
-	{
-		$sale_data = $this->_load_sale_data($sale_id);
-
-		$result = FALSE;
-		$message = $this->lang->line('sales_invoice_no_email');
-
-		if(!empty($sale_data['customer_email']))
-		{
-			$to = $sale_data['customer_email'];
-			$subject = $this->lang->line('sales_invoice') . ' ' . $sale_data['invoice_number'];
-
-			$text = $this->config->item('invoice_email_message');
-			$text = str_replace('$INV', $sale_data['invoice_number'], $text);
-			$text = str_replace('$CO', 'POS ' . $sale_data['sale_id'], $text);
-			$text = $this->_substitute_customer($text, (object) $sale_data);
-
-			// generate email attachment: invoice in pdf format
-			$html = $this->load->view('sales/invoice_email', $sale_data, TRUE);
-			// load pdf helper
-			$this->load->helper(array('dompdf', 'file'));
-			$filename = sys_get_temp_dir() . '/' . $this->lang->line('sales_invoice') . '-' . str_replace('/', '-' , $sale_data['invoice_number']) . '.pdf';
-			if(file_put_contents($filename, pdf_create($html)) !== FALSE)
-			{
-				$result = $this->email_lib->sendEmail($to, $subject, $text, $filename);
-			}
-
-			$message = $this->lang->line($result ? 'sales_invoice_sent' : 'sales_invoice_unsent') . ' ' . $to;
-		}
-
-		echo json_encode(array('success' => $result, 'message' => $message, 'id' => $sale_id));
-
-		$this->sale_lib->clear_all();
-
-		return $result;
-	}
-
-	public function send_receipt($sale_id)
-	{
-		$sale_data = $this->_load_sale_data($sale_id);
-
-		$result = FALSE;
-		$message = $this->lang->line('sales_receipt_no_email');
-
-		if(!empty($sale_data['customer_email']))
-		{
-			$sale_data['barcode'] = $this->barcode_lib->generate_receipt_barcode($sale_data['sale_id']);
-
-			$to = $sale_data['customer_email'];
-			$subject = $this->lang->line('sales_receipt');
-
-			$text = $this->load->view('sales/receipt_email', $sale_data, TRUE);
-
-			$result = $this->email_lib->sendEmail($to, $subject, $text);
-
-			$message = $this->lang->line($result ? 'sales_receipt_sent' : 'sales_receipt_unsent') . ' ' . $to;
-		}
-
-		echo json_encode(array('success' => $result, 'message' => $message, 'id' => $sale_id));
-
-		$this->sale_lib->clear_all();
-
-		return $result;
-	}
-
-	private function _substitute_variable($text, $variable, $object, $function)
-	{
-		// don't query if this variable isn't used
-		if(strstr($text, $variable))
-		{
-			$value = call_user_func(array($object, $function));
-			$text = str_replace($variable, $value, $text);
-		}
-
-		return $text;
-	}
-
-	private function _substitute_customer($text, $customer_info)
-	{
-		// substitute customer info
-		$customer_id = $this->sale_lib->get_customer();
-		if($customer_id != -1 && $customer_info != '')
-		{
-			$text = str_replace('$CU', $customer_info->first_name . ' ' . $customer_info->last_name, $text);
-			$words = preg_split("/\s+/", trim($customer_info->first_name . ' ' . $customer_info->last_name));
-			$acronym = '';
-			foreach($words as $w)
-			{
-				$acronym .= $w[0];
-			}
-			$text = str_replace('$CI', $acronym, $text);
-		}
-
-		return $text;
-	}
-
-	private function _is_custom_invoice_number($customer_info)
-	{
-		$invoice_number = $this->config->config['sales_invoice_format'];
-		$invoice_number = $this->_substitute_variables($invoice_number, $customer_info);
-
-		return $this->sale_lib->get_invoice_number() != $invoice_number;
-	}
-
-	private function _substitute_variables($text, $customer_info)
-	{
-		$text = $this->_substitute_variable($text, '$YCO', $this->Sale, 'get_invoice_number_for_year');
-		$text = $this->_substitute_variable($text, '$CO', $this->Sale , 'get_invoice_count');
-		$text = $this->_substitute_variable($text, '$SCO', $this->Sale_suspended, 'get_invoice_count');
-		$text = strftime($text);
-		$text = $this->_substitute_customer($text, $customer_info);
-
-		return $text;
-	}
-
 	private function _load_customer_data($customer_id, &$data, $totals = FALSE)
 	{
 		$customer_info = '';
@@ -459,7 +323,7 @@ class Test extends Secure_Controller
 
         $data['test_id'] = $this->test_lib->get_test_id();
 	    $data['cart'] = $this->test_lib->get_cart();
-		$data['items_module_allowed'] = $this->Employee->has_grant('items', $this->Employee->get_logged_in_employee_info()->person_id);
+		//$data['items_module_allowed'] = $this->Employee->has_grant('items', $this->Employee->get_logged_in_employee_info()->person_id);
 
 		$customer_info = $this->_load_customer_data($this->test_lib->get_customer(), $data, TRUE);
 		//$data['invoice_number'] = $this->_substitute_invoice_number($customer_info);
@@ -493,24 +357,6 @@ class Test extends Secure_Controller
         }
         $data = $this->xss_clean($data);
 		$this->load->view("test/register", $data);
-	}
-
-	public function receipt($sale_id)
-	{
-		$data = $this->_load_sale_data($sale_id);
-
-		$this->load->view('sales/receipt', $data);
-
-		$this->sale_lib->clear_all();
-	}
-
-	public function invoice($sale_id)
-	{
-		$data = $this->_load_sale_data($sale_id);
-
-		$this->load->view('sales/invoice', $data);
-
-		$this->sale_lib->clear_all();
 	}
 
 	public function view_test()
@@ -590,119 +436,7 @@ class Test extends Secure_Controller
 
 	public function save($sale_id = -1)
 	{
-		$newdate = $this->input->post('date');
-
-		$date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $newdate);
-
-		$sale_data = array(
-			'sale_time' => $date_formatter->format('Y-m-d H:i:s'),
-			'customer_id' => $this->input->post('customer_id') != '' ? $this->input->post('customer_id') : NULL,
-			'employee_id' => $this->input->post('employee_id'),
-			'comment' => $this->input->post('comment'),
-			'invoice_number' => $this->input->post('invoice_number') != '' ? $this->input->post('invoice_number') : NULL
-		);
-
-		// go through all the payment type input from the form, make sure the form matches the name and iterator number
-		$payments = array();
-		$number_of_payments = $this->input->post('number_of_payments');
-		for ($i = 0; $i < $number_of_payments; ++$i)
-		{
-			$payment_amount = $this->input->post('payment_amount_' . $i);
-			$payment_type = $this->input->post('payment_type_' . $i);
-			// remove any 0 payment if by mistake any was introduced at sale time
-			if($payment_amount != 0)
-			{
-				// search for any payment of the same type that was already added, if that's the case add up the new payment amount
-				$key = FALSE;
-				if(!empty($payments))
-				{
-					// search in the multi array the key of the entry containing the current payment_type
-					// NOTE: in PHP5.5 the array_map could be replaced by an array_column
-					$key = array_search($payment_type, array_map(function($v){return $v['payment_type'];}, $payments));
-				}
-
-				// if no previous payment is found add a new one
-				if($key === FALSE)
-				{
-					$payments[] = array('payment_type' => $payment_type, 'payment_amount' => $payment_amount);
-				}
-				else
-				{
-					// add up the new payment amount to an existing payment type
-					$payments[$key]['payment_amount'] += $payment_amount;
-				}
-			}
-		}
-
-		if($this->Sale->update($sale_id, $sale_data, $payments))
-		{
-			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('sales_successfully_updated'), 'id' => $sale_id));
-		}
-		else
-		{
-			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('sales_unsuccessfully_updated'), 'id' => $sale_id));
-		}
-	}
-
-	public function cancel()
-	{
-		$this->sale_lib->clear_all();
-
-		$this->_reload();
-	}
-
-	public function suspend()
-	{
-		$cart = $this->sale_lib->get_cart();
-		$payments = $this->sale_lib->get_payments();
-		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
-		$customer_id = $this->sale_lib->get_customer();
-		$customer_info = $this->Customer->get_info($customer_id);
-		$invoice_number = $this->_is_custom_invoice_number($customer_info) ? $this->sale_lib->get_invoice_number() : NULL;
-		$comment = $this->sale_lib->get_comment();
-
-		//SAVE sale to database
-		$data = array();
-		if($this->Sale_suspended->save($cart, $customer_id, $employee_id, $comment, $invoice_number, $payments) == '-1')
-		{
-			$data['error'] = $this->lang->line('sales_unsuccessfully_suspended_sale');
-		}
-		else
-		{
-			$data['success'] = $this->lang->line('sales_successfully_suspended_sale');
-		}
-
-		$this->sale_lib->clear_all();
-
-		$this->_reload($data);
-	}
-
-	public function suspended()
-	{
-		$data = array();
-		$data['suspended_sales'] = $this->xss_clean($this->Sale_suspended->get_all()->result_array());
-
-		$this->load->view('sales/suspended', $data);
-	}
-
-	public function unsuspend()
-	{
-		$sale_id = $this->input->post('suspended_sale_id');
-
-		$this->sale_lib->clear_all();
-		$this->sale_lib->copy_entire_suspended_sale($sale_id);
-		$this->Sale_suspended->delete($sale_id);
-
-		$this->_reload();
-	}
-
-	public function check_invoice_number()
-	{
-		$sale_id = $this->input->post('sale_id');
-		$invoice_number = $this->input->post('invoice_number');
-		$exists = !empty($invoice_number) && $this->Sale->check_invoice_number_exists($invoice_number, $sale_id);
-
-		echo !$exists ? 'true' : 'false';
+		exit();
 	}
 }
 ?>

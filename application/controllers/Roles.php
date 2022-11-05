@@ -103,7 +103,7 @@ class Roles extends Secure_Controller
 			$_aoP->name = $oPermission->name;
 			$_aoP->module_key = $oPermission->module_key;
 			$_aoP->permision_key = $oPermission->permission_key;
-			$_aoP->actions = '<a href="'.base_url('roles/per_edit/'.$oPermission->id).'">Edit</a> | <a href="'.base_url('roles/per_view/'.$oPermission->id).'">View</a>';
+			$_aoP->actions = '<a href="'.base_url('roles/per_edit/'.$oPermission->permissions_uuid).'">Edit</a> | <a href="'.base_url('roles/per_view/'.$oPermission->permissions_uuid).'">View</a>';
 			$_aoPs[] = $_aoP;
 			$i++;
 		}
@@ -197,9 +197,32 @@ class Roles extends Secure_Controller
 		$retrun = array();
 		echo json_encode($retrun);
 	}
-	public function per_view()
+	public function per_view($uuid)
 	{
-		
+		if($uuid == null)
+		{
+			$data['thePermission'] = new stdClass;
+			$data['fields'] = array();
+		} else {
+			$_aoFields = array(); // tao mang dua tren _aModule
+			$_oThePermission = $this->Module->get_the_permission_by_uuid($uuid);
+
+			if($_oThePermission == null)
+			{
+				echo 'Invalid Data';
+				exit();
+			}
+			
+			$_aoFields = $this->Module->get_fields_by_permission($_oThePermission->id)->result();
+			//var_dump($_aoManagedPermissions);
+			
+			
+			$data['thePermission'] = $_oThePermission;
+			$data['fields'] = $_aoFields;
+			
+			//var_dump($data['permissions'] );
+		}
+		$this->load->view('roles/per_view', $data);	
 	}
 	public function per_edit()
 	{
@@ -489,6 +512,11 @@ class Roles extends Secure_Controller
 		$role_id = $this->input->post('role_id');
 		$mode = $this->input->post('mode');
 		$permission_id = $this->input->post('permission_id');
+		if(empty($role_id) || empty($permission_id))
+		{
+			echo 'Not Validate';
+			exit();
+		}
 		$_aT = array(
 			'role_id'=>$role_id,
 			'permission_id'=>$permission_id
@@ -502,6 +530,39 @@ class Roles extends Secure_Controller
 			//insert permission
 			echo 'Active the permission';
 			$this->Module->add_permission_to_grants($_aT);
+		}
+	}
+
+	public function switch_action()
+	{
+		$mode = $this->input->post('mode');
+		$permission_id = $this->input->post('permission_id');
+		$permission_key = $this->input->post('permission_key');
+		$module_id = $this->input->post('module_id');
+		$module_key = $this->input->post('module_key');
+
+		$_aT = array(
+			'module_id'=>$module_id,
+			'permission_key'=>$permission_key,
+			'module_key'=>$module_key,
+			'location_id'=>1,
+			'name'=>''
+		);
+		
+		if($permission_id==null)
+		{
+			echo 'Not Validate';
+			exit();
+		}
+		if($mode == 'false')
+		{
+			//delete permission
+			echo 'Deactive the permission';
+			$this->Module->del_permission_from_permissions($permission_id);
+		} else {
+			//insert permission
+			echo 'Active the permission';
+			$this->Module->add_permission_to_permissions($_aT);
 		}
 	}
 

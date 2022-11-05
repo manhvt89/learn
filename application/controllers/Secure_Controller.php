@@ -24,7 +24,7 @@ class Secure_Controller extends CI_Controller
 		$task = $module_id."_".$action;
 		$this->track_page($module_id, $action);
 		//echo $module_id . ' |' . $submodule_id;
-		$_astrManagedActions = $model->get_actions_by_module($module_id); // Cacs action duoc quan ly boi he thong phan quyen.
+		$_astrManagedActions = $model->get_actions_by_module($module_id); // Cacs action duoc quan ly boi he thong phan quyen. CHỉ kiểm soát các actions này;
 		//var_dump($_astrManagedActions);die();
 		if(in_array($task,$_astrManagedActions))
 		{
@@ -42,7 +42,7 @@ class Secure_Controller extends CI_Controller
 			{
 				redirect('no_access/' . $module_id . '/' . $submodule_id);
 			}
-			//Thêm bởi ManhjVT: Nếu không có quyền manager thì không thể hiển thị menu list all
+			//Thêm bởi ManhjVT: Nếu không có quyền manager (_index) thì không thể hiển thị menu list all
 			//$_aoAllowed_Modules = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
 			//var_dump($_aoAllowed_Modules);
 			$_aoAllowed_Modules = $model->get_allowed_modules();

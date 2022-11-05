@@ -12,12 +12,16 @@ $(document).ready(function()
 	
 });
 </script>
-
 <div id="title_bar" class="btn-toolbar print_hide">
     <button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-new='<?php echo $this->lang->line('common_new') ?>' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/view"); ?>'
             title='<?php echo $this->lang->line($controller_name . '_new'); ?>'>
         <span class="glyphicon glyphicon-tag">&nbsp</span><?php echo $this->lang->line($controller_name. '_new'); ?>
     </button>
+    </a> &nbsp; &nbsp; &nbsp; <a href="<?php echo base_url('roles/mod_index') ?>">
+        <button class='btn btn-info btn-sm pull-right modal-dlg' title='<?php echo $this->lang->line($controller_name . '_new'); ?>'>
+            <span class="glyphicon glyphicon-tag">&nbsp</span>Danh sách mô đun
+        </button>
+    </a>
 </div>
 
 <div id="toolbar">

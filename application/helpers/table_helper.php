@@ -39,24 +39,21 @@ function get_reminder_data_row($reminder,$controller)
 function get_test_manage_table_headers($sale_display=0)
 {
 	$CI =& get_instance();
-
 	$headers = array(
 		array('test_id' => $CI->lang->line('common_id')),
 		array('test_time' => $CI->lang->line('test_test_time')),
 		array('customer_name' => $CI->lang->line('test_customer_name')),
-		array('note' => $CI->lang->line('test_note')),
-		array('eyes' => $CI->lang->line('test_eyes')),
-		array('toltal' => $CI->lang->line('test_toltal'))
+		array('note' => $CI->lang->line('test_note'),'sortable'=>FALSE),
+		array('eyes' => $CI->lang->line('test_eyes'),'sortable'=>FALSE),
+		array('toltal' => $CI->lang->line('test_toltal'),'sortable'=>FALSE)
 	);
-
 		//$headers[] = array('invoice_number' => $CI->lang->line('sales_invoice_number'));
 	if($sale_display == 1)
 	{
 		$headers[] = array('sale' => '&nbsp', 'sortable' => FALSE);
 	}
-
-
-	return transform_headers(array_merge($headers, array(array('receipt' => '&nbsp', 'sortable' => FALSE))));
+	//return transform_headers(array_merge($headers, array(array('receipt' => '&nbsp', 'sortable' => FALSE))));
+	return transform_headers($headers,true, false);
 }
 
 function get_orders_manage_table_headers()
@@ -96,7 +93,8 @@ function get_sales_manage_table_headers()
 		array('amount_due' => $CI->lang->line('sales_amount_due')),
 		array('amount_tendered' => $CI->lang->line('sales_amount_tendered')),
 		array('change_due' => $CI->lang->line('sales_change_due')),
-		array('phone_number' => $CI->lang->line('sales_customer_phone'))
+		array('phone_number' => $CI->lang->line('sales_customer_phone')),
+		array('payment_type'=>'')
 	);
 	
 	if($CI->config->item('invoice_enable') == TRUE)
@@ -314,6 +312,7 @@ function get_sale_data_row($sale, $controller)
 {
 	$CI =& get_instance();
 	$controller_name = $CI->uri->segment(1);
+	//var_dump($sale);
 
 	$row = array (
 		'sale_id' => $sale->sale_id,
@@ -323,6 +322,7 @@ function get_sale_data_row($sale, $controller)
 		'amount_due' => number_format($sale->amount_due),
 		'amount_tendered' => number_format($sale->amount_tendered),
 		'change_due' => number_format($sale->change_due),
+		//'phone_number' => number_format($sale->phone_number),
 		'payment_type' => $sale->payment_type,
 		'status'=>$sale->status
 	);
@@ -476,7 +476,12 @@ function get_people_manage_table_headers()
 		array('address_1' => $CI->lang->line('common_address_1'))
 	);
 
-	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))
+	
+	if($CI->Employee->has_grant('customers_phonenumber_hide'))
+	{
+		$headers = remove_array_by_key($headers,'phone_number');
+	}
+	if($CI->Employee->has_grant('messages'))
 	{
 		$headers[] = array('messages' => '', 'sortable' => FALSE);
 	}
@@ -489,7 +494,7 @@ function get_person_data_row($person, $controller)
 	$CI =& get_instance();
 	$controller_name=strtolower(get_class($CI));
 
-	return array (
+	$return = array (
 		'people.person_id' => $person->person_id,
 		'last_name' => $person->last_name,
 		'first_name' => $person->first_name,
@@ -501,6 +506,17 @@ function get_person_data_row($person, $controller)
 		'edit' => anchor($controller_name."/view/$person->person_id", '<span class="glyphicon glyphicon-edit"></span>',
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 	));
+
+	if($CI->Employee->has_grant('customers_phonenumber_hide'))
+	{
+		unset($return['phone_number']);
+	}
+	if(!$CI->Employee->has_grant('customers_view'))
+	{
+		unset($return['edit']);
+	}
+
+	return $return;
 }
 
 function get_suppliers_manage_table_headers()
@@ -606,23 +622,8 @@ function get_items_manage_table_headers()
 {
 	$CI =& get_instance();
 	$person_id = $CI->session->userdata('person_id');
-	if(!$CI->Employee->has_grant('items_accounting', $person_id))
-	{
-		$headers = array(
-			array('items.item_id' => $CI->lang->line('common_id')),
-			array('item_number' => $CI->lang->line('items_item_number')),
-			array('name' => $CI->lang->line('items_name')),
-			array('category' => $CI->lang->line('items_category')),
-			array('company_name' => $CI->lang->line('suppliers_company_name')),
-			array('unit_price' => $CI->lang->line('items_unit_price')),
-			array('quantity' => $CI->lang->line('items_quantity')),
-			array('tax_percents' => $CI->lang->line('items_tax_percents'), 'sortable' => FALSE),
-			array('standard_amount' => $CI->lang->line('items_standard_amount'), 'sortable' => FALSE),
-			array('inventory' => ''),
-			array('stock' => '')
-		);
-	}else {
-		$headers = array(
+	
+	$headers = array(
 			array('items.item_id' => $CI->lang->line('common_id')),
 			array('item_number' => $CI->lang->line('items_item_number')),
 			array('name' => $CI->lang->line('items_name')),
@@ -636,9 +637,39 @@ function get_items_manage_table_headers()
 			array('inventory' => ''),
 			array('stock' => '')
 		);
+		
+	//var_dump($headers);
+	if($CI->Employee->has_grant('items_unitprice_hide'))
+	{
+		//unset();
+		$headers = remove_array_by_key($headers,'cost_price');
 	}
-
+	//var_dump($headers);
 	return transform_headers($headers);
+}
+
+function remove_array_by_key($_aaInput,$_sKey='')
+{
+	if ($_aaInput == null) {
+		return array();
+	} else {
+		foreach ($_aaInput as $key=>$value) {
+			$_flag = false;
+			if ($_flag == true) {
+				break;
+			} else {
+				foreach ($value as $k=>$v) {
+					//echo $k;
+					if ($k == $_sKey) {
+						unset($_aaInput[$key]);
+						$_flag = true;
+						break;
+					}
+				}
+			}
+		}
+		return $_aaInput;
+	}
 }
 
 function get_item_data_row($item, $controller)
@@ -663,8 +694,35 @@ function get_item_data_row($item, $controller)
 			$image .= '<a class="rollover" href="'. base_url($images[0]) .'"><img src="'.site_url('items/pic_thumb/'.$item->pic_id).'"></a>';
 		}
 	}
-
-	return array (
+	if ($CI->Employee->has_grant($controller_name.'_inventory')) {
+		$inventory = anchor(
+			$controller_name."/inventory/$item->item_id",
+			'<span class="glyphicon glyphicon-pushpin"></span>',
+			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_count'))
+		);
+	} else {
+		$inventory = '';
+	}
+	if ($CI->Employee->has_grant($controller_name.'_count_details')) {
+		$stock = anchor(
+			$controller_name."/count_details/$item->item_id",
+			'<span class="glyphicon glyphicon-list-alt"></span>',
+			array('class' => 'modal-dlg', 'title' => $CI->lang->line($controller_name.'_details_count'))
+		);
+	} else {
+		$stock = '';
+	}
+	if ($CI->Employee->has_grant($controller_name.'_view')) {
+		$edit = anchor(
+			$controller_name."/view/$item->item_id",
+			'<span class="glyphicon glyphicon-edit"></span>',
+			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
+		);
+	} else {
+		$edit = '';
+	}
+	
+	$return = array (
 		'items.item_id' => $item->item_id,
 		'item_number' => $item->item_number,
 		'name' => $item->name,
@@ -675,15 +733,15 @@ function get_item_data_row($item, $controller)
 		'quantity' => to_quantity_decimals($item->quantity),
 		'tax_percents' => !$tax_percents ? '-' : $tax_percents,
 		'standard_amount' => to_quantity_decimals($item->standard_amount),
-		'inventory' => anchor($controller_name."/inventory/$item->item_id", '<span class="glyphicon glyphicon-pushpin"></span>',
-			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_count'))
-		),
-		'stock' => anchor($controller_name."/count_details/$item->item_id", '<span class="glyphicon glyphicon-list-alt"></span>',
-			array('class' => 'modal-dlg', 'title' => $CI->lang->line($controller_name.'_details_count'))
-		),
-		'edit' => anchor($controller_name."/view/$item->item_id", '<span class="glyphicon glyphicon-edit"></span>',
-			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
-		));
+		'inventory' => $inventory,		
+		'stock' => $stock,
+		'edit' => $edit);
+	if($CI->Employee->has_grant('items_unitprice_hide'))
+	{
+		//unset();
+		unset($return['cost_price']);
+	}	
+	return $return;
 }
 
 function get_giftcards_manage_table_headers()

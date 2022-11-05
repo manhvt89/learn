@@ -121,7 +121,7 @@ function save_name(ele)
 </script>
 
 <div id="title_bar" class="btn-toolbar print_hide">
-    <a href="<?php echo base_url('roles/mod_add') ?>">
+    <a href="<?php echo base_url('roles/field_add/'.$thePermission->permissions_uuid) ?>">
         <button class='btn btn-info btn-sm pull-right modal-dlg' title='<?php echo $this->lang->line($controller_name . '_new'); ?>'>
             <span class="glyphicon glyphicon-tag">&nbsp</span><?php echo $this->lang->line($controller_name. '_mod_new'); ?>
         </button>
@@ -136,32 +136,29 @@ function save_name(ele)
   <div class="form-horizontal">
     <div class="form-group form-group-sm">	
 			
-      <div class='col-xs-3'>Tên mô đun:</div>
+      <div class='col-xs-3'>Tên quyền:</div>
 			<div class='col-xs-8'>
-          <?php echo $theModule->name;?>
+          <?php echo $thePermission->name;?>
 			</div>
 		</div>
 		<div class="form-group form-group-sm">	
 	
-      <div class='col-xs-3'>Module Key:</div>
+      <div class='col-xs-3'>Permission Key:</div>
 			<div class='col-xs-8'>
-          <?=$theModule->module_key?>
+          <?=$thePermission->permission_key?>
 			</div>
 		</div>
 
     <div class="form-group form-group-sm">	
-			
-      <div class='col-xs-3'>Mã (code):</div>
-			<div class='col-xs-8'>
-          <?=$theModule->code==null?'-':$theModule->code?>
-			</div>
+
+      
 		</div>
 
     <div class="form-group form-group-sm">	
 			
       <div class='col-xs-3'>UUID:</div>
 			<div class='col-xs-8'>
-          <?=$theModule->module_uuid?>
+          <?=$thePermission->permissions_uuid?>
 			</div>
 		</div>
 
@@ -169,7 +166,7 @@ function save_name(ele)
 			
       <div class='col-xs-3'>ID:</div>
 			<div class='col-xs-8'>
-          <?=$theModule->id?>
+          <?=$thePermission->id?>
 			</div>
 		</div>    
 	</fieldset>
@@ -178,14 +175,14 @@ function save_name(ele)
     <table id="table" data-sort-order="desc" data-sort-name="item_number" data-search="true">
         <thead>
         <th data-field="stt">STT</th>
-        <th data-field="name">Tên quyền</th>
-        <th data-field="module_key">Module key</th>
-        <th data-field="permision_key">Actions</th>
+        <th data-field="name">Tên trường</th>
+        <th data-field="module_key">key của trường</th>
+        <th data-field="permision_key">Quyền (ẩn, đọc, chỉnh sửa)</th>
         <th data-field="actions">Actions</th>
         </thead>
         <tbody>
-          <?php if(!empty($permissions)): ?>
-            <?php $i=1; foreach($permissions as $permission): ?>
+          <?php if(!empty($fields)): ?>
+            <?php $i=1; foreach($fields as $field): ?>
 
             <tr>
               <td><?=$i?></td>

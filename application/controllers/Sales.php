@@ -31,41 +31,43 @@ class Sales extends Secure_Controller
 	{
 		$person_id = $this->session->userdata('person_id');
 
-		if(!$this->Employee->has_grant('reports_sales', $person_id))
+		$data['table_headers'] = get_sales_manage_table_headers();
+
+		// filters that will be loaded in the multiselect dropdown
+		if($this->config->item('invoice_enable') == TRUE)
 		{
-			redirect('no_access/sales/reports_sales');
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),
+									'only_invoices' => $this->lang->line('sales_invoice_filter'));
 		}
 		else
 		{
-			$data['table_headers'] = get_sales_manage_table_headers();
-
-			// filters that will be loaded in the multiselect dropdown
-			if($this->config->item('invoice_enable') == TRUE)
-			{
-				$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),
-										'only_invoices' => $this->lang->line('sales_invoice_filter'));
-			}
-			else
-			{
-				$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'));
-			}
-
-			if($this->logedUser_type == 2)
-			{
-				$data['is_created'] = 0;
-			} else{
-				$data['is_created'] = 1;	
-			}
-
-			$this->load->view('sales/manage', $data);
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'));
 		}
+
+		if ($this->Employee->has_grant('sales_index')) {
+			$data['is_created'] = 1;
+		} else {
+			$data['is_created'] = 0;
+		}
+		
+		$this->load->view('sales/manage', $data);
+		
 	}
 	
-	public function get_row($row_id)
+	public function get_row($row_id=0)
 	{
+		if($row_id == 0)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		$sale_info = $this->Sale->get_info($row_id)->row();
+		if($sale_info == null)
+		{
+			echo 'Not Found a Record';
+			exit();
+		}
 		$data_row = $this->xss_clean(get_sale_data_row($sale_info, $this));
-
 		echo json_encode($data_row);
 	}
 
@@ -86,6 +88,11 @@ class Sales extends Secure_Controller
 						'is_valid_receipt' => $this->Sale->is_valid_receipt($search));
 
 		// check if any filter is set in the multiselect dropdown
+		if($this->input->get('filters') == null)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		$filledup = array_fill_keys($this->input->get('filters'), TRUE);
 		$filters = array_merge($filters, $filledup);
 
@@ -162,9 +169,7 @@ class Sales extends Secure_Controller
 			} else{
 				$this->sale_lib->set_customer_total(0);
 			}
-
 		}
-		
 		$this->_reload();
 	}
 
@@ -335,16 +340,22 @@ class Sales extends Secure_Controller
 		$this->_reload($data);
 	}
 
-	public function edit_item($item_id)
+	public function edit_item($item_id=0)
 	{
+		if($item_id == 0)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		$data = array();
-
+		
 		$this->form_validation->set_rules('price', 'lang:items_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
+		
 		$price = parse_decimals($this->input->post('price'));
 		$quantity = parse_decimals($this->input->post('quantity'));
 		$discount = parse_decimals($this->input->post('discount'));
@@ -355,7 +366,11 @@ class Sales extends Secure_Controller
 		//var_dump($discount);
 		//die();
 		$item_location = $this->input->post('location');
-
+		if($quantity == null)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
 		if($this->form_validation->run() != FALSE)
 		{
 			$this->sale_lib->edit_item($item_id, $description, $serialnumber, $quantity, $discount, $price);
@@ -370,7 +385,7 @@ class Sales extends Secure_Controller
 		$this->_reload($data);
 	}
 
-	public function delete_item($item_number)
+	public function delete_item($item_number=0)
 	{
 		$this->sale_lib->delete_item($item_number);
 
@@ -987,8 +1002,7 @@ class Sales extends Secure_Controller
 		$data['partner_id'] = $this->sale_lib->get_partner_id();
 		$data['test_id'] = $this->sale_lib->get_test_id();
 
-		$data['items_module_allowed'] = $this->Employee->has_grant('items', $this->Employee->get_logged_in_employee_info()->person_id);
-
+		$data['items_module_allowed'] = $this->Employee->has_grant('sales_price_edit');
 		$customer_info = $this->_load_customer_data($this->sale_lib->get_customer(), $data, TRUE);
 		$data['invoice_number'] = $this->_substitute_invoice_number($customer_info);
 		$data['invoice_number_enabled'] = $this->sale_lib->is_invoice_number_enabled();
@@ -1326,6 +1340,10 @@ class Sales extends Secure_Controller
 		}
 
 		$this->_reload();
+	}
+	public function price_edit()
+	{
+		exit();
 	}
 }
 ?>

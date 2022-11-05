@@ -11,20 +11,17 @@ class Customers extends Persons
         $this->person_id = $this->session->userdata('person_id');
 		$this->logedUser_type = $this->session->userdata('type');
 	}
-	
+	/* 
+		Require permissions: customer_view
+	*/
 	public function index()
 	{
 		if($this->logedUser_type != 2)
 		{
-			if(!$this->Employee->has_grant('customers_manager', $this->person_id))
-			{
-				redirect('no_access/customers/manage_customers');
-			}else {
-				$data['table_headers'] = $this->xss_clean(get_people_manage_table_headers());
-
-				$this->load->view('people/manage', $data);
-			}
-		} else { // Bác sĩ
+			$data['table_headers'] = $this->xss_clean(get_people_manage_table_headers());
+			$this->load->view('people/manage', $data);
+			
+		} else { // Bác sĩ type = 2 laf bac si;
 			$data['table_headers'] = $this->xss_clean(get_people_manage_table_headers());
 
 				$this->load->view('people/manage', $data);
@@ -33,6 +30,7 @@ class Customers extends Persons
 	
 	/*
 	Returns customer table data rows. This will be called with AJAX.
+	Exclude permissions
 	*/
 	public function search()
 	{
@@ -57,7 +55,7 @@ class Customers extends Persons
 	}
 	
 	/*
-	Gives search suggestions based on what is being searched for
+	Gives search suggestions based on what is being searched for, Call Ajax
 	*/
 	public function suggest()
 	{
@@ -74,6 +72,7 @@ class Customers extends Persons
 	
 	/*
 	    Loads the customer edit form
+		Require permissions: customer_view
 	*/
 	public function view($customer_id = -1)
 	{
@@ -104,7 +103,7 @@ class Customers extends Persons
 	}
 	
 	/*
-	Inserts/updates a customer
+		Inserts/updates a customer
 	*/
 	public function save($customer_id = -1)
 	{
@@ -124,6 +123,11 @@ class Customers extends Persons
             'age'=>$this->input->post('age'),
             'facebook'=>$this->input->post('facebook')
 		);
+		if($person_data['gender'] == null)
+		{
+			echo 'Invalid Data!';
+			exit();
+		}
         if($customer_id > 0)
         {
 
@@ -177,6 +181,7 @@ class Customers extends Persons
 	
 	/*
 	This deletes customers from the customers table
+	Require permissions: customer_delete
 	*/
 	public function delete()
 	{
@@ -202,7 +207,10 @@ class Customers extends Persons
 		$data = file_get_contents('../' . $name);
 		force_download($name, $data);
 	}
-	
+	/*
+	This deletes customers from the customers table
+	Require permissions: customer_excel_import
+	*/
 	public function excel_import()
 	{
 		$this->load->view('customers/form_excel_import', NULL);
@@ -383,5 +391,10 @@ class Customers extends Persons
             }
         }
     }
+
+	public function phonenumber_hide()
+	{
+		exit();
+	}
 }
 ?>

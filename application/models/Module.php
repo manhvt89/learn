@@ -229,5 +229,51 @@ class Module extends CI_Model
 		return $this->db->delete('grants');
 	}
 
+	public function add_permission_to_permissions($_aT)
+	{
+		return $this->db->insert('permissions', $_aT);
+	}
+
+	public function del_permission_from_permissions($permission_id=0)
+	{
+		if($permission_id == 0)
+		{
+			return -1;
+		}
+		$this->db->trans_start();
+		
+		$this->db->where('id',$permission_id);
+		$success = $this->db->delete('permissions');
+		$this->db->where('permission_id',$permission_id);
+		$success &= $this->db->delete('grants');
+
+		$this->db->trans_complete();
+		
+		$success &= $this->db->trans_status();
+		return $success;
+	}
+
+	public function get_the_permission_by_uuid($uuid =0)
+	{
+		# code...
+		$query = $this->db->get_where('permissions', array('permissions_uuid' => $uuid), 1);
+		$row = null;
+		
+		if ($query->num_rows() == 1) {
+			$row = $query->row();
+		}
+
+		return $row; // return obj
+	}
+
+	public function get_fields_by_permission($per_id)
+	{
+		$this->db->select('fields.*');
+		$this->db->from('fields');
+		$this->db->where('permission_id',$per_id);
+		//$this->db->distinct();
+		return $this->db->get();
+	}
+
 }
 ?>
