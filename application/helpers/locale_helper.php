@@ -614,4 +614,27 @@ function get_all_modules()
     }
     return $_astrReturn;
 }
+
+function extract_fullname($sFullName = '')
+{
+    $_sFullName = trim($sFullName, ' '); // bỏ khoảng trắng trước và sau chuỗi
+    $_sFullName = preg_replace('/\s+/', ' ', $_sFullName); // loại bỏ khoảng trắng thừa trong
+
+    $_aWords = explode(' ',$_sFullName);
+    $_sFirstName = array_pop($_aWords);
+    $_sLastName = implode(' ',$_aWords);
+    return array(
+        'firstname'=>$_sFirstName,
+        'lastname'=>$_sLastName
+    );
+}
+
+function get_fullname($firstname='',$lastname='')
+{
+    $_sFullName = $lastname .' '.$firstname;
+    $_sFullName = trim($_sFullName, ' '); // bỏ khoảng trắng trước và sau chuỗi
+    $_sFullName = preg_replace('/\s+/', ' ', $_sFullName); // loại bỏ khoảng trắng thừa trong
+
+    return $_sFullName;
+}
 ?>

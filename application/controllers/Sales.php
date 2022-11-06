@@ -438,7 +438,8 @@ class Sales extends Secure_Controller
 		$suspended_sale_id = $this->sale_lib->get_suspend_id();
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$employee_info = $this->Employee->get_info($employee_id);
-		$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
+		//$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
+		$data['employee'] = $employee_info->first_name;
 		$data['company_info'] = implode("\n", array(
 			$this->config->item('address'),
 			$this->config->item('phone'),
@@ -570,7 +571,8 @@ class Sales extends Secure_Controller
 			$suspended_sale_id = $this->sale_lib->get_suspend_id();
 			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 			$employee_info = $this->Employee->get_info($employee_id);
-			$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name[0];
+			//$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name[0];
+			$data['employee'] = $employee_info->first_name;
 			$data['company_info'] = implode("\n", array(
 				$this->config->item('address'),
 				$this->config->item('phone'),

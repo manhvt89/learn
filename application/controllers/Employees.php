@@ -61,6 +61,8 @@ class Employees extends Persons
 		{
 			$person_info->$property = $this->xss_clean($value);
 		}
+		$person_info->first_name = get_fullname($person_info->first_name, $person_info->last_name);
+
 		$data['person_info'] = $person_info;
         $city_ = get_cities_list();
         $cities = array();
@@ -136,9 +138,10 @@ class Employees extends Persons
 	{
 
 		$_firstname = $this->input->post('first_name');
+		$_aName = extract_fullname($_firstname);
 		$person_data = array(
-			'first_name' => $this->input->post('first_name'),
-			'last_name' => '',
+			'first_name' => mb_convert_case($_aName['firstname'], MB_CASE_TITLE, "UTF-8"),
+			'last_name' => mb_convert_case($_aName['lastname'], MB_CASE_TITLE, "UTF-8"),
 			'gender' => $this->input->post('gender'),
 			'email' => $this->input->post('email'),
 			'phone_number' => $this->input->post('phone_number'),

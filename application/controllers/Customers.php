@@ -96,6 +96,8 @@ class Customers extends Persons
 		{
 			$info->age = 30;
 		}
+		//var_dump($info);
+		$info->first_name = get_fullname($info->first_name, $info->last_name);
 		$data['person_info'] = $info;
         $data['cities'] = $cities;
 		$data['total'] = $this->xss_clean($this->Customer->get_totals($customer_id)->total);
@@ -108,11 +110,10 @@ class Customers extends Persons
 	public function save($customer_id = -1)
 	{
 		$_firstname = $this->input->post('first_name');
-		$_aFirstName = explode(' ',$_firstname);
-		$_aTmp = array_reverse($_aFirstName);
+		$_aName = extract_fullname($_firstname);
 		$person_data = array(
-			'first_name' => mb_convert_case($this->input->post('first_name'), MB_CASE_TITLE, "UTF-8"),
-			'last_name' => '',
+			'first_name' => mb_convert_case($_aName['firstname'], MB_CASE_TITLE, "UTF-8"),
+			'last_name' => mb_convert_case($_aName['lastname'], MB_CASE_TITLE, "UTF-8"),
 			'gender' => $this->input->post('gender'),
 			'email' => $this->input->post('email'),
 			'phone_number' => $this->input->post('phone_number'),
