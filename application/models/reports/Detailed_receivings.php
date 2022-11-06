@@ -18,8 +18,7 @@ class Detailed_receivings extends Report
 	public function getDataColumns()
 	{
         $CI =& get_instance();
-        $person_id = $CI->session->userdata('person_id');
-        if($CI->Employee->has_grant('reports_sales-accounting', $person_id)) {
+        if($CI->Employee->has_grant('reports_detail_import_lens')) {
             $columns = array(
                 'summary' => array(
                     array('id' => $this->lang->line('reports_receiving_id')),
@@ -81,18 +80,8 @@ class Detailed_receivings extends Report
 		$this->db->join('people AS employee', 'receivings_items_temp.employee_id = employee.person_id');
 		$this->db->join('suppliers AS supplier', 'receivings_items_temp.supplier_id = supplier.person_id', 'left');
 
-        $categories = array(1 => $this->lang->line('reports_category_156_chemi'),
-        2 => $this->lang->line('reports_category_156_kodak'),
-        3 => $this->lang->line('reports_category_156_TC'),
-        4 => $this->lang->line('reports_category_160_essilor'),
-        5 => $this->lang->line('reports_category_160_hoya'),
-        6 => $this->lang->line('reports_category_160_kodak'),
-        7 => $this->lang->line('reports_category_160_nahami'),
-        8 => $this->lang->line('reports_category_161_chemi'),
-        9 => $this->lang->line('reports_category_167_hoya'),
-        10 => $this->lang->line('reports_category_167_kodak'),
-        11 => $this->lang->line('reports_category_167_chemi'),
-    );
+        //var_dump($inputs);
+        $categories = $this->config->item('iKindOfLens');
 
 		if($inputs['category'] != 'all')
         {
@@ -141,18 +130,7 @@ class Detailed_receivings extends Report
 	{
 		$this->db->select('SUM(total) AS total');
 		$this->db->from('receivings_items_temp');
-        $categories = array(1 => $this->lang->line('reports_category_156_chemi'),
-            2 => $this->lang->line('reports_category_156_kodak'),
-            3 => $this->lang->line('reports_category_156_TC'),
-            4 => $this->lang->line('reports_category_160_essilor'),
-            5 => $this->lang->line('reports_category_160_hoya'),
-            6 => $this->lang->line('reports_category_160_kodak'),
-            7 => $this->lang->line('reports_category_160_nahami'),
-            8 => $this->lang->line('reports_category_161_chemi'),
-            9 => $this->lang->line('reports_category_167_hoya'),
-            10 => $this->lang->line('reports_category_167_kodak'),
-            11 => $this->lang->line('reports_category_167_chemi'),
-        );
+        $categories = $this->config->item('iKindOfLens');
 
         if($inputs['category'] != 'all')
         {
@@ -186,13 +164,8 @@ class Detailed_receivings extends Report
      */
     public function getCategoryDropdownArray()
     {
-        $_aKindOfLens = $this->config->item('KindOfLens');
-        $_arr = array();
-        foreach($_aKindOfLens as $key=>$value)
-        {
-            $_arr[] = $value;
-        }
-        return $_arr;
+        $_aKindOfLens = $this->config->item('iKindOfLens');
+        return $_aKindOfLens;
     }
 }
 ?>

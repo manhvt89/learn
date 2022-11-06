@@ -107,9 +107,12 @@ class Customers extends Persons
 	*/
 	public function save($customer_id = -1)
 	{
+		$_firstname = $this->input->post('first_name');
+		$_aFirstName = explode(' ',$_firstname);
+		$_aTmp = array_reverse($_aFirstName);
 		$person_data = array(
 			'first_name' => mb_convert_case($this->input->post('first_name'), MB_CASE_TITLE, "UTF-8"),
-			'last_name' => mb_convert_case($this->input->post('last_name'), MB_CASE_TITLE, "UTF-8"),
+			'last_name' => '',
 			'gender' => $this->input->post('gender'),
 			'email' => $this->input->post('email'),
 			'phone_number' => $this->input->post('phone_number'),
@@ -120,14 +123,10 @@ class Customers extends Persons
 			'zip' => $this->input->post('zip'),
 			'country' => $this->input->post('country'),
 			'comments' => $this->input->post('comments'),
-            'age'=>$this->input->post('age'),
+            'age'=>$this->input->post('age')==''?0:$this->input->post('age'),
             'facebook'=>$this->input->post('facebook')
 		);
-		if($person_data['gender'] == null)
-		{
-			echo 'Invalid Data!';
-			exit();
-		}
+		//var_dump($this->input->post('age'));
         if($customer_id > 0)
         {
 

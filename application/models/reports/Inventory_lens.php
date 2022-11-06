@@ -31,9 +31,10 @@ class Inventory_lens extends Report
         $this->db->where('stock_locations.deleted', 0);
 
 		// should be corresponding to values Inventory_summary::getItemCountDropdownArray() returns...
+		$categories = $this->config->item('iKindOfLens');
 		if($inputs['category'] != '')
 		{
-			$this->db->where('items.category',$inputs['category']);
+			$this->db->where('items.category',$categories[$inputs['category']]);
 		}
 
 		if($inputs['location_id'] != 'all')
@@ -71,25 +72,7 @@ class Inventory_lens extends Report
 	 */
 	public function getCategoryDropdownArray()
 	{
-		/* Nam Hai COM
-		return array(
-			$this->lang->line('reports_category_156_chemi') => $this->lang->line('reports_category_156_chemi'),
-            $this->lang->line('reports_category_156_kodak') => $this->lang->line('reports_category_156_kodak'),
-            $this->lang->line('reports_category_156_TC') => $this->lang->line('reports_category_156_TC'),
-            $this->lang->line('reports_category_160_essilor') => $this->lang->line('reports_category_160_essilor'),
-            $this->lang->line('reports_category_160_hoya') => $this->lang->line('reports_category_160_hoya'),
-            $this->lang->line('reports_category_160_kodak') => $this->lang->line('reports_category_160_kodak'),
-            $this->lang->line('reports_category_160_nahami') => $this->lang->line('reports_category_160_nahami'),
-            $this->lang->line('reports_category_161_chemi') => $this->lang->line('reports_category_161_chemi'),
-            $this->lang->line('reports_category_167_hoya') => $this->lang->line('reports_category_167_hoya'),
-            $this->lang->line('reports_category_167_kodak') => $this->lang->line('reports_category_167_kodak'),
-            $this->lang->line('reports_category_167_chemi') => $this->lang->line('reports_category_167_chemi'),
-			$this->lang->line('reports_category_155_blue') => $this->lang->line('reports_category_155_blue'),
-			$this->lang->line('reports_category_160_blue') => $this->lang->line('reports_category_160_blue'),
-            );
-		*/	
-		return $this->config->item('KindOfLens');
-		
+		return $this->config->item('iKindOfLens');
 	}
 }
 ?>

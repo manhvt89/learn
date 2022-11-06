@@ -31,3 +31,4 @@ $lang['module_test_desc'] = "Phân quyền phần khám mắt";
 $lang['account_new_payout'] = 'Tạo phiếu chi';
 $lang['account_new_income'] = 'Tạo phiếu thu';
 $lang['common_new_income'] = 'Tạo phiếu thu';
+$lang['module_roles'] = "Phân quyền";

@@ -135,6 +135,21 @@ $config['KindOfLens'] = array(
     '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
     );
 
+    $config['iKindOfLens'] = array(
+        0 => '1.56 CHEMI',
+        1 => '1.60 U2 CHEMI',
+        2 => '1.67 U2 CHEMI',
+        3 => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
+        4 => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
+        5 => '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
+        6 => '1.60 ESSILOR CRIZAL ALIZE UV',
+        7 => '1.60 HOYA - NULUX SFT SV',
+        8=>'1.60 NAHAmi SUPER HMC A+',
+        9=>'1.61 CHEMI Crystal U2',
+        10=>'1.67 HOYA - NULUX SFT SV',
+        11=>'1.67 CHEMI Crystal U2',
+        );    
+
 $config['exclude_module'] = array(
     'secure_controller',
     'no_access',

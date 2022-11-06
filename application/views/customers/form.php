@@ -99,8 +99,6 @@ $(document).ready(function()
 		rules:
 		{
 			first_name: "required",
-			last_name: "required",
-			age: "required",
     		email: "email",
     		account_number:
 			{
@@ -122,8 +120,6 @@ $(document).ready(function()
 		messages: 
 		{
      		first_name: "<?php echo $this->lang->line('common_first_name_required'); ?>",
-     		last_name: "<?php echo $this->lang->line('common_last_name_required'); ?>",
-			age: "<?php echo $this->lang->line('common_age_required'); ?>",
      		email: "<?php echo $this->lang->line('common_email_invalid_format'); ?>",
 			account_number: "<?php echo $this->lang->line('customers_account_number_duplicate'); ?>"
 		}
