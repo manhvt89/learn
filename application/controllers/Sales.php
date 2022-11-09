@@ -405,7 +405,7 @@ class Sales extends Secure_Controller
 	}
 
 
-	public function before_complete()
+	public function before_complete() // Đặt trước;
 	{
 		$data = array();
 		$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric');
@@ -413,137 +413,178 @@ class Sales extends Secure_Controller
 		if($this->form_validation->run() == FALSE)
 		{
 			$data['error'] = $this->lang->line('sales_must_enter_numeric');
+			//echo site_url(uri_string());
+			//redirect(base_url('sales'));
 		}else{
 			$amount_tendered = $this->input->post('amount_tendered');
 			$this->sale_lib->add_payment($this->lang->line('sales_check'), $amount_tendered);
 		}
-
-		$data['cart'] = $this->sale_lib->get_cart();
-		$status = 1;
-		$data['subtotal'] = $this->sale_lib->get_subtotal();
-		$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
-		$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
-		$data['taxes'] = $this->sale_lib->get_taxes();
-		$data['total'] = $this->sale_lib->get_total();
-		$data['discount'] = $this->sale_lib->get_discount();
-		$data['receipt_title'] = $this->lang->line('sales_receipt');
-		$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'));
-		$data['transaction_date'] = date($this->config->item('dateformat'));
-		$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
-		$data['comments'] = $this->sale_lib->get_comment();
-		$data['payments'] = $this->sale_lib->get_payments();
-		$data['amount_change'] = $this->sale_lib->get_amount_due() * -1;
-		$amount_change = $this->sale_lib->get_amount_due() * -1;
-		$data['amount_due'] = $this->sale_lib->get_amount_due();
-		$suspended_sale_id = $this->sale_lib->get_suspend_id();
-		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
-		$employee_info = $this->Employee->get_info($employee_id);
-		//$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
-		$data['employee'] = $employee_info->first_name;
-		$data['company_info'] = implode("\n", array(
-			$this->config->item('address'),
-			$this->config->item('phone'),
-			$this->config->item('account_number')
-		));
-		$payments = array();
-		$payment['payment_type'] = $this->lang->line('sales_cash');
-		$payment['payment_amount'] = 0;
-		$payment['payment_kind'] = $this->lang->line('sales_reserve_money');
-		if(count($data['payments']) == 0)
-		{
-			$data['error'] = 'Chưa thêm thanh toán, kiểm tra lại thông tin';
-
-			$this->_reload($data);
-		}else{
-
-			if(isset($data['payments'][$this->lang->line('sales_reserve_money')]))
+			$data['cart'] = $this->sale_lib->get_cart();
+			$status = 1;
+			$data['subtotal'] = $this->sale_lib->get_subtotal();
+			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
+			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
+			$data['taxes'] = $this->sale_lib->get_taxes();
+			$data['total'] = $this->sale_lib->get_total();
+			$data['discount'] = $this->sale_lib->get_discount();
+			$data['receipt_title'] = $this->lang->line('sales_receipt');
+			$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'));
+			$data['transaction_date'] = date($this->config->item('dateformat'));
+			$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
+			$data['comments'] = $this->sale_lib->get_comment();
+			$data['payments'] = $this->sale_lib->get_payments();
+			$data['amount_change'] = $this->sale_lib->get_amount_due() * -1;
+			$amount_change = $this->sale_lib->get_amount_due() * -1;
+			$data['amount_due'] = $this->sale_lib->get_amount_due();
+			$suspended_sale_id = $this->sale_lib->get_suspend_id();
+			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+			$employee_info = $this->Employee->get_info($employee_id);
+			//$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
+			$data['employee'] = get_fullname($employee_info->first_name,$employee_info->last_name);
+			$data['company_info'] = implode("\n", array(
+				$this->config->item('address'),
+				$this->config->item('phone'),
+				$this->config->item('account_number')
+			));
+			$payments = array();
+			$payment['payment_type'] = $this->lang->line('sales_cash');
+			$payment['payment_amount'] = 0;
+			$payment['payment_kind'] = $this->lang->line('sales_reserve_money');
+			if(count($data['payments']) == 0)
 			{
-				$old_payments = $data['payments'][$this->lang->line('sales_reserve_money')];
-			}else{
-				$old_payments = null;
-			}
-			if(isset($data['payments'][$this->lang->line('sales_paid_money')]))
-			{
-				$new_payments = $data['payments'][$this->lang->line('sales_paid_money')];
-			}else{
-				$new_payments = null;
-			}
-			foreach($new_payments as $item)
-			{
-				$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
-			}
+				$data['error'] = 'Chưa thêm thanh toán, kiểm tra lại thông tin';
 
-			$payments[] = $payment;
-
-			$customer_id = $this->sale_lib->get_customer();
-			$test_id = $this->sale_lib->get_test_id();
-			$kxv_id = 0;
-			$doctor_id = 0;
-			if(!isset($test_id)){
-				$test_id = 0;
-
-			} else {
-				$test_info = $this->Testex->get_info($test_id);
-				$kxv_id = $test_info->kxv_id;
-				$doctor_id = 0;
-			}
-			$customer_info = $this->_load_customer_data($customer_id, $data);
-			$invoice_number = $this->_substitute_invoice_number($customer_info);
-
-			if($this->sale_lib->is_invoice_number_enabled() && $this->Sale->check_invoice_number_exists($invoice_number))
-			{
-				$data['error'] = $this->lang->line('sales_invoice_number_duplicate');
 				$this->_reload($data);
+			}else{
+				if (isset($data['payments'][$this->lang->line('sales_reserve_money')])) {
+					$old_payments = $data['payments'][$this->lang->line('sales_reserve_money')];
+				} else {
+					$old_payments = null;
+				}
+				if (isset($data['payments'][$this->lang->line('sales_paid_money')])) {
+					$new_payments = $data['payments'][$this->lang->line('sales_paid_money')];
+				} else {
+					$new_payments = null;
+				}
+				foreach ($new_payments as $item) {
+					$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
+				}
+
+    			$payments[] = $payment;
+
+				$customer_id = $this->sale_lib->get_customer();
+				$test_id = $this->sale_lib->get_test_id();
+				$kxv_id = 0;
+				$doctor_id = 0;
+				if (!isset($test_id)) {
+					$test_id = 0;
+				} else {
+					//echo $test_id;die();
+					$test_info = $this->Testex->get_info($test_id);
+					//var_dump($test_info); die();
+					$kxv_id = $test_info['employeer_id'];
+					$doctor_id = 0;
+				}
+				$customer_info = $this->_load_customer_data($customer_id, $data);
+				$invoice_number = $this->_substitute_invoice_number($customer_info);
+
+				if ($this->sale_lib->is_invoice_number_enabled() && $this->Sale->check_invoice_number_exists($invoice_number)) {
+					$data['error'] = $this->lang->line('sales_invoice_number_duplicate');
+					$this->_reload($data);
+				} else {
+					$ctv_id = $this->input->post('hidden_ctv');
+					$invoice_number = $this->sale_lib->is_invoice_number_enabled() ? $invoice_number : null;
+					$data['invoice_number'] = $invoice_number;
+					$data['sale_id_num'] = $this->Sale->save(
+						$data['cart'],
+						$customer_id,
+						$employee_id,
+						$data['comments'],
+						$invoice_number,
+						$payments,
+						$amount_change,
+						$suspended_sale_id,
+						$ctv_id,
+						$status,
+						$test_id,
+						$kxv_id,
+						$doctor_id
+					);
+					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
+					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
+					$data['code'] = $sale_info['code'];
+					$data = $this->xss_clean($data);
+
+					if ($data['sale_id_num'] == -1) {
+						$data['error_message'] = $this->lang->line('sales_transaction_failed');
+					} else {
+						$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+					}
+
+					$data['cur_giftcard_value'] = $this->sale_lib->get_giftcard_remainder();
+					$data['print_after_sale'] = $this->sale_lib->is_print_after_sale();
+					$data['email_receipt'] = $this->sale_lib->get_email_receipt();
+
+					if ($this->sale_lib->is_invoice_number_enabled()) {
+						$this->load->view('sales/invoice', $data);
+					} else {
+						/*
+						** Thêm barcode vào đơn hàng
+						** QRCode vào đơn hàng
+						*/
+						$_bIsBarcode = false;
+						$_bIsQRcode = true;
+
+						if ($_bIsQRcode == true) {
+						} else {
+						}
+
+						if ($_bIsQRcode == true) {
+							$qr_url_data = base_url('/verify/confirm/').$sale_info['sale_uuid'];
+							$hex_data   = bin2hex($qr_url_data);
+							$save_name  = $hex_data.'.png';
+
+							/* QR Code File Directory Initialize */
+							$dir = 'assets/media/qrcode/';
+							if (!file_exists($dir)) {
+								mkdir($dir, 0775, true);
+							}
+
+							/* QR Configuration  */
+							$config['cacheable']    = true;
+							$config['imagedir']     = $dir;
+							$config['quality']      = true;
+							$config['size']         = '1024';
+							$config['black']        = array(255,255,255);
+							$config['white']        = array(255,255,255);
+							$this->ciqrcode->initialize($config);
+
+							/* QR Data  */
+							$params['data']     = $qr_url_data;
+							$params['level']    = 'L';
+							$params['size']     = 10;
+							$params['savename'] = FCPATH.$config['imagedir']. $save_name;
+
+							//$this->ciqrcode->generate($params);
+
+							$data['qrcode_string'] = $this->ciqrcode->generate($params);
+							$data['url_string'] = $qr_url_data;
+							$data['footer_string'] = 'Quét mã QR để nhận quà';
+							$data['sale_uuid'] = $sale_info['sale_uuid'];
+						} else {
+							$data['footer_string'] = '';
+							$data['qrcode_string'] = '';
+							$data['url_string'] = '';
+							$data['sale_uuid'] = '';
+						}
+            			$this->load->view('sales/receipt', $data);
+        			}
+
+        			$this->sale_lib->clear_all();
+    			}
 			}
-			else
-			{
-				$ctv_id = $this->input->post('hidden_ctv');
-				$invoice_number = $this->sale_lib->is_invoice_number_enabled() ? $invoice_number : NULL;
-				$data['invoice_number'] = $invoice_number;
-				$data['sale_id_num'] = $this->Sale->save($data['cart'],
-															$customer_id,
-															$employee_id,
-															$data['comments'],
-															$invoice_number,
-															$payments,
-															$amount_change,
-															$suspended_sale_id,
-															$ctv_id,
-															$status,
-															$test_id,
-															$kxv_id,
-															$doctor_id);
-				$data['sale_id'] = 'POS ' . $data['sale_id_num'];
-				$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
-				$data['code'] = $sale_info['code'];
-				$data = $this->xss_clean($data);
 
-				if($data['sale_id_num'] == -1)
-				{
-					$data['error_message'] = $this->lang->line('sales_transaction_failed');
-				}
-				else
-				{
-					$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
-				}
-
-				$data['cur_giftcard_value'] = $this->sale_lib->get_giftcard_remainder();
-				$data['print_after_sale'] = $this->sale_lib->is_print_after_sale();
-				$data['email_receipt'] = $this->sale_lib->get_email_receipt();
-
-				if($this->sale_lib->is_invoice_number_enabled())
-				{
-					$this->load->view('sales/invoice', $data);
-				}
-				else
-				{
-					$this->load->view('sales/receipt', $data);
-				}
-
-				$this->sale_lib->clear_all();
-			}
-
-		}
+		
 
 	}
 
@@ -572,7 +613,8 @@ class Sales extends Secure_Controller
 			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 			$employee_info = $this->Employee->get_info($employee_id);
 			//$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name[0];
-			$data['employee'] = $employee_info->first_name;
+			//$data['employee'] = $employee_info->first_name;
+			$data['employee'] = get_fullname($employee_info->first_name,$employee_info->last_name);
 			$data['company_info'] = implode("\n", array(
 				$this->config->item('address'),
 				$this->config->item('phone'),
@@ -1262,7 +1304,8 @@ class Sales extends Secure_Controller
 	{
 		$this->sale_lib->clear_all();
 		$this->sale_lib->copy_entire_sale($sale_id);
-		$this->_reload();
+		$data['edit'] = 1;
+		$this->_reload($data);
 	}
 	
 	public function check_invoice_number()

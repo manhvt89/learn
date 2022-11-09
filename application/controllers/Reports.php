@@ -1328,6 +1328,9 @@ class Reports extends Secure_Controller
         $this->load->view('reports/inventory_lens_input', $data);
     }
 
+    /*
+    Call report inventory_lens()
+    */
     public function ajax_inventory_summary()
     {
         $this->load->model('reports/Inventory_lens');
@@ -1488,8 +1491,8 @@ class Reports extends Secure_Controller
         );
 
         $grid_data = array();
-        $myopia = array(); //can
-        $hyperopia = array(); //vien
+        $myopia = array(); //cận
+        $hyperopia = array(); //viễn
         foreach ($report_data as $item)
         {
             $name = $item['name'];
@@ -1543,6 +1546,8 @@ class Reports extends Secure_Controller
         $sub_hyperopia = array();
         $sub_group = array();
         $total = 0;
+        $cols = 18;
+        $rows = 62;
 
         if($category == '1.56 TC')
         {
@@ -1673,8 +1678,8 @@ class Reports extends Secure_Controller
 
             $total = array_sum($sub_hyperopia) + array_sum($sub_myopia);
         }else {
-            for ($i = 0; $i < 62; $i++) {
-                for ($j = 0; $j < 18; $j++) {
+            for ($i = 0; $i < $rows; $i++) {
+                for ($j = 0; $j < $cols; $j++) {
                     if (!isset($myopia[$i][$j])) {
                         $myopia[$i][$j] = '';
                     } else {
@@ -1695,10 +1700,10 @@ class Reports extends Secure_Controller
                 }
             }
 
-            for($i =1;$i<10;$i++)
+            for($i =1;$i<$cols;$i++)
             {
                 $sub_myopia[$i] = 0;
-                for($j =1;$j<62;$j++)
+                for($j =1;$j<$rows;$j++)
                 {
 
                     if($myopia[$j][$i] !='') {
@@ -1784,7 +1789,7 @@ class Reports extends Secure_Controller
                 }
             }
 
-            for($i =1;$i<10;$i++)
+            for($i =1;$i<$cols;$i++)
             {
                 $sub_hyperopia[$i] = 0;
                 for($j =1;$j<26;$j++)
@@ -1796,7 +1801,7 @@ class Reports extends Secure_Controller
                 }
             }
 
-            for($i =10;$i<18;$i++)
+            /* for($i =10;$i<18;$i++)
             {
                 $sub_hyperopia[$i] = 0;
                 for($j =1;$j<9;$j++)
@@ -1806,9 +1811,9 @@ class Reports extends Secure_Controller
                         $sub_hyperopia[$i] = $sub_hyperopia[$i] + $hyperopia[$j][$i];
                     }
                 }
-            }
+            } */
 
-            $total = array_sum($sub_group);
+            $total = array_sum($sub_myopia) + array_sum($sub_hyperopia);
         }
 
 

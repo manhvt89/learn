@@ -61,6 +61,7 @@ class Sale_suspended extends CI_Model
 	
 	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments, $sale_id = FALSE)
 	{
+		//var_dump($payments); die();
 		if(count($items) == 0)
 		{
 			return -1;
@@ -79,7 +80,7 @@ class Sale_suspended extends CI_Model
 
 		$this->db->insert('sales_suspended', $sales_data);
 		$sale_id = $this->db->insert_id();
-
+		/*
 		foreach($payments as $payment_id=>$payment)
 		{
 			$sales_payments_data = array(
@@ -90,7 +91,7 @@ class Sale_suspended extends CI_Model
 
 			$this->db->insert('sales_suspended_payments', $sales_payments_data);
 		}
-
+		*/
 		foreach($items as $line=>$item)
 		{
 			$cur_item_info = $this->Item->get_info($item['item_id']);

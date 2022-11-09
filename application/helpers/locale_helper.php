@@ -637,4 +637,5 @@ function get_fullname($firstname='',$lastname='')
 
     return $_sFullName;
 }
+
 ?>

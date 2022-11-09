@@ -15,6 +15,7 @@ if (isset($success))
 {
 	echo "<div class='alert alert-dismissible alert-success'>".$success."</div>";
 }
+
 ?>
 
 <div id="register_wrapper">
@@ -683,8 +684,11 @@ if (isset($success))
 								</tr>
 							</table>
 						<?php echo form_close(); ?>
-						<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Đặt trước</div>
-						<div class='btn btn-sm btn-success pull-right' id='add_payment_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span><?php echo $this->lang->line('sales_add_payment'); ?></div>
+						<?php if(!empty($edit)):?>
+						<?php else : ?>
+							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Đặt trước</div>
+						<?php endif; ?>
+							<div class='btn btn-sm btn-success pull-right' id='add_payment_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span><?php echo $this->lang->line('sales_add_payment'); ?></div>
 					<?php
 					}
 					?>
@@ -953,6 +957,7 @@ $(document).ready(function()
 				$('#buttons_form').submit();
 			}
 		}else{
+			
 			$('#buttons_form').attr('action', '<?php echo site_url($controller_name . "/before_complete"); ?>');
 			$('#buttons_form').submit();
 		}

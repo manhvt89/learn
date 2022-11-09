@@ -203,9 +203,9 @@
 	<div class="barcode">
 	</div>
 	<div class="qrcode" style="text-align: center;">
-			<span><?php echo $footer_string ?></span>
+			<span><?php echo $footer_string ?></span><br/>
 			<img src='data:image/png;base64,<?php echo $qrcode_string; ?>' />
-			<?php echo $url_string; ?>
+			<?php //echo $url_string; ?>
 	</div>
 	<div id="sale_return_policy">
 		<?php //echo nl2br($this->config->item('return_policy')); ?>
