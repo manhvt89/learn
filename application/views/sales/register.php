@@ -822,7 +822,7 @@ if (isset($success))
 <script type="text/javascript">
 $(document).ready(function()
 {
-	$('#amount_tendered').number(true,0);
+	$('#amount_tendered').number(true,0,',','.');
 
 	$("#item").autocomplete(
 	{
