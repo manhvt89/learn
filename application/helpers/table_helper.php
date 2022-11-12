@@ -94,7 +94,7 @@ function get_sales_manage_table_headers()
 		array('amount_tendered' => $CI->lang->line('sales_amount_tendered')),
 		array('change_due' => $CI->lang->line('sales_change_due')),
 		array('phone_number' => $CI->lang->line('sales_customer_phone')),
-		array('payment_type'=>'')
+		array('payment_type'=>'Hình thức thanh toán')
 	);
 	
 	if($CI->config->item('invoice_enable') == TRUE)
@@ -319,10 +319,10 @@ function get_sale_data_row($sale, $controller)
 		'bacsi_id'=>$sale->bacsi_id,
 		'sale_time' => date( $CI->config->item('dateformat') . ' ' . $CI->config->item('timeformat'), strtotime($sale->sale_time) ),
 		'customer_name' => $sale->customer_name,
-		'amount_due' => number_format($sale->amount_due),
-		'amount_tendered' => number_format($sale->amount_tendered),
-		'change_due' => number_format($sale->change_due),
-		//'phone_number' => number_format($sale->phone_number),
+		'amount_due' => number_format($sale->amount_due,0,',','.'),
+		'amount_tendered' => number_format($sale->amount_tendered,0,',','.'),
+		'change_due' => number_format($sale->change_due,0,',','.'),
+		'phone_number' => '***',
 		'payment_type' => $sale->payment_type,
 		'status'=>$sale->status
 	);

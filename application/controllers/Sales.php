@@ -29,8 +29,7 @@ class Sales extends Secure_Controller
 	
 	public function manage()
 	{
-		$person_id = $this->session->userdata('person_id');
-
+		
 		$data['table_headers'] = get_sales_manage_table_headers();
 
 		// filters that will be loaded in the multiselect dropdown

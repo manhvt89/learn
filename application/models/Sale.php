@@ -111,7 +111,7 @@ class Sale extends CI_Model
 			(
 				SELECT payments.sale_id AS sale_id, 
 					IFNULL(SUM(payments.payment_amount), 0) AS sale_payment_amount,
-					GROUP_CONCAT(CONCAT(payments.payment_type, " ", payments.payment_amount) SEPARATOR ", ") AS payment_type
+					GROUP_CONCAT(CONCAT(payments.payment_type, " ", FORMAT(payments.payment_amount,0,"vi_VN")) SEPARATOR ", ") AS payment_type
 				FROM ' . $this->db->dbprefix('sales_payments') . ' AS payments
 				INNER JOIN ' . $this->db->dbprefix('sales') . ' AS sales
 					ON sales.sale_id = payments.sale_id
@@ -969,7 +969,7 @@ class Sale extends CI_Model
 			(
 				SELECT payments.sale_id AS sale_id, 
 					IFNULL(SUM(payments.payment_amount), 0) AS sale_payment_amount,
-					GROUP_CONCAT(CONCAT(payments.payment_type, " ", payments.payment_amount) SEPARATOR ", ") AS payment_type
+					GROUP_CONCAT(CONCAT(payments.payment_type, " ", FORMAT(payments.payment_amount,0,"vi_VN")) SEPARATOR ", ") AS payment_type
 				FROM ' . $this->db->dbprefix('sales_payments') . ' AS payments
 				INNER JOIN ' . $this->db->dbprefix('sales') . ' AS sales
 					ON sales.sale_id = payments.sale_id

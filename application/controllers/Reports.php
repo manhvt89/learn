@@ -1031,8 +1031,8 @@ class Reports extends Secure_Controller
 
 		$show_locations = $this->xss_clean($this->Stock_location->multiple_locations());
 
-        $person_id = $this->session->userdata('person_id');
-        $reports_accounting = $this->Employee->has_grant('reports_sales-accounting', $person_id);
+        //$person_id = $this->session->userdata('person_id');
+        $reports_accounting = 1;//$this->Employee->has_grant('reports_sales-accounting', $person_id);
 
         //var_dump($report_data['details']);
         foreach($report_data['summary'] as $key => $row)
