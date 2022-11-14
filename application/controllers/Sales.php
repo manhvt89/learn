@@ -531,13 +531,9 @@ class Sales extends Secure_Controller
 						** Thêm barcode vào đơn hàng
 						** QRCode vào đơn hàng
 						*/
-						$_bIsBarcode = false;
-						$_bIsQRcode = true;
-
-						if ($_bIsQRcode == true) {
-						} else {
-						}
-
+						$_bIsBarcode = true;
+						$_bIsQRcode = false; // Phieeuj tam ung ko co qrcode
+						
 						if ($_bIsQRcode == true) {
 							$qr_url_data = base_url('/verify/confirm/').$sale_info['sale_uuid'];
 							$hex_data   = bin2hex($qr_url_data);
@@ -574,7 +570,7 @@ class Sales extends Secure_Controller
 							$data['footer_string'] = '';
 							$data['qrcode_string'] = '';
 							$data['url_string'] = '';
-							$data['sale_uuid'] = '';
+							$data['sale_uuid'] = $sale_info['sale_uuid'];
 						}
             			$this->load->view('sales/receipt', $data);
         			}
@@ -698,14 +694,20 @@ class Sales extends Secure_Controller
 					** Thêm barcode vào đơn hàng
 					** QRCode vào đơn hàng					
 					*/
-					$_bIsBarcode = FALSE;
+					$_bIsBarcode = TRUE;
 					$_bIsQRcode = TRUE;
 
-					if ($_bIsQRcode == TRUE) {
-
+					if ($this->config->item('qrcode') == 0) {
+						$_bIsQRcode = false;
 					} else {
 						
 					}
+					if ($this->config->item('barcode') == 0) {
+						$_bIsBarcode = false;
+					} else {
+						
+					}
+
 
 					if($_bIsQRcode == TRUE)
 					{
@@ -744,7 +746,7 @@ class Sales extends Secure_Controller
 						$data['footer_string'] = '';
 						$data['qrcode_string'] = '';
 						$data['url_string'] = '';
-						$data['sale_uuid'] = '';
+						$data['sale_uuid'] = $sale_info['sale_uuid'];
 					}
 
 					$this->load->view('sales/receipt', $data);
@@ -1303,6 +1305,7 @@ class Sales extends Secure_Controller
 	{
 		$this->sale_lib->clear_all();
 		$this->sale_lib->copy_entire_sale($sale_id);
+		$this->sale_lib->set_edit(1);
 		$data['edit'] = 1;
 		$this->_reload($data);
 	}

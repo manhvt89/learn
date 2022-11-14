@@ -46,7 +46,6 @@ class Testex extends CI_Model
 	{
 		$this->db->from('test');
 		$this->db->where('code', $code);
-
 		return ($this->db->get()->num_rows()==1);
 	}
 

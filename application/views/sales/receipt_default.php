@@ -200,13 +200,20 @@
 		<div id="employee"><?php echo $employee; ?></div>
 	</div>
 	<div class="clearboth"></div>
+	<?php if($this->config->item('barcode') ==1 ): ?>
 	<div class="barcode">
+		<img src='data:image/png;base64,<?php echo $barcode; ?>' />
 	</div>
+	<?php endif; ?>
+	<?php if($this->config->item('qrcode') ==1 ): ?>
+		<?php if($footer_string != ''): //Khoong hien thi phieu tam ung ?>
 	<div class="qrcode" style="text-align: center;">
 			<span><?php echo $footer_string ?></span><br/>
 			<img src='data:image/png;base64,<?php echo $qrcode_string; ?>' />
 			<?php //echo $url_string; ?>
 	</div>
+		<?php endif;?>
+	<?php endif; ?>
 	<div id="sale_return_policy">
 		<?php //echo nl2br($this->config->item('return_policy')); ?>
 	</div>

@@ -750,6 +750,7 @@ class Sale_lib
 		$this->clear_item_description();
 		$this->clear_points();
 		$this->clear_paid_points();
+		$this->clear_edit();
 	}
 	
 	public function is_customer_taxable()
@@ -1076,8 +1077,24 @@ class Sale_lib
 		$this->CI->session->unset_userdata('_fpoint');
 	}
 
+	public function set_edit($_edit)
+	{
+		$this->CI->session->set_userdata('edit', $_edit);
+	}
 
-
+	public function get_edit()
+	{
+		if (!empty($this->CI->session->userdata('edit'))) {
+			return $this->CI->session->userdata('edit');
+		} else{
+			return 0;
+		}
+	}
+	public function clear_edit()
+	{
+		$this->CI->session->unset_userdata('edit'); 
+	}
+	
 }
 
 ?>

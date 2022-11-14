@@ -135,7 +135,7 @@ $config['KindOfLens'] = array(
     '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
     );
 
-    $config['iKindOfLens'] = array(
+$config['iKindOfLens'] = array(
         0 => '1.56 CHEMI',
         1 => '1.60 U2 CHEMI',
         2 => '1.67 U2 CHEMI',
@@ -160,3 +160,9 @@ $config['exclude_module'] = array(
     'cron',
     'verify'
 );
+/*
+** config qrcode; = 0 don't active qrcode; 
+** = 1: Active module qrcode;
+*/
+$config['qrcode'] = 1;
+$config['barcode'] = 1;

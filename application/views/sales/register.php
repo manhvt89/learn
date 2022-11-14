@@ -684,7 +684,7 @@ if (isset($success))
 								</tr>
 							</table>
 						<?php echo form_close(); ?>
-						<?php if(!empty($edit)):?>
+						<?php if($this->sale_lib->get_edit() == 1):?>
 						<?php else : ?>
 							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Đặt trước</div>
 						<?php endif; ?>
