@@ -126,8 +126,9 @@ class Account extends Secure_Controller
 		$total_rows = $this->Accounting->get_found_rows($search, $filters);
 		//$payments = $this->Testex->get_payments_summary($search, $filters);
 		//$payment_summary = $this->xss_clean(get_sales_manage_payments_summary($payments, $sales, $this));
-        $user = $this->Employee->get_logged_in_employee_info();
-        $permission = $this->Employee->has_grant('account',$user->person_id);
+		var_dump($sales->result() );
+
+        $permission = true;
         $accounting = $this->Accounting->get_accounting_summary($filters);
         $accounting_summary = $this->xss_clean(get_accounting_manage_summary($accounting, $this));
 

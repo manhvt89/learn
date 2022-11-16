@@ -154,10 +154,12 @@
 				$only_sale_check |= $payment['payment_type'] == $this->lang->line('sales_check');
 				$splitpayment = explode(':', $payment['payment_type']);
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
+
+				$_sTitleDislayReceipt = 'Đặt trước - Phương thức thanh toán (' . $payment['payment_type']. ')';
 				?>
 				<tr class="total_reserve">
-					<td colspan="4" style="text-align:right;">Đặt trước</td>
-					<td class="total-value" data-th="Đặt trước: "><?php echo number_format($payment['payment_amount'] * 1); ?></td>
+					<td colspan="4" style="text-align:right;"><?php echo  $_sTitleDislayReceipt; ?></td>
+					<td class="total-value" data-th="<?php echo  $_sTitleDislayReceipt; ?>"><?php echo number_format($payment['payment_amount'] * 1); ?></td>
 				</tr>
 				<?php
 			}

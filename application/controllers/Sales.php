@@ -407,22 +407,22 @@ class Sales extends Secure_Controller
 	public function before_complete() // Đặt trước;
 	{
 		$data = array();
-		$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric');
+		$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric_zero');
 
-		if($this->form_validation->run() == FALSE)
-		{
+		if ($this->form_validation->run() == false) {
 			$data['error'] = $this->lang->line('sales_must_enter_numeric');
-			//echo site_url(uri_string());
-			//redirect(base_url('sales'));
-		}else{
+			$this->_reload($data);
+		} else {
 			$amount_tendered = $this->input->post('amount_tendered');
-			$this->sale_lib->add_payment($this->lang->line('sales_check'), $amount_tendered);
-		}
+			$payment_type = $this->input->post('payment_type');
+			$payment_kind = $this->lang->line('sales_reserve_money');
+			$this->sale_lib->add_payment($payment_type, $amount_tendered,$payment_kind); // Thêm vào trả trước với loại thanh toán $type
+		
 			$data['cart'] = $this->sale_lib->get_cart();
 			$status = 1;
 			$data['subtotal'] = $this->sale_lib->get_subtotal();
-			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
-			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
+			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(true);
+			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(true, true);
 			$data['taxes'] = $this->sale_lib->get_taxes();
 			$data['total'] = $this->sale_lib->get_total();
 			$data['discount'] = $this->sale_lib->get_discount();
@@ -439,37 +439,42 @@ class Sales extends Secure_Controller
 			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 			$employee_info = $this->Employee->get_info($employee_id);
 			//$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
-			$data['employee'] = get_fullname($employee_info->first_name,$employee_info->last_name);
+			$data['employee'] = get_fullname($employee_info->first_name, $employee_info->last_name);
 			$data['company_info'] = implode("\n", array(
 				$this->config->item('address'),
 				$this->config->item('phone'),
 				$this->config->item('account_number')
 			));
 			$payments = array();
-			$payment['payment_type'] = $this->lang->line('sales_cash');
+			$payment['payment_type'] = $payment_type;
 			$payment['payment_amount'] = 0;
 			$payment['payment_kind'] = $this->lang->line('sales_reserve_money');
-			if(count($data['payments']) == 0)
-			{
+			//var_dump($data['payments']);
+			//die();
+			if (count($data['payments']) == 0) {
 				$data['error'] = 'Chưa thêm thanh toán, kiểm tra lại thông tin';
 
 				$this->_reload($data);
-			}else{
+			} else {
 				if (isset($data['payments'][$this->lang->line('sales_reserve_money')])) {
 					$old_payments = $data['payments'][$this->lang->line('sales_reserve_money')];
 				} else {
 					$old_payments = null;
 				}
-				if (isset($data['payments'][$this->lang->line('sales_paid_money')])) {
+				//var_dump($old_payments);die();
+				foreach ($old_payments as $item) {
+					$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
+				}
+				/* if (isset($data['payments'][$this->lang->line('sales_paid_money')])) {
 					$new_payments = $data['payments'][$this->lang->line('sales_paid_money')];
 				} else {
 					$new_payments = null;
-				}
+				} 
 				foreach ($new_payments as $item) {
 					$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
 				}
-
-    			$payments[] = $payment;
+				*/
+				$payments[] = $payment;
 
 				$customer_id = $this->sale_lib->get_customer();
 				$test_id = $this->sale_lib->get_test_id();
@@ -533,7 +538,7 @@ class Sales extends Secure_Controller
 						*/
 						$_bIsBarcode = true;
 						$_bIsQRcode = false; // Phieeuj tam ung ko co qrcode
-						
+
 						if ($_bIsQRcode == true) {
 							$qr_url_data = base_url('/verify/confirm/').$sale_info['sale_uuid'];
 							$hex_data   = bin2hex($qr_url_data);
@@ -572,14 +577,13 @@ class Sales extends Secure_Controller
 							$data['url_string'] = '';
 							$data['sale_uuid'] = $sale_info['sale_uuid'];
 						}
-            			$this->load->view('sales/receipt', $data);
-        			}
+						$this->load->view('sales/receipt', $data);
+					}
 
-        			$this->sale_lib->clear_all();
-    			}
+					$this->sale_lib->clear_all();
+				}
 			}
-
-		
+		}
 
 	}
 

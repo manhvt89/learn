@@ -121,8 +121,23 @@ class Secure_Controller extends CI_Controller
 	public function numeric($str)
 	{
         $str = str_replace(',','',$str);
-	    return parse_decimals($str);
+		return parse_decimals($str);
+		
 	}
+
+	public function numeric_zero($str)
+	{
+        $str = str_replace(',','',$str);
+		
+		if(parse_decimals($str) == 0)
+		{
+			return FALSE;
+		} else {
+			return parse_decimals($str);
+		}
+	}
+
+
 
 	public function check_numeric()
 	{

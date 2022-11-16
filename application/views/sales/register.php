@@ -686,7 +686,9 @@ if (isset($success))
 						<?php echo form_close(); ?>
 						<?php if($this->sale_lib->get_edit() == 1):?>
 						<?php else : ?>
+							<?php if(empty($payments['Thanh toán'])): ?>
 							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Đặt trước</div>
+							<?php endif; ?>		
 						<?php endif; ?>
 							<div class='btn btn-sm btn-success pull-right' id='add_payment_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span><?php echo $this->lang->line('sales_add_payment'); ?></div>
 					<?php
@@ -953,13 +955,13 @@ $(document).ready(function()
 				$('#customer').val('');
 				$('#customer').focus();
 			}else{
-				$('#buttons_form').attr('action', '<?php echo site_url($controller_name . "/before_complete"); ?>');
-				$('#buttons_form').submit();
+				$('#add_payment_form').attr('action', '<?php echo site_url($controller_name . "/before_complete"); ?>');
+				$('#add_payment_form').submit();
 			}
 		}else{
 			
-			$('#buttons_form').attr('action', '<?php echo site_url($controller_name . "/before_complete"); ?>');
-			$('#buttons_form').submit();
+			$('#add_payment_form').attr('action', '<?php echo site_url($controller_name . "/before_complete"); ?>');
+			$('#add_payment_form').submit();
 		}
 	});
 

@@ -638,6 +638,7 @@ class Sale extends CI_Model
 				'payment_amount' => $payment['payment_amount'],
 				'payment_kind'=>$payment['payment_kind']
 			);
+			//var_dump($sales_payments_data); die();
 			$this->db->insert('sales_payments', $sales_payments_data);
 			$payment_id = $this->db->insert_id();
 

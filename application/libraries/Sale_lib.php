@@ -267,18 +267,18 @@ class Sale_lib
 		{
 			$payments = $paymentalls[$this->CI->lang->line('sales_paid_money')];
 		}
-
+		//echo $payment_kind;
 		if($payment_kind == $this->CI->lang->line('sales_reserve_money'))
 		{
-			$payment = array(
+			$_RsPayment = array(
 				$payment_type => array('payment_type' => $payment_type,
 					'payment_amount' => $payment_amount,
 					'payment_kind' => $payment_kind,
 					'payment_id'=>$payment_id));
 
-			$payments_reserve += $payment;
+			$payments_reserve += $_RsPayment;
 
-
+			//var_dump($payments_reserve);
 		} else{
 			if(isset($payments[$payment_type]))
 			{
@@ -305,6 +305,7 @@ class Sale_lib
 			}
 
 		}
+		//var_dump($payments_reserve);
 		$paymentalls[$this->CI->lang->line('sales_reserve_money')] = $payments_reserve;
 		$paymentalls[$this->CI->lang->line('sales_paid_money')] =  $payments;
 		$this->set_payments($paymentalls);

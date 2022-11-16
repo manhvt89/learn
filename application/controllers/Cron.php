@@ -16,11 +16,13 @@ class Cron extends CI_Controller{
         echo 	$message .PHP_EOL;
         
         $lfile =  str_replace('/public/','/',FCPATH).'log.txt';
+        //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
 
         //1. Get All sản phẩm từ file csv
         $_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
+        //echo $_file;exit();
         if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
             fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
@@ -40,7 +42,7 @@ class Cron extends CI_Controller{
                         'cost_price'			=> $data[6],
                         'unit_price'			=> $data[7],
                         'reorder_level'			=> 0,
-                        'supplier_id'			=> 3,
+                        'supplier_id'			=> 200278,
                         'allow_alt_description'	=> '0',
                         'is_serialized'			=> '0',
                         'custom1'				=> '',
@@ -132,6 +134,7 @@ class Cron extends CI_Controller{
 
         //2. Get All đơn kính từ file csv
         $_file = str_replace('/public_html/public/','/',FCPATH).'dk.csv';
+        //echo $_file; die();dk
         if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
             // Skip the first row as it's the table description
@@ -304,7 +307,8 @@ class Cron extends CI_Controller{
     // Import Khách hàng
     public function import_kh()
 	{
-	    $_file = "/home/dev.thiluc2020.com/kh.csv";
+        $_file = str_replace('/public_html/public/','/',FCPATH).'kh.csv';
+	    //$_file = "/home/dev.thiluc2020.com/kh.csv";
 	    if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
                 // Skip the first row as it's the table description
