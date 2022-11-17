@@ -590,43 +590,41 @@ class Sales extends Secure_Controller
 	public function complete()
 	{
 
-			$data = array();
+		$data = array();
 
-			$data['cart'] = $this->sale_lib->get_cart();
-			$data['subtotal'] = $this->sale_lib->get_subtotal();
-			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
-			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
-			$data['taxes'] = $this->sale_lib->get_taxes();
-			$data['total'] = $this->sale_lib->get_total();
-			$data['discount'] = $this->sale_lib->get_discount();
-			$data['receipt_title'] = $this->lang->line('sales_receipt');
-			$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'));
-			$data['transaction_date'] = date($this->config->item('dateformat'));
-			$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
-			$data['comments'] = $this->sale_lib->get_comment();
-			$data['payments'] = $this->sale_lib->get_payments();
-			$data['amount_change'] = $this->sale_lib->get_amount_due() * -1;
-			$amount_change = $this->sale_lib->get_amount_due() * -1;
-			$data['amount_due'] = $this->sale_lib->get_amount_due();
-			$suspended_sale_id = $this->sale_lib->get_suspend_id();
-			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
-			$employee_info = $this->Employee->get_info($employee_id);
-			//$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name[0];
-			//$data['employee'] = $employee_info->first_name;
-			$data['employee'] = get_fullname($employee_info->first_name,$employee_info->last_name);
-			$data['company_info'] = implode("\n", array(
-				$this->config->item('address'),
-				$this->config->item('phone'),
-				$this->config->item('account_number')
-			));
-			$customer_id = $this->sale_lib->get_customer();
-			$customer_info = $this->_load_customer_data($customer_id, $data);
-			$invoice_number = $this->_substitute_invoice_number($customer_info);
-			$sale_id = $this->sale_lib->get_sale_id();
-			if(empty($data['payments']))
-			{
-				$data['payments'][$this->lang->line('sales_paid_money')] = array();
-			}
+		$data['cart'] = $this->sale_lib->get_cart();
+		$data['subtotal'] = $this->sale_lib->get_subtotal();
+		$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(TRUE);
+		$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
+		$data['taxes'] = $this->sale_lib->get_taxes();
+		$data['total'] = $this->sale_lib->get_total();
+		$data['discount'] = $this->sale_lib->get_discount();
+		$data['receipt_title'] = $this->lang->line('sales_receipt');
+		$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'));
+		$data['transaction_date'] = date($this->config->item('dateformat'));
+		$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
+		$data['comments'] = $this->sale_lib->get_comment();
+		$data['payments'] = $this->sale_lib->get_payments();
+		$data['amount_change'] = $this->sale_lib->get_amount_due() * -1;
+		$amount_change = $this->sale_lib->get_amount_due() * -1;
+		$data['amount_due'] = $this->sale_lib->get_amount_due();
+		$suspended_sale_id = $this->sale_lib->get_suspend_id();
+		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
+		$employee_info = $this->Employee->get_info($employee_id);
+		$data['employee'] = get_fullname($employee_info->first_name,$employee_info->last_name);
+		$data['company_info'] = implode("\n", array(
+			$this->config->item('address'),
+			$this->config->item('phone'),
+			$this->config->item('account_number')
+		));
+		$customer_id = $this->sale_lib->get_customer();
+		$customer_info = $this->_load_customer_data($customer_id, $data);
+		$invoice_number = $this->_substitute_invoice_number($customer_info);
+		$sale_id = $this->sale_lib->get_sale_id();
+		if(empty($data['payments']))
+		{
+			$data['payments'][$this->lang->line('sales_paid_money')] = array();
+		}
 
 		if($this->input->post('hidden_form')) {
 			$ctv_id = $this->input->post('hidden_ctv');

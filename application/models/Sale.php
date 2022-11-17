@@ -445,7 +445,7 @@ class Sale extends CI_Model
 		return ($this->db->get()->num_rows()==1);
 	}
 
-	public function update($sale_id, $sale_data, $payments, $employee_id,$customer_id,$amount_change)
+	public function update($sale_id, $sale_data, $payments, $employee_id,$customer_id,$amount_change,$points=0)
 	{
 		//$this->db->where('sale_id', $sale_id);
 		//$success = $this->db->update('sales', $sale_data);
@@ -462,7 +462,7 @@ class Sale extends CI_Model
             $success = $this->db->update('sales', $sale_data);
             // first delete all payments
 			// $this->db->delete('sales_payments', array('sale_id' => $sale_id));
-
+			$cus_obj = $this->Customer->get_info($customer_id);
 			// add new payments
 			foreach($payments as $payment)
 			{
@@ -475,32 +475,63 @@ class Sale extends CI_Model
 				$success = $this->db->insert('sales_payments', $sales_payments_data);
 				$payment_id = $this->db->insert_id();
 
-				$data_total = array(
-					'creator_personal_id'=>$employee_id,
-					'personal_id'=>$customer_id, // this is a customer
-					'amount'=>$payment['payment_amount']
-				);
-				$data_total['payment_type'] = $payment['payment_type'];
-				$data_total['kind'] = $payment['payment_kind']; //return money
-				$data_total['payment_id'] = $payment_id;
-				$data_total['sale_id'] = $sale_id;
-				$this->Accounting->save_income($data_total);
-
-				if($amount_change > 0) {
-					$out_data = array(
+				if($payment['payment_type'] == $this->lang->line("sales_cash")) { // If tiền mặt then insert accounting
+				 
+					$data_total = array(
 						'creator_personal_id' => $employee_id,
 						'personal_id' => $customer_id, // this is a customer
-						'amount' => $amount_change
+						'amount' => $payment['payment_amount']
 					);
-					$out_data['payment_type'] = $payment['payment_type'];
-					$out_data['kind'] = 2;
-					$out_data['payment_id'] = $payment_id;
-					$out_data['sale_id'] = $sale_id;
-
-
-					$this->Accounting->save_payout($out_data);
+					$data_total['payment_type'] = $payment['payment_type'];
+					$data_total['kind'] = $payment['payment_kind'];
+					$data_total['payment_id'] = $payment_id;
+					$data_total['sale_id'] = $sale_id;
+					$this->Accounting->save_income($data_total);
+	
+					if($amount_change > 0) {
+						$out_data = array(
+							'creator_personal_id' => $employee_id,
+							'personal_id' => $customer_id, // this is a customer
+							'amount' => $amount_change
+						);
+						$out_data['payment_type'] = $payment['payment_type'];
+						$out_data['kind'] = 2;
+						$out_data['payment_id'] = $payment_id;
+						$out_data['sale_id'] = $sale_id;
+	
+	
+						$this->Accounting->save_payout($out_data);
+					}
 				}
 			}
+
+			if($points > 0) // Nếu sử dụng điểm thanh toán
+			{
+				//1. Update ppoint cua kh
+				// Lấy thông tin của khách hàng này
+				//$customer_info = $cus_obj;
+				//var_dump($customer_info);die();
+				$customer_info['points'] = $cus_obj->points - $points;
+				$this->db->where('person_id',$customer_id);
+				$this->db->update('customers',$customer_info);
+
+				//2. insert ospos_history_points
+				//$sale_info = $this->Sale->get_info($sale_id)->row_array();
+				//var_dump($sale_id ); die();
+				$_aHistoryPoint = array(
+					'customer_id' =>$customer_id,
+					'sale_id' => $sale_id,
+					'sale_uuid' => '',
+					'created_date' =>time(),
+					'point' =>$points,
+					'type' => 1,
+					'note' =>'- '.$points . ' TT đơn hàng ID '. $sale_id
+				);
+				// Insert ospos_history_points
+				$this->db->insert('history_points', $_aHistoryPoint);
+				
+			}
+
 			
 			$this->db->trans_complete();
 			

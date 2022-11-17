@@ -99,17 +99,17 @@ $(document).ready(function()
 							'<td colspan="3">Tổng số lượng (miếng)</td>' +
 							'<td colspan="2"><b>' + msg.data.total + '</b></td></tr>';
 
-						header = header + '<tr><td class="rp_header">SPH</td>' +
+						var header_rp1 = '<tr><td class="rp_header">SPH</td>' +
 							'<td colspan="17">CYL (-)</td>' +
 							'</tr>';
 
-						var header_rp = '<tr><td>(-)</td>' +
+						var header_rp2 = '<tr><td>(-)</td>' +
 							'<td>-0.00</td><td>-0.25</td><td>-0.50</td><td>-0.75</td>' +
 							'<td>-1.00</td><td>-1.25</td><td>-1.50</td><td>-1.75</td>' +
 							'<td>-2.00</td><td>-2.25</td><td>-2.50</td><td>-2.75</td>' +
 							'<td>-3.00</td><td>-3.25</td><td>-3.50</td><td>-3.75</td>' +
 							'<td>-4.00</td></tr>';
-						header = header + header_rp; // Header of table;
+						//header = header + header_rp1 + header_rp2; // Header of table;
 
 						var rp_body = '';
 						var myopia = msg.data.myopia;
@@ -151,15 +151,24 @@ $(document).ready(function()
 						
 						rp_body = rp_body + row_sub + '</tr>';
 
-						html = '<table id="rp_inventory" class="table2excel">' + header + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
+						html = '<table id="rp_inventory" class="table2excel">' + header + header_rp1 + header_rp2 + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
 						
 						/********************************* END  */ 
 
 						rp_body = '';
+						header_rp1 = '<tr><td class="rp_header">SPH</td>' +
+							'<td colspan="17">CYL (+)</td>' +
+							'</tr>';
+							var header_rp2 = '<tr><td>(+)</td>' +
+							'<td>-0.00</td><td>-0.25</td><td>-0.50</td><td>-0.75</td>' +
+							'<td>-1.00</td><td>-1.25</td><td>-1.50</td><td>-1.75</td>' +
+							'<td>-2.00</td><td>-2.25</td><td>-2.50</td><td>-2.75</td>' +
+							'<td>-3.00</td><td>-3.25</td><td>-3.50</td><td>-3.75</td>' +
+							'<td>-4.00</td></tr>';
 
 						_row_index = 1; //The first row
 						for (i = 2; i < 26; i++) {
-							var row = '<tr class="rp_number" data-row="'+i+'"><td> -' + re_map[i] + '</td>';
+							var row = '<tr class="rp_number" data-row="'+i+'"><td> +' + re_map[i] + '</td>';
 							for (j = 1; j < 18; j++) {
 								var _hypD = hyperopia[i][j];
 								console.log(hyperopia[i][j]);
@@ -189,7 +198,7 @@ $(document).ready(function()
 						
 						rp_body = rp_body + row_sub + '</tr>';
 
-						html = html + '<table id="rp_inventory" class="table2excel">' + header + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
+						html = html + '<table id="rp_inventory" class="table2excel">' + header + header_rp1 + header_rp2 + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
 						
 						
 						html = html + '<div style="height: 50px;"></div>'
