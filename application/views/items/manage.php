@@ -6,7 +6,7 @@ $(document).ready(function()
     $('#generate_barcodes').click(function()
     {
         window.open(
-            <?php base_url('items/generate_barcodes/') ?>+table_support.selected_ids().join(':'),
+            '<?=base_url('items/generate_barcodes/')?>'+table_support.selected_ids().join(':'),
             '_blank' // <- This is what makes it open in a new window.
         );
     });
