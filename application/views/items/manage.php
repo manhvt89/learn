@@ -3,6 +3,7 @@
 <script type="text/javascript">
 $(document).ready(function()
 {
+    <?php if ($this->Employee->has_grant($controller_name.'_generate_barcodes')) {?>
     $('#generate_barcodes').click(function()
     {
         window.open(
@@ -10,6 +11,7 @@ $(document).ready(function()
             '_blank' // <- This is what makes it open in a new window.
         );
     });
+    <?php }?>
 	
 	// when any filter is clicked and the dropdown window is closed
 	$('#filters').on('hidden.bs.select', function(e)
@@ -86,9 +88,11 @@ $(document).ready(function()
             <span class="glyphicon glyphicon-edit">&nbsp</span><?php echo $this->lang->line("items_bulk_edit"); ?>
         </button>
     <?php } ?>
+    <?php if ($this->Employee->has_grant($controller_name.'_generate_barcodes')) {?>
         <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/generate_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
             <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo $this->lang->line("items_generate_barcodes"); ?>
         </button>
+    <?php } ?>    
         <?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
         <?php echo form_multiselect('filters[]', $filters, '', array('id'=>'filters', 'class'=>'selectpicker show-menu-arrow', 'data-none-selected-text'=>$this->lang->line('common_none_selected_text'), 'data-selected-text-format'=>'count > 1', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
         <?php

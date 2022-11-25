@@ -170,8 +170,58 @@ class Barcode_lib
 		
 		return $display_table;
 	}
+
+	public function _display_barcode($item, $barcode_config) // @ mawt
+	{
+		$display_table = "<table class='print-barcode_1'>";
+		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
+		$barcode = $this->generate_barcode($item, $barcode_config);
+		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
+		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "</table>";
+
+		$display_table .= "<table class='print-barcode_2'>";
+		$display_table .= "<tr><td align='center'>Kính mắt Việt Hàn</td></tr>";
+		
+		$display_table .= "<tr><td align='center'>Chăm sóc đôi mắt bạn</td></tr>";
+		$display_table .= "<tr><td align='center'>91 Trương Định - <b class='category-barcode'>G02</b></td></tr>";
+		$display_table .= "</table>";
+		
+		return $display_table;
+	}
 	
 	private function manage_display_layout($layout_type, $item, $barcode_config)
+	{
+		$result = '';
+		
+		if($layout_type == 'name')
+		{
+			$result = $item['name'];
+		}
+		elseif($layout_type == 'category' && isset($item['category']))
+		{
+			$result = $item['category'];
+		}
+		elseif($layout_type == 'cost_price' && isset($item['cost_price']))
+		{
+			$result = to_currency($item['cost_price']);
+		}
+		elseif($layout_type == 'unit_price' && isset($item['unit_price']))
+		{
+			$result = to_currency($item['unit_price']);
+		}
+		elseif($layout_type == 'company_name')
+		{
+			$result = $barcode_config['company'];
+		}
+		elseif($layout_type == 'item_code')
+		{
+			$result = $barcode_config['barcode_content'] !== "id" && isset($item['item_number']) ? $item['item_number'] : $item['item_id'];
+		}
+		return character_limiter($result, 40);
+	}
+	private function _manage_display_layout($layout_type, $item, $barcode_config)
 	{
 		$result = '';
 		
@@ -202,7 +252,6 @@ class Barcode_lib
 
 		return character_limiter($result, 40);
 	}
-	
 	public function listfonts($folder) 
 	{
 		$array = array();
