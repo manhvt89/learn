@@ -20,7 +20,7 @@
 		transform: rotate(180deg);
 	}
 	.print-page-barcode{
-		width: 450px;
+		width: 390px;
 	}
 	.category-barcode{
 		transform: rotate(90deg);
