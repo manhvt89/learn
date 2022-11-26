@@ -36,9 +36,9 @@ class Cron extends CI_Controller{
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
-                        'name'					=> $data[2],
+                        'name'					=> $data[1],
                         'description'			=> '',
-                        'category'				=> 'Cũ',
+                        'category'				=> $data[2],
                         'cost_price'			=> $data[6],
                         'unit_price'			=> $data[7],
                         'reorder_level'			=> 0,

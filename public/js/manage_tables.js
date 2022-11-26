@@ -236,7 +236,7 @@ $.fn.digits = function() {
             queryParamsType: 'limit',
             iconSize: 'sm',
             silentSort: true,
-            paginationVAlign: 'bottom',
+            paginationVAlign: 'both',
             escape: false
         }));
         enable_actions();

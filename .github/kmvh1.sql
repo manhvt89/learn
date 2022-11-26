@@ -116,7 +116,7 @@ CREATE TABLE `ospos_employees` (
 
 LOCK TABLES `ospos_employees` WRITE;
 /*!40000 ALTER TABLE `ospos_employees` DISABLE KEYS */;
-INSERT INTO `ospos_employees` VALUES (('admin','$2y$10$2MwikhUEMMiyWHfLx9oQ3.cqGG.P/XLFIh8g7C4BL1.TiWnmR8sLS',1,0,2,1));
+INSERT INTO `ospos_employees` VALUES ('admin','$2y$10$2MwikhUEMMiyWHfLx9oQ3.cqGG.P/XLFIh8g7C4BL1.TiWnmR8sLS',1,0,2,1);
 /*!40000 ALTER TABLE `ospos_employees` ENABLE KEYS */;
 UNLOCK TABLES;
 

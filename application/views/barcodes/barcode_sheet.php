@@ -18,6 +18,7 @@
 	.print-barcode_2{
 		width: 100%;
 		transform: rotate(180deg);
+		padding-bottom: 15px;
 	}
 	.print-page-barcode{
 		width: 390px;
