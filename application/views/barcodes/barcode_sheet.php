@@ -39,8 +39,8 @@
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="print-page-barcode">
-	<table cellspacing=<?php echo $barcode_config['barcode_page_cellspacing']; ?> width='<?php echo $barcode_config['barcode_page_width']."%"; ?>' >
-		<tr style="clear:both;page-break-after: always;">
+	<table style="page-break-inside:auto" cellspacing=<?php echo $barcode_config['barcode_page_cellspacing']; ?> width='<?php echo $barcode_config['barcode_page_width']."%"; ?>' >
+		<tr style="page-break-after: always;">
 			<?php
 			$count = 0;
 			foreach($items as $item)
