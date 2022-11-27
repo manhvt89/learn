@@ -34,6 +34,12 @@
 	.category-barcode{
 		transform: rotate(90deg);
 	}
+	@media print {
+    .pagebreak {
+        clear: both;
+        page-break-after: always;
+    }
+}
 </style>
 
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
@@ -46,7 +52,7 @@
 				if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0)
 				{
 					?>
-					<div style="clear:both;page-break-before: always;"></div>
+					<div class="pagebreak"></div>
 					<?php
 				}
 				?>
