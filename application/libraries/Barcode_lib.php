@@ -219,7 +219,7 @@ class Barcode_lib
 		{
 			$result = $barcode_config['barcode_content'] !== "id" && isset($item['item_number']) ? $item['item_number'] : $item['item_id'];
 		}
-		return character_limiter($result, 40);
+		return character_limiter($result, 26);
 	}
 	private function _manage_display_layout($layout_type, $item, $barcode_config)
 	{

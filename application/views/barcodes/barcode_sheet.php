@@ -10,18 +10,26 @@
 <style>
 	.barcode-print-area {
 		background-color: transparent;
-		outline: 2px dashed;
-		width: 188px;
-  		height: 151px;
+		outline: 1px dashed;
+		width: 188.9px;
+  		height: 151.2px;
+		margin: 5px 3px 5px 3px;
 		/*transform: rotate(45deg);*/
 	}
 	.print-barcode_2{
 		width: 100%;
 		transform: rotate(180deg);
-		padding-bottom: 16px;
+		padding-bottom: 6px;
+		border-spacing: 1px;
+	}
+	.print-barcode_1{
+		width: 100%;
+		outline: 1px dashed;
+		border-spacing: 1px;
+		height: 75.6px;
 	}
 	.print-page-barcode{
-		width: 390px;
+		width: 396.8px;
 	}
 	.category-barcode{
 		transform: rotate(90deg);
