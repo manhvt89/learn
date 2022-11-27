@@ -13,7 +13,7 @@
 		outline: 1px dashed;
 		width: 188.9px;
   		height: 151.2px;
-		margin: 5px 3px 5px 3px;
+		margin: 0px 3px 0px 3px;
 		/*transform: rotate(45deg);*/
 	}
 	.print-barcode_2{
