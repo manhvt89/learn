@@ -39,22 +39,22 @@
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="print-page-barcode">
-	<table style="page-break-inside:auto" cellspacing=<?php echo $barcode_config['barcode_page_cellspacing']; ?> width='<?php echo $barcode_config['barcode_page_width']."%"; ?>' >
-		<tr style="page-break-after: always;">
-			<?php
-			$count = 0;
-			foreach($items as $item)
-			{
+		<?php 
+		$count = 0;
+	  foreach($items as $item)
+			{ 
 				if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0)
 				{
-					echo '</tr><tr>';
+					?>
+					<div style="clear:both;page-break-before: always;"></div>
+					<?php
 				}
-				echo '<td><div class="barcode-print-area">' . $this->barcode_lib->_display_barcode($item, $barcode_config) . '<div></td>';
-				++$count;
-			}
-			?>
-		</tr>
-	</table>
+				?>
+		<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px; margin-top:8px">
+				<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
+		</div>
+	 <?php ++$count; } ?>
+	
 	  </div>
 </body>
 
