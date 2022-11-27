@@ -40,7 +40,7 @@
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="print-page-barcode">
 	<table cellspacing=<?php echo $barcode_config['barcode_page_cellspacing']; ?> width='<?php echo $barcode_config['barcode_page_width']."%"; ?>' >
-		<tr>
+		<tr style="clear:both;page-break-after: always;">
 			<?php
 			$count = 0;
 			foreach($items as $item)
