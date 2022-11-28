@@ -143,14 +143,13 @@ class Printbarcode_lib
 		return -1;
 	}
 
-	public function edit_item($line, $quantity, $price)
+	public function edit_item($line, $quantity)
 	{
 		$items = $this->get_cart();
 		if(isset($items[$line]))	
 		{
 			$line = &$items[$line];
 			$line['quantity'] = $quantity;
-			$line['price'] = $price;
 			$this->set_cart($items);
 		}
 

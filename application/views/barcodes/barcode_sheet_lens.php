@@ -57,7 +57,7 @@
 				}
 				?>
 		<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px; margin-top:8px">
-				<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
+				<?php echo $this->barcode_lib->_display_barcode_lens($item, $barcode_config); ?>
 		</div>
 	 <?php ++$count; } ?>
 	

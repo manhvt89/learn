@@ -2,35 +2,164 @@
 
 require_once("Secure_Controller.php");
 
-class Items extends Secure_Controller
+class Barcodes extends Secure_Controller
 {
 	public function __construct()
 	{
-		parent::__construct('items');
+		parent::__construct('barcodes');
 
-		$this->load->library('item_lib');
+		$this->load->library('printbarcode_lib');
 	}
 	
 	public function index()
 	{
-
-		$data['table_headers'] = $this->xss_clean(get_items_manage_table_headers());
-
-		//$data['table_headers'] = $this->xss_clean(get_items_manage_table_headers());
-
-		
-		$data['stock_location'] = $this->xss_clean($this->item_lib->get_item_location());
-		$data['stock_locations'] = $this->xss_clean($this->Stock_location->get_allowed_locations());
-
-		// filters that will be loaded in the multiselect dropdown
-		$data['filters'] = array('empty_upc' => $this->lang->line('items_empty_upc_items'),
-			'low_inventory' => $this->lang->line('items_low_inventory_items'),
-			'is_deleted' => $this->lang->line('items_is_deleted'));
-
-		$data['hide_unitprice'] = $this->Employee->has_grant('items_unitprice_hide');
-		$this->load->view('items/manage', $data);
+		$this->_reload();
 	}
 
+	private function _reload($data = array())
+	{		
+		
+		$data['cart'] = $this->printbarcode_lib->get_cart();
+			
+		$data = $this->xss_clean($data);
+
+		$this->load->view("barcodes/register", $data);
+	}
+
+	public function item_search()
+	{
+		$suggestions = array();
+		$receipt = $search = $this->input->get('term') != '' ? $this->input->get('term') : NULL;
+		
+		$suggestions = array_merge($suggestions, $this->Item->get_search_suggestions($search, array('search_custom' => FALSE, 'is_deleted' => FALSE), TRUE));
+		$suggestions = array_merge($suggestions, $this->Item_kit->get_search_suggestions($search));
+		
+		$suggestions = $this->xss_clean($suggestions);
+
+		echo json_encode($suggestions);
+	}
+
+	public function add()
+	{
+		$data = array();
+		$quantity = 1;
+		$item_id_or_number_or_item_kit_or_receipt = $this->input->post('item');
+
+		
+		if($this->Item_kit->is_valid_item_kit($item_id_or_number_or_item_kit_or_receipt))
+		{
+			
+			$data['error'] = $this->lang->line('sales_unable_to_add_item');
+			
+		}
+		else
+		{
+			if(!$this->printbarcode_lib->add_item($item_id_or_number_or_item_kit_or_receipt, $quantity))
+			{
+				$data['error'] = $this->lang->line('sales_unable_to_add_item');
+			}
+			
+		}
+
+		$this->_reload($data);
+	}
+
+	public function edit_item($item_id=0)
+	{
+		if($item_id == 0)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
+		$data = array();
+		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
+	
+		$quantity = parse_decimals($this->input->post('quantity'));
+	
+		if($quantity == null)
+		{
+			echo 'Invalid Data';
+			exit();
+		}
+		if($this->form_validation->run() != FALSE)
+		{
+			$this->printbarcode_lib->edit_item($item_id, $quantity);
+		}
+		else
+		{
+			$data['error'] = $this->lang->line('sales_error_editing_item');
+		}
+
+		$this->_reload($data);
+	}
+
+	public function delete_item($item_number=0)
+	{
+		$this->printbarcode_lib->delete_item($item_number);
+
+		$this->_reload();
+	}
+
+	public function barcode()
+	{
+		$this->load->library('barcode_lib');
+
+		//$data['cart'] = $this->printbarcode_lib->get_cart();
+		//var_dump($data['cart']); die();
+		//$item_ids = explode(':', $item_ids);
+		$results = $this->printbarcode_lib->get_cart();
+		$config = $this->barcode_lib->get_barcode_config();
+
+		$data['barcode_config'] = $config;
+
+		foreach($results as $item)
+		{
+			$_max = (int)$item['quantity'];
+			if($_max > 0)
+			{
+				for($i = 1;$i < $_max +1;$i++)
+				{
+					$data['items'][] = $item;
+				}
+			}
+		}
+		// display barcodes
+		$this->load->view('barcodes/barcode_sheet', $data);
+	}
+
+	public function barcode_lens()
+	{
+		$this->load->library('barcode_lib');
+
+		//$data['cart'] = $this->printbarcode_lib->get_cart();
+		//var_dump($data['cart']); die();
+		//$item_ids = explode(':', $item_ids);
+		$results = $this->printbarcode_lib->get_cart();
+		$config = $this->barcode_lib->get_barcode_config();
+
+		$data['barcode_config'] = $config;
+
+		foreach($results as $item)
+		{
+			$_max = (int)$item['quantity'];
+			if($_max > 0)
+			{
+				for($i = 1;$i < $_max +1;$i++)
+				{
+					$data['items'][] = $item;
+				}
+			}
+		}
+
+		// display barcodes
+		$this->load->view('barcodes/barcode_sheet_lens', $data);
+	}
+
+	public function empty()
+	{
+		$this->printbarcode_lib->clear_all();
+		$this->_reload();
+	}
 	/*
 	Returns Items table data rows. This will be called with AJAX.
 	*/
@@ -339,28 +468,6 @@ class Items extends Secure_Controller
 
 		// display barcodes
 		$this->load->view('barcodes/barcode_sheet_lens', $data);
-	}
-
-	public function add_barcodes($item_ids=0)
-	{
-		if($item_ids == 0)
-		{
-			redirect(base_url('items/'));
-		}
-		$this->load->library('printbarcode_lib');
-
-		$item_ids = explode(':', $item_ids);
-		//$result = $this->Item->get_multiple_info($item_ids, $this->item_lib->get_item_location())->result_array();
-		$quantity = 1;
-		// check the list of items to see if any item_number field is empty
-		foreach($item_ids as $item)
-		{
-			$item = $this->xss_clean($item);
-
-			$this->printbarcode_lib->add_item($item, $quantity);
-			
-		}
-		redirect(base_url('items/'));
 	}
 	public function bulk_edit()
 	{

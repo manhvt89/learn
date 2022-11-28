@@ -190,6 +190,19 @@ class Barcode_lib
 		
 		return $display_table;
 	}
+
+	public function _display_barcode_lens($item, $barcode_config)
+	{
+		$display_table = "<table class='print-barcode_1'>";
+		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
+		$barcode = $this->generate_barcode($item, $barcode_config);
+		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
+		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
+		//$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "</table>";
+		
+		return $display_table;
+	}
 	
 	private function manage_display_layout($layout_type, $item, $barcode_config)
 	{

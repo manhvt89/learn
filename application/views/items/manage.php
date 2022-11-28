@@ -11,6 +11,14 @@ $(document).ready(function()
             '_blank' // <- This is what makes it open in a new window.
         );
     });
+
+    $('#add_barcodes').click(function()
+    {
+        window.open(
+            '<?=base_url('items/add_barcodes/')?>'+table_support.selected_ids().join(':'),
+            '_blank' // <- This is what makes it open in a new window.
+        );
+    });
     <?php }?>
 	
 	// when any filter is clicked and the dropdown window is closed
@@ -90,7 +98,10 @@ $(document).ready(function()
     <?php } ?>
     <?php if ($this->Employee->has_grant($controller_name.'_generate_barcodes')) {?>
         <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/generate_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
-            <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo $this->lang->line("items_generate_barcodes"); ?>
+            <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo 'Barcode gọng'; ?>
+        </button>
+        <button id="add_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/add_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
+            <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo 'Thêm SP Tạo barocde'; ?>
         </button>
     <?php } ?>    
         <?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
