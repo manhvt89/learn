@@ -185,7 +185,7 @@ class Barcode_lib
 		$display_table .= "<tr><td align='center'>Kính mắt Việt Hàn</td></tr>";
 		
 		$display_table .= "<tr><td align='center'>Chăm sóc đôi mắt bạn</td></tr>";
-		$display_table .= "<tr><td align='center'>91 Trương Định - <b class='category-barcode'>G02</b></td></tr>";
+		$display_table .= "<tr><td align='center'>91 Trương Định - <b class='category-barcode'>".$item['item_category']."</b></td></tr>";
 		$display_table .= "</table>";
 		
 		return $display_table;
