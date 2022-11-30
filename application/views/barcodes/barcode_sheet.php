@@ -30,20 +30,32 @@
 	}
 	.print-page-barcode{
 		width: 105mm;
+		margin: auto;
 	}
 	.category-barcode{
 		transform: rotate(90deg);
+	}
+	.buttonpr{
+		width: 105mm;
+		margin: auto;
+		padding: 25px;
 	}
 	@media print {
     .pagebreak {
         clear: both;
         page-break-after: always;
     }
+	.buttonpr{
+		display: none;
+	}
 }
 </style>
 
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
+	  <div class="buttonpr no-print">
+	  	<button onclick="window.print()" style="width:45mm">Print</button>
+	  </div>
 	  <div class="print-page-barcode">
 		<?php 
 		$count = 0;
