@@ -173,6 +173,8 @@ class Barcode_lib
 
 	public function _display_barcode($item, $barcode_config) // @ mawt
 	{
+		//var_dump($item);die();
+		$item['unit_price'] = $item['price'];
 		$display_table = "<table class='print-barcode_1'>";
 		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
 		$barcode = $this->generate_barcode($item, $barcode_config);

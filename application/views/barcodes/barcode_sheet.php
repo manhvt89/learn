@@ -6,55 +6,15 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title><?php echo $this->lang->line('items_generate_barcodes'); ?></title>
 	<link rel="stylesheet" rev="stylesheet" href="<?php echo base_url();?>dist/barcode_font.css" />
+	<link rel="stylesheet" rev="stylesheet" href="<?php echo base_url();?>dist/barcode_print.css" />
 </head>
 <style>
-	.barcode-print-area {
-		background-color: transparent;
-		outline: 1px dashed;
-		width: 188.9px;
-  		height: 151.2px;
-		margin: 0px 3px 0px 3px;
-		/*transform: rotate(45deg);*/
-	}
-	.print-barcode_2{
-		width: 50mm;
-		transform: rotate(180deg);
-		padding-bottom: 6px;
-		border-spacing: 1px;
-	}
-	.print-barcode_1{
-		width: 50mm;
-		outline: 1px dashed;
-		border-spacing: 1px;
-		height: 20mm;
-	}
-	.print-page-barcode{
-		width: 105mm;
-		margin: auto;
-	}
-	.category-barcode{
-		transform: rotate(90deg);
-	}
-	.buttonpr{
-		width: 105mm;
-		margin: auto;
-		padding: 25px;
-	}
-	@media print {
-    .pagebreak {
-        clear: both;
-        page-break-after: always;
-    }
-	.buttonpr{
-		display: none;
-	}
-}
 </style>
 
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="buttonpr no-print">
-	  	<button onclick="window.print()" style="width:45mm">Print</button>
+	  	<button onclick="window.print()" class="bt-print-barcode">Print</button>
 	  </div>
 	  <div class="print-page-barcode">
 		<?php 
@@ -68,7 +28,7 @@
 					<?php
 				}
 				?>
-		<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px; margin-top:8px">
+		<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px;">
 				<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
 		</div>
 	 <?php ++$count; } ?>
