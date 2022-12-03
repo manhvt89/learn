@@ -1784,7 +1784,7 @@ class Reports extends Secure_Controller
                 for($j=10;$j<18;$j++)
                 {
                     if($hyperopia[$i][$j] !='') {
-                        $sub_group[7] = $sub_group[7] + $hyperopia[$i][$j];
+                        $sub_group[7] = $sub_group[7] + (int) $hyperopia[$i][$j];
                     }
                 }
             }
@@ -1794,9 +1794,10 @@ class Reports extends Secure_Controller
                 $sub_hyperopia[$i] = 0;
                 for($j =1;$j<26;$j++)
                 {
-
                     if($hyperopia[$j][$i] !='') {
-                        $sub_hyperopia[$i] = $sub_hyperopia[$i] + $hyperopia[$j][$i];
+                        //if ($hyperopia[$j][$i] != '-') {
+                            $sub_hyperopia[$i] = $sub_hyperopia[$i] + (int) $hyperopia[$j][$i];
+                        //}
                     }
                 }
             }
