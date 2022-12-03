@@ -122,8 +122,8 @@ $config['hysphs'] = array(
 
 $config['iKindOfLens'] = array(
         '1.56 CHEMI',
-        '1.60 U2 CHEMI',
-        '1.67 U2 CHEMI',
+        '1.60 CHEMI U2',
+        '1.67 CHEMI U2',
         '1.60 CHEMI Crystal U6',
         '1.67 CHEMI Crystal U6',
         
@@ -131,6 +131,7 @@ $config['iKindOfLens'] = array(
         '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
         '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
         '1.60 KODAK UV400 BLUE',
+
         '1.60 ESSILOR CRIZAL ALIZE UV',
         '1.60 HOYA - NULUX SFT SV',
         '1.60 NAHAmi SUPER HMC A+',
@@ -138,6 +139,8 @@ $config['iKindOfLens'] = array(
         '1.67 HOYA - NULUX SFT SV',
         '1.67 CHEMI Crystal U2',
         '1.49 CR Korea',
+        'MẮT 1.56 POLAROD KHÓI',
+        'MẮT 1.56 POLAROD XANH'
         );
 
 $_arrTmp = array();
