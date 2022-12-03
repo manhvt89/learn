@@ -1694,7 +1694,7 @@ class Reports extends Secure_Controller
                     } else {
                         if($hyperopia[$i][$j] == 0)
                         {
-                            $hyperopia[$i][$j] = '';
+                            $hyperopia[$i][$j] = '-';
                         }
                     }
                 }
