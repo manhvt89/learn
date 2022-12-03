@@ -14,25 +14,27 @@
 <body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="buttonpr no-print">
-	  	<button onclick="window.print()" class="bt-print-barcode">Print</button>
+				<button onclick="window.print()" class="bt-print-barcode">Print</button>
 	  </div>
 	  <div class="print-page-barcode">
 		<?php 
-		$count = 0;
-	  foreach($items as $item)
-			{ 
-				if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0)
-				{
+		if (!empty($items)) {
+			$count = 0;
+			foreach ($items as $item) {
+				if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0) {
 					?>
-					<div class="pagebreak"></div>
-					<?php
+							<div class="pagebreak"></div>
+							<?php
 				}
 				?>
-		<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px;">
-				<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
-		</div>
-	 <?php ++$count; } ?>
-	
+				<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px;">
+						<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
+				</div>
+			<?php ++$count;
+			}
+		} else { ?>
+		Hiện tại chưa có sản phẩm nào để in barcode, vui lòng chọn sản phẩm để in.
+		<?php }?>
 	  </div>
 </body>
 

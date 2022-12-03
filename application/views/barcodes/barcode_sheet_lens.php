@@ -18,6 +18,7 @@
 	  </div>
 	  <div class="print-page-barcode">
 	<?php 
+	if (!empty($items)) {
 		$count = 0;
 	  	foreach($items as $item)
 		{ 
@@ -31,8 +32,11 @@
 			<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px; ">
 				<?php echo $this->barcode_lib->_display_barcode_lens($item, $barcode_config); ?>
 			</div>
-	<?php ++$count; 
-		} ?>
+		<?php ++$count; 
+		} 
+	} else { ?>
+		Hiện tại chưa có sản phẩm nào để in barcode, vui lòng chọn sản phẩm để in.
+	<?php }?>
 	
 	  </div>
 </body>

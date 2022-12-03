@@ -124,6 +124,8 @@ $config['iKindOfLens'] = array(
         '1.56 CHEMI',
         '1.60 CHEMI U2',
         '1.67 CHEMI U2',
+        '1.61 CHEMI Crystal U2',
+        '1.56 CHEMI Crystal U6',
         '1.60 CHEMI Crystal U6',
         '1.67 CHEMI Crystal U6',
         
@@ -134,8 +136,9 @@ $config['iKindOfLens'] = array(
 
         '1.60 ESSILOR CRIZAL ALIZE UV',
         '1.60 HOYA - NULUX SFT SV',
+        '1.56 NAHAMI CRYSTAL COATED',
         '1.60 NAHAmi SUPER HMC A+',
-        '1.61 CHEMI Crystal U2',
+        
         '1.67 HOYA - NULUX SFT SV',
         '1.67 CHEMI Crystal U2',
         '1.49 CR Korea',

@@ -1,5 +1,5 @@
 <?php $this->load->view("partial/header"); ?>
-
+<link rel="stylesheet" rev="stylesheet" href="<?php echo base_url();?>dist/barcode_print.css" />
 <?php
 if (isset($error))
 {
@@ -27,11 +27,11 @@ if (isset($success))
 			<ul>
 			<li class="pull-right">
 						<?php echo anchor($controller_name."/barcode", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Tạo barcode gọng',
-									array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Tạo barcode gọng')); ?>
+									array('class'=>'btn btn-primary btn-sm','target'=>"_blank", 'id'=>'sales_takings_button', 'title'=>'Tạo barcode gọng')); ?>
 				</li>
 				<li class="pull-right">
 						<?php echo anchor($controller_name."/barcode_lens", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Tạo barcode mắt',
-									array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Tạo barcode mắt')); ?>
+									array('class'=>'btn btn-primary btn-sm', 'target'=>"_blank",'id'=>'sales_takings_button', 'title'=>'Tạo barcode mắt')); ?>
 				</li>
 				<li class="pull-right">
 						<?php echo anchor($controller_name."/empty", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Tạo mới',
