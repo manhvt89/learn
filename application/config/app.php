@@ -120,7 +120,31 @@ $config['hysphs'] = array(
                             '8.00',
                         );
 
-$config['KindOfLens'] = array(
+$config['iKindOfLens'] = array(
+        '1.56 CHEMI',
+        '1.60 U2 CHEMI',
+        '1.67 U2 CHEMI',
+        '1.67 CHEMI Crystal U6',
+        '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
+        '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
+        '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
+        '1.60 ESSILOR CRIZAL ALIZE UV',
+        '1.60 HOYA - NULUX SFT SV',
+        '1.60 NAHAmi SUPER HMC A+',
+        '1.61 CHEMI Crystal U2',
+        '1.67 HOYA - NULUX SFT SV',
+        '1.67 CHEMI Crystal U2',
+        '1.49 CR Korea',
+        
+        );
+
+$_arrTmp = array();
+foreach($config['iKindOfLens'] as $v)
+{
+    $_arrTmp[$v] = $v;
+}
+$config['KindOfLens'] = $_arrTmp;
+/*$config['KindOfLens'] = array(
     '1.56 CHEMI' => '1.56 CHEMI',
     '1.60 U2 CHEMI' => '1.60 U2 CHEMI',
     '1.67 U2 CHEMI' => '1.67 U2 CHEMI',
@@ -133,25 +157,10 @@ $config['KindOfLens'] = array(
     '1.61 CHEMI Crystal U2'=>'1.61 CHEMI Crystal U2',
     '1.67 HOYA - NULUX SFT SV'=>'1.67 HOYA - NULUX SFT SV',
     '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
-    '1.49 CR Korea'=>'1.49 CR Korea'
+    '1.49 CR Korea'=>'1.49 CR Korea',
+    '1.67 CHEMI Crystal U6'=>'1.67 CHEMI Crystal U6',
     );
-
-$config['iKindOfLens'] = array(
-        0 => '1.56 CHEMI',
-        1 => '1.60 U2 CHEMI',
-        2 => '1.67 U2 CHEMI',
-        3 => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
-        4 => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
-        5 => '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
-        6 => '1.60 ESSILOR CRIZAL ALIZE UV',
-        7 => '1.60 HOYA - NULUX SFT SV',
-        8=>'1.60 NAHAmi SUPER HMC A+',
-        9=>'1.61 CHEMI Crystal U2',
-        10=>'1.67 HOYA - NULUX SFT SV',
-        11=>'1.67 CHEMI Crystal U2',
-        12=>'1.49 CR Korea'    
-        );    
-
+*/
 $config['exclude_module'] = array(
     'secure_controller',
     'no_access',
