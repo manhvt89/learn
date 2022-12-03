@@ -1342,6 +1342,7 @@ class Reports extends Secure_Controller
         $inputs = array('location_id'=>$location_id,'category'=>$category);
 
         $report_data = $model->getData($inputs);
+        var_dump($report_data);
 
         if(count($report_data) != 1087)
         {
