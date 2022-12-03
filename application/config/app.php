@@ -133,6 +133,7 @@ $config['KindOfLens'] = array(
     '1.61 CHEMI Crystal U2'=>'1.61 CHEMI Crystal U2',
     '1.67 HOYA - NULUX SFT SV'=>'1.67 HOYA - NULUX SFT SV',
     '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
+    '1.49 CR Korea'=>'1.49 CR Korea'
     );
 
 $config['iKindOfLens'] = array(
@@ -148,6 +149,7 @@ $config['iKindOfLens'] = array(
         9=>'1.61 CHEMI Crystal U2',
         10=>'1.67 HOYA - NULUX SFT SV',
         11=>'1.67 CHEMI Crystal U2',
+        12=>'1.49 CR Korea'    
         );    
 
 $config['exclude_module'] = array(
