@@ -9,7 +9,118 @@ class Cron extends CI_Controller{
         $this->load->library('sms_lib');
 	}
 
-    // Import Sản phẩm;
+    // Import Sản phẩm mắt kính;
+    public function import_lens()
+    {
+        $message = ' Bắt đầu import SP '. date('d/m/Y h:m:s',time());
+        echo 	$message .PHP_EOL;
+        
+        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
+        //echo $lfile;exit();
+        $_flog=fopen($lfile, 'a');
+        fwrite($_flog, $message.PHP_EOL);
+
+        //1. Get All sản phẩm từ file csv
+        $_file = str_replace('/public_html/public/','/',FCPATH)."lens.csv";
+        //echo $_file;exit();
+        if(($handle = fopen($_file, 'r')) !== FALSE)
+		{
+            fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
+            $i = 1;
+            $failCodes = array();
+
+            while(($data = fgetcsv($handle)) !== FALSE)
+            {
+                
+					//$item_data = array();
+                if(sizeof($data) >= 0)
+                {
+                    $item_data = array(
+                        'name'					=> $data[1],
+                        'description'			=> '',
+                        'category'				=> $data[2],
+                        'cost_price'			=> $data[6],
+                        'unit_price'			=> $data[7],
+                        'reorder_level'			=> 0,
+                        'supplier_id'			=> 200278,
+                        'allow_alt_description'	=> '0',
+                        'is_serialized'			=> '0',
+                        'custom1'				=> '',
+                        'custom2'				=> '',
+                        'custom3'				=> '',
+                        'custom4'				=> '',
+                        'custom5'				=> '',
+                        'custom6'				=> '',
+                        'custom7'				=> '',
+                        'custom8'				=> '',
+                        'custom9'				=> '',
+                        'custom10'				=> ''
+                    );
+                    $item_number = $data[3];
+                    $invalidated = FALSE;
+                    if($item_number != '')
+                    {
+                        $item_data['item_number'] = $item_number;
+                        $invalidated = $this->Item->item_number_exists($item_number);
+                    }
+				} else {
+					$invalidated = TRUE;
+				}
+				
+                if(!$invalidated && $this->Item->save($item_data))
+				{
+					$items_taxes_data = NULL;
+						//tax 1
+
+					$items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
+						// save tax values
+					if(count($items_taxes_data) > 0)
+					{
+						$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+					}
+
+					// quantities & inventory Info
+					$employee_id = 1; // Khởi tạo dữ liệu ban đầu;
+					$emp_info = $this->Employee->get_info($employee_id);
+					$comment =$this->lang->line('items_qty_file_import');
+					// array to store information if location got a quantity
+                    $item_quantity_data = array(
+                        'item_id' => $item_data['item_id'],
+                        'location_id' => 1,
+                        'quantity' => 0,
+                    );
+					$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+
+                    $excel_data = array(
+                        'trans_items' => $item_data['item_id'],
+                        'trans_user' => $employee_id,
+                        'trans_comment' => $comment,
+                        'trans_location' => 1,
+                        'trans_inventory' => 0
+                    );
+
+					$this->Inventory->insert($excel_data);
+
+				} 
+                else //insert or update item failure
+				{
+						$failCodes[$i] = $item_data['item_number'];
+                        $message = "$i,". $item_data['item_number'];
+                        fwrite($_flog, $message.PHP_EOL);
+                        echo 	$message .PHP_EOL;
+				}
+
+				++$i;
+            }
+            
+        } else {
+            $message = ' Lỗi đọc file sp.csv';
+            echo 	$message .PHP_EOL;
+        }
+        fclose($_flog);
+    }
+
+    //Import Sản phẩm
     public function import_products()
     {
         $message = ' Bắt đầu import SP '. date('d/m/Y h:m:s',time());
