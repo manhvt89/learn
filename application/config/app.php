@@ -142,7 +142,7 @@ $config['iKindOfLens'] = array(
         '1.60 NAHAMI SUPER HMC A+',
         '1.67 NAHAMI SUPER HMC',
 
-        '1.56 TC Korea',
+        '1.56 KOREA TC',
         '1.56 Đổi màu TC',
         '1.56 ĐM PQ Korea',
         '1.56 CR Korea',
