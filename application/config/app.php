@@ -146,7 +146,7 @@ $config['iKindOfLens'] = array(
         '1.56 Đổi màu TC',
         '1.56 ĐM PQ Korea',
         '1.56 CR Korea',
-        '1.56 CR Polaroid Korea',
+        '1.56 Polaroid CR Korea',
         '1.56 2 Tròng TC Korea',
         '1.56 2 Tròng QP TC Korea',
         
