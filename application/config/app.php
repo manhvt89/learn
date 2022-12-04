@@ -124,11 +124,13 @@ $config['iKindOfLens'] = array(
         '1.56 CHEMI', //ok
         '1.60 CHEMI U2',
         '1.67 CHEMI U2',
-        '1.61 CHEMI Crystal U2',
+        '1.61 CHEMI Crystal U2', //ok
+        '1.56 CHEMI Crystal U2',
         '1.56 CHEMI Crystal U6',//ok
         '1.60 CHEMI Crystal U6',//ok
-        '1.67 CHEMI Crystal U2',
+        '1.67 CHEMI Crystal U2', //ok
         '1.67 CHEMI Crystal U6',//ok
+        '1.74 CHEMI Crystal U2',
         '1.56 CHEMI ASP PHOTOCHROMIC GRAY',//ok
 
         '1.67 KODAK FSV,UV400 Clean\'N\'CleAR', //ok
@@ -137,12 +139,12 @@ $config['iKindOfLens'] = array(
         '1.60 KODAK UV400 BLUE',//ok
 
         '1.67 HOYA NULUX SFT SV',//ok
-        '1.60 HOYA NULUX SFT SV',
+        '1.60 HOYA NULUX SFT SV', //ok
         '1.60 ESSILOR CRIZAL ALIZE ',//ok
         
 
         '1.56 NAHAMI CRYSTAL COATED',
-        '1.60 NAHAMI SUPER HMC A+',
+        '1.60 NAHAMI SUPER HMC A+', //ok
         '1.67 NAHAMI SUPER HMC',//ok
 
         '1.56 KOREA TC',//ok
