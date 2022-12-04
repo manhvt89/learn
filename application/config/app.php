@@ -123,7 +123,6 @@ $config['hysphs'] = array(
 $config['iKindOfLens'] = array(
         '1.56 CHEMI', //ok
         '1.60 CHEMI U2',
-        '1.67 CHEMI U2',
         '1.61 CHEMI Crystal U2', //ok
         '1.56 CHEMI Crystal U2', //ok
         '1.56 CHEMI Crystal U6',//ok
@@ -154,8 +153,9 @@ $config['iKindOfLens'] = array(
         '1.56 Polaroid CR Korea',//ok
         //'1.56 2 Tròng TC Korea', //Chua ho tro da trong bao cao
         //'1.56 2 Tròng QP TC Korea',//Chua ho tro da trong bao cao
-        '1.56 TRÁNG CỨNG', //
-        '1.60 U1 ECOVIS',
+        '1.56 TRÁNG CỨNG', //ok
+        '1.60 U1 ECOVIS', //ok
+        'ĐỔI MÀU KOREA',
         '1.49 CR Korea',//ok
         'MẮT 1.56 POLAROD KHÓI',//ok
         'MẮT 1.56 POLAROD XANH'//ok
