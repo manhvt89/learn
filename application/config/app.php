@@ -158,7 +158,11 @@ $config['iKindOfLens'] = array(
         'ĐỔI MÀU KOREA',
         '1.49 CR Korea',//ok
         'MẮT 1.56 POLAROD KHÓI',//ok
-        'MẮT 1.56 POLAROD XANH'//ok
+        'MẮT 1.56 POLAROD XANH',//ok,
+        '1.56 KHÓI 1 MÀU CR',
+        '1.56 KHÓI 2 MÀU CR',
+        '1.56 TRÀ 1 MÀU CR',
+        '1.56 TRÀ 2 MÀU CR'
         );
 
 $_arrTmp = array();
