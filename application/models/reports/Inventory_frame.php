@@ -32,8 +32,7 @@ class Inventory_frame extends Report
 
 	public function getData(array $inputs)
 	{	
-        $filter = array('G01','G02','G03','G04','G05','G06','G07','G08','G09','G10','G11','G12','G13','G14','G15',
-            'M01','M02','M03','M04','M05','M06','M07','M08','M09','M10','M11','M12','M13','M14','M15');
+        $filter = $this->config->item('filter'); //define in app.php
 	    $this->db->select('items.category, SUM(item_quantities.quantity) AS quantity, stock_locations.location_id');
         $this->db->from('items AS items');
         $this->db->join('item_quantities AS item_quantities', 'items.item_id = item_quantities.item_id');
