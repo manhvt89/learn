@@ -162,7 +162,8 @@ $config['iKindOfLens'] = array(
         '1.56 KHÓI 1 MÀU CR',
         '1.56 KHÓI 2 MÀU CR',
         '1.56 TRÀ 1 MÀU CR',
-        '1.56 TRÀ 2 MÀU CR'
+        '1.56 TRÀ 2 MÀU CR',
+        '1.56 XANH 1 MÀU CR'
         );
 
 $_arrTmp = array();
