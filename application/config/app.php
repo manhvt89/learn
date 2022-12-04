@@ -125,38 +125,36 @@ $config['iKindOfLens'] = array(
         '1.60 CHEMI U2',
         '1.67 CHEMI U2',
         '1.61 CHEMI Crystal U2',
-        '1.56 CHEMI Crystal U6',
-        '1.60 CHEMI Crystal U6',
+        '1.56 CHEMI Crystal U6',//ok
+        '1.60 CHEMI Crystal U6',//ok
         '1.67 CHEMI Crystal U2',
-        '1.67 CHEMI Crystal U6',
-        '1.56 CHEMI ASP PHOTOCHROMIC GRAY',
+        '1.67 CHEMI Crystal U6',//ok
+        '1.56 CHEMI ASP PHOTOCHROMIC GRAY',//ok
 
-        '1.56 KODAK FSV,UV400 Clean\'N\'CleAR',
-        '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
-        '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
-        '1.60 KODAK UV400 BLUE',
+        '1.67 KODAK FSV,UV400 Clean\'N\'CleAR', //ok
+        '1.60 KODAK FSV,UV400 Clean\'N\'CleAR', //ok
+        '1.67 KODAK FSV,UV400 Clean\'N\'CleAR', //ok
+        '1.60 KODAK UV400 BLUE',//ok
 
-        '1.67 HOYA NULUX SFT SV',
-        '1.60 ESSILOR CRIZAL ALIZE ',
-        '1.60 HOYA - NULUX SFT SV',
+        '1.67 HOYA NULUX SFT SV',//ok
+        '1.60 ESSILOR CRIZAL ALIZE ',//ok
+        '1.60 HOYA NULUX SFT SV',
 
         '1.56 NAHAMI CRYSTAL COATED',
         '1.60 NAHAMI SUPER HMC A+',
-        '1.67 NAHAMI SUPER HMC',
+        '1.67 NAHAMI SUPER HMC',//ok
 
         '1.56 KOREA TC',//ok
         '1.56 Đổi màu TC',//ok
         '1.56 ĐM PQ Korea',//ok
         '1.56 CR Korea',//ok
         '1.56 Polaroid CR Korea',//ok
-        //'1.56 2 Tròng TC Korea',
-        //'1.56 2 Tròng QP TC Korea',
+        //'1.56 2 Tròng TC Korea', //Chua ho tro da trong bao cao
+        //'1.56 2 Tròng QP TC Korea',//Chua ho tro da trong bao cao
         
-
-        
-        '1.49 CR Korea',
-        'MẮT 1.56 POLAROD KHÓI',
-        'MẮT 1.56 POLAROD XANH'
+        '1.49 CR Korea',//ok
+        'MẮT 1.56 POLAROD KHÓI',//ok
+        'MẮT 1.56 POLAROD XANH'//ok
         );
 
 $_arrTmp = array();
