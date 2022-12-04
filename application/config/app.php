@@ -125,12 +125,12 @@ $config['iKindOfLens'] = array(
         '1.60 CHEMI U2',
         '1.67 CHEMI U2',
         '1.61 CHEMI Crystal U2', //ok
-        '1.56 CHEMI Crystal U2',
+        '1.56 CHEMI Crystal U2', //ok
         '1.56 CHEMI Crystal U6',//ok
         '1.60 CHEMI Crystal U6',//ok
         '1.67 CHEMI Crystal U2', //ok
         '1.67 CHEMI Crystal U6',//ok
-        '1.74 CHEMI Crystal U2',
+        '1.74 CHEMI Crystal U2', //ok
         '1.56 CHEMI ASP PHOTOCHROMIC GRAY',//ok
 
         '1.67 KODAK FSV,UV400 Clean\'N\'CleAR', //ok
@@ -154,7 +154,8 @@ $config['iKindOfLens'] = array(
         '1.56 Polaroid CR Korea',//ok
         //'1.56 2 Tròng TC Korea', //Chua ho tro da trong bao cao
         //'1.56 2 Tròng QP TC Korea',//Chua ho tro da trong bao cao
-        
+        '1.56 TRÁNG CỨNG', //
+        '1.60 U1 ECOVIS',
         '1.49 CR Korea',//ok
         'MẮT 1.56 POLAROD KHÓI',//ok
         'MẮT 1.56 POLAROD XANH'//ok
