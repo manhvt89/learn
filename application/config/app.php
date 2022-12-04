@@ -210,5 +210,5 @@ $config['barcode'] = 1;
 Báo cáo Khác;
 */
 
-$config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','GỌNG <5T','GỌNG >5T','G07','G08','G09','G10','G11','G12','G13','G14','G15',
-            'KÍNH MÁT <1T','KÍNH MÁT <2T','KÍNH MÁT <3T','KÍNH MÁT <4T','KÍNH MÁT <5T','KÍNH MÁT >5T','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI');
+$config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','GỌNG <5T','GỌNG > 5T','G07','G08','G09','G10','G11','G12','G13','G14','G15',
+            'KÍNH MÁT <1T','KÍNH MÁT <2T','KÍNH MÁT <3T','KÍNH MÁT <4T','KÍNH MÁT <5T','KÍNH MÁT > 5T','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI');
