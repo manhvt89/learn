@@ -175,36 +175,51 @@ class Barcode_lib
 	{
 		//var_dump($item);die();
 		$item['unit_price'] = $item['price'];
-		$display_table = "<table class='print-barcode_1'>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table = "<div class='print-barcode_1'>";
+		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
-		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
-		$display_table .= "</table>";
+		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div></tr>";
+		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "</div>";
 
-		$display_table .= "<table class='print-barcode_2'>";
-		$display_table .= "<tr><td align='center'>Kính mắt Việt Hàn</td></tr>";
+		$display_table .= "<div class='print-barcode_2'>";
+		$display_table .= "<div align='center'><b>KÍNH MẮT NAM HẢI</b></div>";
 		
-		$display_table .= "<tr><td align='center'>Chăm sóc đôi mắt bạn</td></tr>";
-		$display_table .= "<tr><td align='center'>91 Trương Định - <b class='category-barcode'>".$item['item_category']."</b></td></tr>";
-		$display_table .= "</table>";
+		$display_table .= "<div align='center'>Chăm sóc đôi mắt bạn</div>";
+		$display_table .= "<div align='center'>50 Trần Đại Nghĩa - <b class='category-barcode'>".$item['item_category']."</b></div>";
+		$display_table .= "</div>";
 		
 		return $display_table;
 	}
 
 	public function _display_barcode_lens($item, $barcode_config)
 	{
-		$display_table = "<table class='print-barcode_1'>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
+		$barcode_config['barcode_width'] = 150;
+		$display_table = "<div class='' with='120px'>";
+		$display_table .= "<div style='width:120px' align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
-		$display_table .= "<tr><td align='center'><img src='data:image/png;base64,$barcode' /></td></tr>";
-		$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "<div style='width:120px' align='center'><img style='width:120px' src='data:image/png;base64,$barcode' /></div>";
+		$display_table .= "<div style='width:120px' align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		//$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
+		$display_table .= "</div>";
+		
+		return $display_table;
+	}
+	public function _display_barcode_lens_bak($item, $barcode_config)
+	{
+		$barcode_config['barcode_width'] = 150;
+		$display_table = "<table class='print-barcode_1' with='35mm'>";
+		$display_table .= "<tr><td style='width:130px' align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</td></tr>";
+		$barcode = $this->generate_barcode($item, $barcode_config);
+		$display_table .= "<tr><td style='width:130px' align='center'><img style='width:130px' src='data:image/png;base64,$barcode' /></td></tr>";
+		$display_table .= "<tr><td style='width:130px' align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</td></tr>";
 		//$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "</table>";
 		
 		return $display_table;
 	}
+	
 	
 	private function manage_display_layout($layout_type, $item, $barcode_config)
 	{

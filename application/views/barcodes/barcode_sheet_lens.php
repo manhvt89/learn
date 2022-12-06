@@ -22,14 +22,14 @@
 		$count = 0;
 	  	foreach($items as $item)
 		{ 
-			if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0)
+			if ($count % 3 == 0 and $count != 0)
 			{
 					?>
 					<div class="pagebreak"></div>
 					<?php
 			}
 				?>
-			<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0px; ">
+			<div class="2" style=" width: 33mm; text-align: center;float: left; margin:0px; ">
 				<?php echo $this->barcode_lib->_display_barcode_lens($item, $barcode_config); ?>
 			</div>
 		<?php ++$count; 
