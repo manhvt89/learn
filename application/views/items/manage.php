@@ -97,9 +97,6 @@ $(document).ready(function()
         </button>
     <?php } ?>
     <?php if ($this->Employee->has_grant($controller_name.'_generate_barcodes')) {?>
-        <button id="generate_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/generate_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
-            <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo 'Barcode gọng'; ?>
-        </button>
         <button id="add_barcodes" class="btn btn-default btn-sm print_hide" data-href='<?php echo site_url($controller_name."/add_barcodes"); ?>' title='<?php echo $this->lang->line('items_generate_barcodes');?>'>
             <span class="glyphicon glyphicon-barcode">&nbsp</span><?php echo 'Thêm SP Tạo barocde'; ?>
         </button>
