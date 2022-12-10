@@ -344,7 +344,7 @@ class Cron extends CI_Controller{
 
                                 $obj['customer_id'] = $customer->person_id;
                                 $obj['code'] = $data[1]; // just only create new
-                                $obj['test_time'] = strtotime($data[2]);
+                                $obj['test_time'] = strtotime(str_replace('/', '-', $data[2]));
                             }
 
                             if(!$invalidated && $this->Testex->save($obj))
