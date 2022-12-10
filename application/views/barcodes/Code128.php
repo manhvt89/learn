@@ -239,6 +239,96 @@ class Code128 extends BarcodeBase
 	 *
 	 * @return void
 	 */
+	public function draw__()
+	{
+		$this->resolveSubtype();
+		$charAry = str_split($this->data);
+		$density = 1;
+		// Calc scaling
+		// Bars is in reference to a single, 1-level bar
+		$numBarsRequired = ($this->type != self::TYPE_C) ? (sizeof($charAry) * 11) + 35 : ((sizeof($charAry)/2) * 11) + 35;
+		$numBarsRequired = round($numBarsRequired * $density);
+		$this->x  = ($this->x == 0) ? $numBarsRequired : $this->x;
+		$pxPerBar = (int) ($this->x / $numBarsRequired);
+		$currentX = ($this->x - ($numBarsRequired  * $pxPerBar)) / 2;
+	
+		if ($pxPerBar < 1)
+		{
+			throw new \LogicException("Not enough space on this barcode for this message, increase the width of the barcode");
+		}
+
+		if ($this->type == self::TYPE_C)
+		{
+			if (sizeof($charAry) % 2)
+			{
+				array_unshift($charAry, '0');
+			}
+
+			$pairs = '';
+			$newAry = array();
+			foreach($charAry as $k => $char)
+			{
+				if (($k % 2) == 0 && $k != 0)
+				{
+					$newAry[] = $pairs;
+					$pairs = '';
+				}
+
+				$pairs .= $char;
+			}
+
+			$newAry[] = $pairs;
+			$charAry = $newAry;
+		}
+
+		// Add the start
+		array_unshift($charAry, $this->getStartChar());
+
+		// Checksum collector
+		$checkSumCollector = $this->getKey($this->getStartChar());
+
+		$this->y = ($this->x * .15 > .7) ? $this->x * .15 : .7;
+		$this->img = @imagecreate($this->x, $this->y);
+		
+		if (!$this->img)
+		{
+			throw new \RuntimeException("Code128: Image failed to initialize");
+		}
+		
+		$white = imagecolorallocate($this->img, 255, 255, 255);
+		$black = imagecolorallocate($this->img, 0, 0, 0);
+
+		//Fill the image white
+		//Set the line thickness (based on $density)
+		
+		imagefill($this->img, 0, 0, $white);
+		imagesetthickness($this->img, $pxPerBar);
+
+		// Print the code
+		foreach($charAry as $k => $char)
+		{
+			$code = $this->getBar($char);
+			$checkSumCollector += $this->getKey($char) * $k; // $k will be 0 for our first
+
+			foreach(str_split((string) $code) as $bit)
+			{
+				imagefilledrectangle($this->img, $currentX, 0, ($currentX + $pxPerBar), ($this->y - 1), (($bit == '1') ? $black : $white));
+				$currentX += $pxPerBar;
+			}
+		}
+
+		$ending[] = self::$barMap[$checkSumCollector % 103];
+		$ending[] = self::$barMap[106]; // STOP.
+
+		foreach($ending as $code)
+		{
+			foreach(str_split((string) $code) as $bit)
+			{
+				imagefilledrectangle($this->img, $currentX, 0, ($currentX + $pxPerBar), ($this->y - 1), (($bit == '1') ? $black : $white));
+				$currentX += $pxPerBar;
+			}
+		}
+	}
 	public function draw()
 	{
 		$this->resolveSubtype();
@@ -250,7 +340,7 @@ class Code128 extends BarcodeBase
 		$this->x  = ($this->x == 0) ? $numBarsRequired : $this->x;
 		$pxPerBar = (int) ($this->x / $numBarsRequired);
 		$currentX = ($this->x - ($numBarsRequired  * $pxPerBar)) / 2;
-
+	
 		if ($pxPerBar < 1)
 		{
 			throw new \LogicException("Not enough space on this barcode for this message, increase the width of the barcode");
