@@ -241,44 +241,20 @@ class Code128 extends BarcodeBase
 	 */
 	public function draw__()
 	{
-		$this->resolveSubtype();
+		//$this->resolveSubtype();
+		$this->setSubType(self::TYPE_A); //just onlye code 128A
 		$charAry = str_split($this->data);
 		$density = 1;
 		// Calc scaling
 		// Bars is in reference to a single, 1-level bar
-		$numBarsRequired = ($this->type != self::TYPE_C) ? (sizeof($charAry) * 11) + 35 : ((sizeof($charAry)/2) * 11) + 35;
-		$numBarsRequired = round($numBarsRequired * $density);
-		$this->x  = ($this->x == 0) ? $numBarsRequired : $this->x;
-		$pxPerBar = (int) ($this->x / $numBarsRequired);
-		$currentX = ($this->x - ($numBarsRequired  * $pxPerBar)) / 2;
+		$numBarsRequired = (sizeof($charAry) * 11) + 35; 
+		$this->x  = $numBarsRequired; // Don't use config, automatic calculate width of bacode via length of string
+		$pxPerBar = 1;
+		$currentX = 0;
 	
 		if ($pxPerBar < 1)
 		{
 			throw new \LogicException("Not enough space on this barcode for this message, increase the width of the barcode");
-		}
-
-		if ($this->type == self::TYPE_C)
-		{
-			if (sizeof($charAry) % 2)
-			{
-				array_unshift($charAry, '0');
-			}
-
-			$pairs = '';
-			$newAry = array();
-			foreach($charAry as $k => $char)
-			{
-				if (($k % 2) == 0 && $k != 0)
-				{
-					$newAry[] = $pairs;
-					$pairs = '';
-				}
-
-				$pairs .= $char;
-			}
-
-			$newAry[] = $pairs;
-			$charAry = $newAry;
 		}
 
 		// Add the start
@@ -287,21 +263,25 @@ class Code128 extends BarcodeBase
 		// Checksum collector
 		$checkSumCollector = $this->getKey($this->getStartChar());
 
+		//auto calculate height defend on width
 		$this->y = ($this->x * .15 > .7) ? $this->x * .15 : .7;
+		//create img with wwidth \:x, height: y
 		$this->img = @imagecreate($this->x, $this->y);
 		
 		if (!$this->img)
 		{
 			throw new \RuntimeException("Code128: Image failed to initialize");
 		}
-		
+		//create white color
 		$white = imagecolorallocate($this->img, 255, 255, 255);
+		//create black color
 		$black = imagecolorallocate($this->img, 0, 0, 0);
 
 		//Fill the image white
 		//Set the line thickness (based on $density)
 		
 		imagefill($this->img, 0, 0, $white);
+		//Set thichness
 		imagesetthickness($this->img, $pxPerBar);
 
 		// Print the code
@@ -331,9 +311,10 @@ class Code128 extends BarcodeBase
 	}
 	public function draw()
 	{
-		$this->resolveSubtype();
+		$this->setSubType(self::TYPE_A); //just onlye code 128A
+		//$this->resolveSubtype();
 		$charAry = str_split($this->data);
-
+		
 		// Calc scaling
 		// Bars is in reference to a single, 1-level bar
 		$numBarsRequired = ($this->type != self::TYPE_C) ? (sizeof($charAry) * 11) + 35 : ((sizeof($charAry)/2) * 11) + 35;

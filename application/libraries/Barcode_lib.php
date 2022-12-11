@@ -195,7 +195,8 @@ class Barcode_lib
 
 	public function _display_barcode_lens($item, $barcode_config)
 	{
-		$barcode_config['barcode_width'] = 191;
+		//$barcode_config['barcode_width'] = 145;
+		$barcode_config['barcode_width'] = 145;
 		$display_table = "<div class='' with='120px'>";
 		$display_table .= "<div style='width:120px; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
