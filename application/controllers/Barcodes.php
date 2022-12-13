@@ -130,6 +130,10 @@ class Barcodes extends Secure_Controller
 	public function barcode_lens()
 	{
 		$this->load->library('barcode_lib');
+		//$this->load->library('Zend');
+        //$this->zend->load('Zend/Barcode');
+        //generate barcode
+        
 
 		//$data['cart'] = $this->printbarcode_lib->get_cart();
 		//var_dump($data['cart']); die();
@@ -150,7 +154,8 @@ class Barcodes extends Secure_Controller
 				}
 			}
 		}
-
+		//$code = 'VH000123456';
+		//Zend_Barcode::render('code128', 'image', array('text'=>$code), array());
 		// display barcodes
 		$this->load->view('barcodes/barcode_sheet_lens', $data);
 	}
