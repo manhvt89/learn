@@ -29,7 +29,7 @@
 					<?php
 			}
 				?>
-			<div class="2" style=" width: 35mm; text-align: center;float: left; margin:0px; ">
+			<div class="2" style=" width: 140px; text-align: center;float: left; margin:0px; ">
 				<?php echo $this->barcode_lib->_display_barcode_lens($item, $barcode_config); ?>
 			</div>
 		<?php ++$count; 
