@@ -20,8 +20,9 @@
 		<?php 
 		if (!empty($items)) {
 			$count = 0;
+	        $columns = 2;
 			foreach ($items as $item) {
-				if ($count % $barcode_config['barcode_num_in_row'] == 0 and $count != 0) {
+				if ($count % $columns == 0 and $count != 0) {
 					?>
 							<div class="pagebreak"></div>
 							<?php

@@ -175,6 +175,7 @@ class Barcode_lib
 	{
 		//var_dump($item);die();
 		$item['unit_price'] = $item['price'];
+		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='print-barcode_1'>";
 		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
@@ -198,7 +199,7 @@ class Barcode_lib
 		//$barcode_config['barcode_width'] = 145;
 		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='' style='width:100%; '>";
-		$display_table .= "<div style='width:100%; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div style='width:100%; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
 		$display_table .= "<div style='width:100%; font-size:9px;' align='left'><img src='data:image/png;base64,$barcode' /></div>";
 		$display_table .= "<div style='width:100%; font-size:9px;' align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
@@ -223,6 +224,36 @@ class Barcode_lib
 	
 	
 	private function manage_display_layout($layout_type, $item, $barcode_config)
+	{
+		$result = '';
+		
+		if($layout_type == 'name')
+		{
+			$result = $item['name'];
+		}
+		elseif($layout_type == 'category' && isset($item['category']))
+		{
+			$result = $item['category'];
+		}
+		elseif($layout_type == 'cost_price' && isset($item['cost_price']))
+		{
+			$result = to_currency($item['cost_price']);
+		}
+		elseif($layout_type == 'unit_price' && isset($item['unit_price']))
+		{
+			$result = to_currency($item['unit_price']);
+		}
+		elseif($layout_type == 'company_name')
+		{
+			$result = $barcode_config['company'];
+		}
+		elseif($layout_type == 'item_code')
+		{
+			$result = $barcode_config['barcode_content'] !== "id" && isset($item['item_number']) ? $item['item_number'] : $item['item_id'];
+		}
+		return character_limiter($result, 25);
+	}
+	private function manage_display_layout_lens($layout_type, $item, $barcode_config)
 	{
 		$result = '';
 		
