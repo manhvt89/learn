@@ -209,12 +209,14 @@ class Item extends CI_Model
                 $this->db->where('item_id', (int) $item_id);
                 $this->db->or_where('items.item_number', $item_id);
                 $this->db->or_where('items.item_number_new',$item_id);
+				$this->db->or_where('items.code',$item_id);
             $this->db->group_end();
         }
         else
         {
             $this->db->where('item_number', $item_id);
             $this->db->or_where('items.item_number_new',$item_id);
+			$this->db->or_where('items.code',$item_id);
         }
 
 		$this->db->where('items.deleted', 0);
@@ -237,6 +239,7 @@ class Item extends CI_Model
 		$this->db->from('items');
 		$this->db->join('suppliers', 'suppliers.person_id = items.supplier_id', 'left');
 		$this->db->where('item_number', $item_number);
+		$this->db->or_where('items.code',$item_number);
 		if($ignore_deleted == FALSE)
 		{
 			$this->db->where('items.deleted', $deleted);
