@@ -351,7 +351,6 @@ class Item extends CI_Model
 	public function get_search_suggestions($search, $filters = array('is_deleted' => FALSE, 'search_custom' => FALSE), $unique = FALSE, $limit = 25)
 	{
 		$suggestions = array();
-
 		$this->db->select('item_id, name,unit_price');
 		$this->db->from('items');
 		$this->db->where('deleted', $filters['is_deleted']);
