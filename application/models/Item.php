@@ -82,6 +82,7 @@ class Item extends CI_Model
 					$this->db->or_like('items.item_id', $search);
 					$this->db->or_like('company_name', $search);
 					$this->db->or_like('category', $search);
+					$this->db->or_like('code', $search); //add by ManhVT 16.12.2022
 				$this->db->group_end();
 			}
 			else
@@ -356,6 +357,7 @@ class Item extends CI_Model
 		$this->db->where('deleted', $filters['is_deleted']);
 		$this->db->like('name', $search);
         $this->db->or_like('unit_price',$search);
+		$this->db->or_like('code',$search); //add by ManhVT 16.12.2022
 		$this->db->order_by('name', 'asc');
 		foreach($this->db->get()->result() as $row)
 		{
