@@ -25,7 +25,11 @@ class Accounting extends CI_Model
 			return null;
 		}
 	}
-
+	/**
+	 * Summary of exists
+	 * @param mixed $date Empty ís current Date
+	 * @return bool
+	 */
 	public function exists($date='')
 	{
 		$this->db->from('daily_total');
@@ -192,11 +196,11 @@ class Accounting extends CI_Model
 			$payout_data['type'] = 1; //payout
 			$payout_data['code'] = 'PO'.time();
 			$payout_data['payment_type'] = 'Tiền mặt';
-			if($payout_data['kind']==2)
+			if($payout_data['kind']==1)
 			{
-				$payout_data['code'] = 'RM'.time();
+				$payout_data['code'] = 'NB-'.time();
 			}else {
-				$payout_data['kind'] = 0; //don't user
+				//$payout_data['kind'] = 0; //don't user
 				$payout_data['payment_id'] = 0;//don't user
 				$payout_data['sale_id'] = 0;//don't user
 			}
@@ -252,6 +256,8 @@ class Accounting extends CI_Model
 	{
 		$this->db->select('
 				total.total_id as total_id,
+				total.kind as kind,
+				total.code as code,
 				total.amount as amount,
 				total.type as type,				
 				CONCAT(people.last_name," ",people.first_name) as person,
@@ -328,7 +334,7 @@ class Accounting extends CI_Model
 		$this->db->select('SUM(amount) AS amount');
 		$this->db->from('total as total');
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
-		$this->db->where('type',0);
+		$this->db->where('type',0); // Thu
 
 		$income_amount = $this->db->get()->result_array();
 
@@ -344,7 +350,7 @@ class Accounting extends CI_Model
 		$this->db->select('SUM(amount) AS amount');
 		$this->db->from('total as total');
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
-		$this->db->where('type',1);
+		$this->db->where('type',1); //Chi
 		$payout_amount = $this->db->get()->result_array();
 
 		$payout = $payout_amount[0]['amount'];
@@ -355,11 +361,16 @@ class Accounting extends CI_Model
 		}
 		$ending = $starting + $income - $payout;
 
+		$this->db->select('SUM(amount) AS amount');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',1); //Chi
+		$this->db->where('kind',1); // Nội bộ
+		$payout_amount_nb = $this->db->get()->result_array();
 
-
+		$payout_nb = $payout_amount_nb[0]['amount'];
 		// consider Gift Card as only one type of payment and do not show "Gift Card: 1, Gift Card: 2, etc." in the total
-
-		$payments = array('in' => $income, 'po' => $payout, 'starting' => $starting,'ending'=>$ending);
+		$payments = array('in' => $income, 'po' => $payout, 'starting' => $starting,'ending'=>$ending,'nb'=>$payout_nb);
 
 
 		return $payments;

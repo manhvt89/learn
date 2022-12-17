@@ -53,12 +53,13 @@ class Account extends Secure_Controller
 
 	    $user = $this->Employee->get_logged_in_employee_info();
         $this->Accounting->auto_create_daily_total();
-        if($this->Employee->has_grant('account_admin',$user->person_id))
+       /*  if($this->Employee->has_grant('account_admin',$user->person_id))
         {
             $data['permission_admin'] = 1;
         }else{
             $data['permission_admin'] = 0;
-        }
+        } */
+		$data['permission_admin'] = 1;
 	    $data['table_headers'] = $this->xss_clean(get_accounting_manage_table_headers());
 
         // filters that will be loaded in the multiselect dropdown
@@ -214,6 +215,7 @@ class Account extends Secure_Controller
     {
         $person_id = $this->input->post('person_id');
         $amount = $this->input->post('accounting_amount');
+		$kind = $this->input->post('kind');
         if($person_id > 0){
             $employee_id = $this->input->post('accounting_employee_id');
             $amount = $this->input->post('accounting_amount');
@@ -225,7 +227,7 @@ class Account extends Secure_Controller
                 'note'=>$note
             );
             $out_data['payment_type'] = 'Tiền mặt';
-            $out_data['kind'] = 0;//don't use
+            $out_data['kind'] = $kind;//1: Chi cho nội bộ //2: Chi khác {điều chỉnh lỗi hóa đơn ...}
             $out_data['payment_id'] = 0;
             $out_data['sale_id'] = 0;
 
@@ -234,7 +236,7 @@ class Account extends Secure_Controller
             {
                 $message = $this->xss_clean($this->lang->line('accounting_successful_add'));
 
-                echo json_encode(array('success' => FALSE, 'message' => $message, 'id' => $rs));
+                echo json_encode(array('success' => TRUE, 'message' => $message, 'id' => $rs));
             }else{
                 $message = $this->xss_clean($this->lang->line('accounting_error_not_exist_customer'));
 

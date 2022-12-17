@@ -46,6 +46,31 @@
 				);?>
 			</div>
 		</div>
+		<div class="form-group form-group-sm">
+			<?php echo form_label('Loại phiếu chi', 'kind', array('class'=>'required control-label col-xs-3')); ?>
+			<div class='col-xs-8'>
+				<label class="radio-inline">
+					<?php echo form_radio(array(
+							'name'=>'kind',
+							'type'=>'radio',
+							'id'=>'kind',
+							'value'=>1,
+							'checked'=>false)
+							); ?> <?php echo 'Chi nội bộ'; ?>
+				</label>
+				<label class="radio-inline">
+					<?php echo form_radio(array(
+							'name'=>'kind',
+							'type'=>'radio',
+							'id'=>'kind',
+							'value'=>3,
+							'checked'=>false)
+							); ?> <?php echo 'Chi khác'; ?>
+				</label>
+
+					
+			</div>
+		</div>
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('accounting_note'), 'category', array('class'=>'control-label col-xs-3')); ?>
@@ -124,13 +149,15 @@
 			rules:
 			{
 				accounting_person:"required",
-				accounting_amount:"required"
+				accounting_amount:"required",
+				kind:"required"
 			},
 
 			messages:
 			{
 				accounting_amount:"<?php echo $this->lang->line('accounting_amount_required'); ?>",
-				accounting_person:"<?php echo $this->lang->line('accounting_name_required'); ?>"
+				accounting_person:"<?php echo $this->lang->line('accounting_name_required'); ?>",
+				kind:"Bạn phải chọn loại phiếu chi"
 
 			}
 		}, form_support.error));

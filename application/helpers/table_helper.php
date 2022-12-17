@@ -570,6 +570,7 @@ function get_accounting_manage_summary($payments, $controller)
 	$table .= '<p>Thu trong kỳ: <b>'. number_format($payments['in']).'</b></p>';
 	$table .= '<p>Chi trong kỳ: <b>'. number_format($payments['po']).'</b></p>';
 	$table .= '<p>Cuối trong kỳ: <b>'. number_format($payments['ending']).'</b></p>';
+	$table .= '<p>Chi nội bộ: <b>'. number_format($payments['nb']).'</b></p>';
 	$table .= '</div>';
 
 	return $table;
@@ -581,6 +582,7 @@ function get_accounting_manage_table_headers()
 
 	$headers = array(
 		array('total_id' => $CI->lang->line('common_id')),
+		array('code' => 'Mã'),
 		array('created_time' => $CI->lang->line('accounting_created_time')),
 		array('employee' => $CI->lang->line('accounting_employee')),
 		array('person' => $CI->lang->line('accounting_person')),
@@ -600,6 +602,7 @@ function get_account_data_row($accounting, $controller)
 	//var_dump($test);
 	$row = array (
 		'total_id' => $accounting->total_id,
+		'code'=>$accounting->code,
 		'created_time' => date("d/m/Y h:m:s",$accounting->created_time),
 		'employee' => $accounting->employee,
 		'note' => $accounting->note,
@@ -611,7 +614,14 @@ function get_account_data_row($accounting, $controller)
 	{
 		$row['type'] = "Thu";
 	}else{
-		$row['type'] = "Chi";
+		if($accounting->kind == 1){
+			$row['type'] = "Chi - Nội bộ";
+		}	elseif($accounting->kind == 2){
+			$row['type'] = "Chi - Khác";
+		} else{
+			$row['type'] = "Chi - Trả lại khách";
+		}
+		
 	}
 
 	return $row;

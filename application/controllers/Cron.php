@@ -9,6 +9,15 @@ class Cron extends CI_Controller{
         $this->load->library('sms_lib');
 	}
 
+    // Auto tong hop vao bang 1 AM daily daily_total
+
+    public function daily_total()
+    {
+        echo 'Started';
+        $this->Accounting->auto_create_daily_total();
+        echo 'Completed';
+    }
+
     // Import Sản phẩm mắt kính;
     public function import_lens()
     {
