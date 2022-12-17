@@ -616,7 +616,7 @@ function get_account_data_row($accounting, $controller)
 	}else{
 		if($accounting->kind == 1){
 			$row['type'] = "Chi - Nội bộ";
-		}	elseif($accounting->kind == 2){
+		}	elseif($accounting->kind == 3){
 			$row['type'] = "Chi - Khác";
 		} else{
 			$row['type'] = "Chi - Trả lại khách";

@@ -196,9 +196,11 @@ class Accounting extends CI_Model
 			$payout_data['type'] = 1; //payout
 			$payout_data['code'] = 'PO'.time();
 			$payout_data['payment_type'] = 'Tiền mặt';
-			if($payout_data['kind']==1)
+			if($payout_data['kind']==1) // Các khoản chi cho hoạt động cửa hàng
 			{
 				$payout_data['code'] = 'NB-'.time();
+				$payout_data['payment_id'] = 0;//don't user
+				$payout_data['sale_id'] = 0;//don't user
 			}else {
 				//$payout_data['kind'] = 0; //don't user
 				$payout_data['payment_id'] = 0;//don't user
