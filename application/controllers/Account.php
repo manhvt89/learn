@@ -53,13 +53,14 @@ class Account extends Secure_Controller
 
 	    $user = $this->Employee->get_logged_in_employee_info();
         $this->Accounting->auto_create_daily_total();
-       /*  if($this->Employee->has_grant('account_admin',$user->person_id))
+		//if ($this->Employee->has_grant($controller_name.'_admin')
+       	if($this->Employee->has_grant('account_admin'))
         {
             $data['permission_admin'] = 1;
         }else{
             $data['permission_admin'] = 0;
-        } */
-		$data['permission_admin'] = 1;
+        }
+		//$data['permission_admin'] = 1;
 	    $data['table_headers'] = $this->xss_clean(get_accounting_manage_table_headers());
 
         // filters that will be loaded in the multiselect dropdown
@@ -710,6 +711,11 @@ class Account extends Secure_Controller
 		$exists = !empty($invoice_number) && $this->Sale->check_invoice_number_exists($invoice_number, $sale_id);
 
 		echo !$exists ? 'true' : 'false';
+	}
+
+	public function admin()
+	{
+		return '';
 	}
 }
 ?>
