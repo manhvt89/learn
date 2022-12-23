@@ -483,7 +483,41 @@ td .input-test {
 #rp_inventory_hyo tr:nth-child(even) input {
     background-color: #D6EEEE;
 }
+#report_summary table{
+  margin:auto;
+}
+#report_summary table tr td:nth-of-type(1){
+  text-align: left;
+}
+#report_summary table tr td:nth-of-type(2){
+  text-align: right;
+  min-width: 100px;
+}
 
+#report_summary table tr{
+  margin: 5px 0 5px 0;
+}
+
+#report_summary .label-dauky{
+   margin:0px;
+}
+#report_summary .label-cuoiky{
+  margin:0px;
+}
+#report_summary .label-chitrongky{
+margin:0px;
+}
+#report_summary .label-thutrongky{
+margin:0px;
+}
+#report_summary .label-chinoibo{
+margin:0px;
+padding-left:20px;
+}
+#report_summary .label-chikhac{
+margin:0px;
+padding-left:20px;
+}
 @media print {
     /*
     Edit for BILL

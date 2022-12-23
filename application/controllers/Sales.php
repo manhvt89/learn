@@ -1291,6 +1291,7 @@ class Sales extends Secure_Controller
 	{	
 		$data = array();
 		$data['suspended_sales'] = $this->xss_clean($this->Sale_suspended->get_all()->result_array());
+
 		$this->load->view('sales/suspended', $data);
 	}
 	

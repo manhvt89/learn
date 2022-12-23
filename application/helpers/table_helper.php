@@ -565,13 +565,15 @@ function get_supplier_data_row($supplier, $controller)
 function get_accounting_manage_summary($payments, $controller)
 {
 	$CI =& get_instance();
-	$table = '<div id="report_summary">';
-	$table .= '<p>Số dư đầu kỳ: <b>'. number_format($payments['starting']).'</b></p>';
-	$table .= '<p>Thu trong kỳ: <b>'. number_format($payments['in']).'</b></p>';
-	$table .= '<p>Chi trong kỳ: <b>'. number_format($payments['po']).'</b></p>';
-	$table .= '<p>Cuối trong kỳ: <b>'. number_format($payments['ending']).'</b></p>';
-	$table .= '<p>Chi nội bộ: <b>'. number_format($payments['nb']).'</b></p>';
-	$table .= '</div>';
+	$table = '<div id="report_summary"><table>';
+	$table .= '<tr><td><p class="label-dauky">Số dư đầu kỳ (1): </p></td><td><b>'. to_currency($payments['starting']).'</b></td></tr>';
+	$table .= '<tr><td><p class="label-thutrongky">Thu trong kỳ (2): </p></td><td><b>'. to_currency($payments['in']).'</b></td></tr>';
+	$table .= '<tr><td><p class="label-chitrongky">Chi trong kỳ (3)=(4)+(5): </p></td><td><b>'. to_currency($payments['po']-0).'</b></td></tr>';
+	$table .= '<tr><td><p class="label-chikhac">Chi khác (4): </p></td><td><b>'. to_currency($payments['po'] - $payments['nb']).'</b></td></tr>';
+	$table .= '<tr><td><p class="label-chinoibo">Chi nội bộ (5): </p></td><td><b>'. to_currency($payments['nb']-0).'</b></td></tr>';
+	$table .= '<tr><td><p class="label-cuoiky">Cuối trong kỳ (6)=(1)+(2)-(3): </p></td><td><b>'. to_currency($payments['ending']).'</b></td></tr>';
+	
+	$table .= '</table></div>';
 
 	return $table;
 }
@@ -607,7 +609,7 @@ function get_account_data_row($accounting, $controller)
 		'employee' => $accounting->employee,
 		'note' => $accounting->note,
 		'person'=>$accounting->person,
-		'amount'=>number_format($accounting->amount)
+		'amount'=>to_currency($accounting->amount - 0)
 	);
 
 	if($accounting->type==0)

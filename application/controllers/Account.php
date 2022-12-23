@@ -69,7 +69,7 @@ class Account extends Secure_Controller
         $this->load->view('accounting/manage', $data);
 	}
 
-	public function manage()
+	/* public function manage()
 	{
 		$person_id = $this->session->userdata('person_id');
 
@@ -98,7 +98,7 @@ class Account extends Secure_Controller
 			$data['filters'] = null;
 			$this->load->view('test/manage', $data);
 		}
-	}
+	} */
 
 	public function get_row($row_id)
 	{
