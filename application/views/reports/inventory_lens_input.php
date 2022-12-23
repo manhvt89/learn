@@ -49,7 +49,7 @@ $(document).ready(function()
 		$(".table2excel").table2excel({
 			exclude: ".noExl",
 			name: "Excel Document Name",
-			filename: "myFileName",
+			filename: "Ton_kho_mat",
 			fileext: ".xls",
 			exclude_img: true,
 			exclude_links: true,
@@ -151,12 +151,12 @@ $(document).ready(function()
 						
 						rp_body = rp_body + row_sub + '</tr>';
 
-						html = '<table id="rp_inventory" class="table2excel">' + header + header_rp1 + header_rp2 + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
+						html = '<table id="rp_inventory" class="table2excel">' + header + header_rp1 + header_rp2 + rp_body;
 						
 						/********************************* END  */ 
 
 						rp_body = '';
-						header_rp1 = '<tr><td class="rp_header">SPH</td>' +
+						header_rp1 = '<tr class=""><td class="rp_header">SPH</td>' +
 							'<td colspan="17">CYL (+)</td>' +
 							'</tr>';
 							var header_rp2 = '<tr><td>(+)</td>' +
@@ -198,7 +198,7 @@ $(document).ready(function()
 						
 						rp_body = rp_body + row_sub + '</tr>';
 
-						html = html + '<table id="rp_inventory" class="table2excel">' + header + header_rp1 + header_rp2 + rp_body + '</table><div class="break-page" style="page-break-after: always; padding-bottom:15px;" ></div>';
+						html = html + '<tr class="break-page" style="page-break-after: always;"><td colspan="18"></td></tr>'+header + header_rp1 + header_rp2 + rp_body + '</table>';
 						
 						
 						html = html + '<div style="height: 50px;"></div>'

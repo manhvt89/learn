@@ -100,11 +100,14 @@ $(document).ready(function()
 					header = header +'<tr><td colspan="26" style="height: 15px"></td></tr>';
 
 
+					header = header;
+
+					var table_header = '<table>'+ header + '</table>';
 
 					var header_rp = '<tr><td class="rp_header">SPH</td>' +
 						'<td colspan="25">CYL (-)</td>' +
 						'</tr>';
-						header_rp = header_rp + '<tr class="rp_header_table_len"><td>(-)</td>' +
+					header_rp = header_rp + '<tr class="rp_header_table_len"><td>(-)</td>' +
 						'<td>-0.00</td><td>-0.25</td><td>-0.50</td><td>-0.75</td>' +
 						'<td>-1.00</td><td>-1.25</td><td>-1.50</td><td>-1.75</td>' +
 						'<td>-2.00</td><td>-2.25</td><td>-2.50</td><td>-2.75</td>' +
@@ -113,9 +116,7 @@ $(document).ready(function()
 						'<td>-5.00</td><td>-5.25</td><td>-5.50</td><td>-5.75</td><td>-6.00</td>' +
 						'</tr>';
 
-					header = header;
-
-					var table_header = '<table>'+ header + '</table>';
+					
 
 					var rp_body = '';
 					var myopia = msg.data.myopia;
@@ -152,11 +153,6 @@ $(document).ready(function()
 
 
 					rp_body = rp_body + row57 + '</tr>';
-
-
-
-
-
 
 					var rp_footer = '<tr><td>Sub</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>' +
 						'<td>'+ sub_hyperopia[10]+ '</td>' +
@@ -205,7 +201,7 @@ $(document).ready(function()
 
 					var table2 = '<table id="rp_inventory_2" style="margin-bottom: 900px; margin-top: 20px;">' + header_rp + rp_body + rp_footer+'</table>';
 
-					html = table_header + table2 + table1;
+					html = table_header + table1 + table2;
 					$('#view_report_lens_category').html(html);
 				}else{
 					$('#view_report_lens_category').html('<strong>Không tìm thấy báo cáo phù hợp, hãy thử lại</strong>');
