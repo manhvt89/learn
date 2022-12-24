@@ -1187,25 +1187,53 @@ class Reports extends Secure_Controller
 		$details_data = array();
 
 		$show_locations = $this->xss_clean($this->Stock_location->multiple_locations());
-        $person_id = $this->session->userdata('person_id');
-        $reports_accounting = $this->Employee->has_grant('reports_receiving-accounting', $person_id);
+        //$person_id = $this->session->userdata('person_id');
+        $reports_accounting = $this->Employee->has_grant('reports_receiving-accounting');
+        $now_time = time() - 36000;
 
 		foreach($report_data['summary'] as $key => $row)
 		{
-			$summary_data[] = $this->xss_clean(array(
-				'id' => $row['receiving_id'],
-				'receiving_date' => $row['receiving_date'],
-				'quantity' => to_quantity_decimals($row['items_purchased']),
-				'employee_name' => $row['employee_name'],
-				'supplier_name' => $row['supplier_name'],
-				'total' => to_currency($row['total']),
-				'payment_type' => $row['payment_type'],
-				'reference' => $row['reference'],
-				'comment' => $row['comment'],
-				'edit' => anchor('receivings/edit/' . $row['receiving_id'], '<span class="glyphicon glyphicon-edit"></span>',
-					array('class' => 'modal-dlg print_hide', 'data-btn-delete' => $this->lang->line('common_delete'), 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('receivings_update'))
-				)
-			));
+            $receiving_time = strtotime($row['receiving_time']);
+            
+            if ($now_time < $receiving_time ) {
+                $summary_data[] = $this->xss_clean(
+                    array(
+                        'id' => $row['receiving_id'],
+                        'receiving_date' => $row['receiving_date'],
+                        'quantity' => to_quantity_decimals($row['items_purchased']),
+                        'employee_name' => $row['employee_name'],
+                        'supplier_name' => $row['supplier_name'],
+                        'total' => to_currency($row['total']),
+                        'payment_type' => $row['payment_type'],
+                        'reference' => $row['reference'],
+                        'comment' => $row['comment'],
+                        'edit' => anchor(
+                            'receivings/edit/' . $row['receiving_id'],
+                            '<span class="glyphicon glyphicon-edit"></span>',
+                            array('class' => 'modal-dlg print_hide', 'data-btn-delete' => $this->lang->line('common_delete'), 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('receivings_update'))
+                        )
+                    )
+                );
+            } else{
+                $summary_data[] = $this->xss_clean(
+                    array(
+                        'id' => $row['receiving_id'],
+                        'receiving_date' => $row['receiving_date'],
+                        'quantity' => to_quantity_decimals($row['items_purchased']),
+                        'employee_name' => $row['employee_name'],
+                        'supplier_name' => $row['supplier_name'],
+                        'total' => to_currency($row['total']),
+                        'payment_type' => $row['payment_type'],
+                        'reference' => $row['reference'],
+                        'comment' => $row['comment'],
+                        'edit' => anchor(
+                            'receivings/edit/' . $row['receiving_id'],
+                            '<span class="glyphicon glyphicon-edit"></span>',
+                            array('class' => 'modal-dlg print_hide', 'data-btn-submit' => $this->lang->line('common_submit'), 'title' => $this->lang->line('receivings_update'))
+                        )
+                    )
+                );
+            }
 
 			foreach($report_data['details'][$key] as $drow)
 			{
