@@ -21,8 +21,9 @@ class Detailed_sales extends Report
 	public function getDataColumns()
 	{
         $CI =& get_instance();
-        $person_id = $this->iLoggedIn_Id;
-        if($CI->Employee->has_grant('reports_sales-accounting', $person_id)) {
+        //$person_id = $this->iLoggedIn_Id;
+        if($CI->Employee->has_grant('reports_sales_accounting')) //Phân quyền cho kế toán
+        {
             return array(
                 'summary' => array(
                     array('id' => $this->lang->line('reports_sale_id')),

@@ -1084,6 +1084,11 @@ class Reports extends Secure_Controller
 		$this->load->view('reports/tabular_details', $data);
 	}
 
+    public function sales_accounting() // use to permission
+    {
+        return true;
+    }
+
 	public function get_detailed_receivings_row($receiving_id)
 	{
 		$inputs = array('receiving_id' => $receiving_id);
