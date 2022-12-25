@@ -122,23 +122,23 @@
 	</table>
 </div>
 <?php
-echo form_button(array(
-	'name'=>'generate_report',
-	'id'=>'generate_report',
-	'content'=>$this->lang->line('common_submit'),
-	'class'=>'btn btn-primary btn-sm')
-);
+	echo form_button(array(
+		'name'=>'generate_report',
+		'id'=>'generate_report',
+		'content'=>$this->lang->line('common_submit'),
+		'class'=>'btn btn-primary btn-sm')
+	);
 ?>
 <?php echo form_close(); ?>
 <script type="text/javascript">
-$(document).ready(function()
-{
-	$('#generate_report').click(function()
-    {
-    	$( "#target" ).submit();
-    });
+	$(document).ready(function()
+	{
+		$('#generate_report').click(function()
+		{
+			$( "#target" ).submit();
+		});
 
-});
+	});
 
 </script>
 <?php $this->load->view("partial/footer"); ?>
