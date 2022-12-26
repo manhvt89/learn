@@ -109,6 +109,10 @@ class Barcodes extends Secure_Controller
 		//$item_ids = explode(':', $item_ids);
 		$results = $this->printbarcode_lib->get_cart();
 		$config = $this->barcode_lib->get_barcode_config();
+		$config['store_name'] = $this->config->item('company');
+		$config['store_address'] = $this->config->item('address');
+			
+		$data['barcode_config'] = $config;
 
 		$data['barcode_config'] = $config;
 
@@ -416,8 +420,7 @@ class Barcodes extends Secure_Controller
 		$data['barcode_config'] = $config;
 
 
-		var_dump($data['barcode_config']);
-		die();
+		
 		// check the list of items to see if any item_number field is empty
 		foreach($result as &$item)
 		{
