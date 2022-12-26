@@ -223,4 +223,5 @@ $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','G
         '1.67 CHEMI Crystal U2', //ok
         '1.67 CHEMI Crystal U6',//ok
         '1.74 CHEMI Crystal U2', //ok
+        '1.56 TRÁNG CỨNG'
         );
