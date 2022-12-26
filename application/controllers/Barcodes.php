@@ -410,7 +410,12 @@ class Barcodes extends Secure_Controller
 		$result = $this->Item->get_multiple_info($item_ids, $this->item_lib->get_item_location())->result_array();
 		$config = $this->barcode_lib->get_barcode_config();
 
+		$config['store_name'] = $this->config->item('company');
+		$config['store_address'] = $this->config->item('address');
+			
 		$data['barcode_config'] = $config;
+
+
 
 		// check the list of items to see if any item_number field is empty
 		foreach($result as &$item)
