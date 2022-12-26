@@ -416,7 +416,7 @@ class Barcodes extends Secure_Controller
 		$data['barcode_config'] = $config;
 
 
-
+		var_dump($data['barcode_config']);
 		// check the list of items to see if any item_number field is empty
 		foreach($result as &$item)
 		{
