@@ -1370,7 +1370,7 @@ class Reports extends Secure_Controller
         $this->load->model('reports/Inventory_lens');
         $model = $this->Inventory_lens;
         $location_id = $this->input->post('location_id');
-        $category = $this->input->post('category');
+        $category = $this->config->item('iKindOfLens')[$this->input->post('category')];
         $result = 1;
 
         $inputs = array('location_id'=>$location_id,'category'=>$category);
