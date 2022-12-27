@@ -86,9 +86,56 @@ class Inventory_lens extends Report
         $this->db->order_by('items.category');
 
         $data = array();
-        $data['summary'] = $this->db->get()->result_array();
+		
+		$tmp = $this->db->get()->result_array();
+
+		$sales = $this->_getSalesToday();
+		if(empty($sale))
+		{
+
+			foreach($tmp as $k=>$v)
+			{
+				$v['sale_quantity'] = 0;
+				$data['summary'][] = $v;
+			}
+			
+		} else {
+			$_sales = array();
+			foreach($sales as $k=>$v)
+			{
+				$_sales[$v['item_category']] = $v['quantity'];
+			}
+			foreach($tmp as $k=>$v)
+			{
+				if(isset($_sales[$v['category']]))
+				{
+					$v['sale_quantity'] = $_sales[$v['category']];
+				} else{
+					$v['sale_quantity'] = 0;
+				}
+				$data['summary'][] = $v;
+			}
+		}
+        //$data['summary'] = $this->db->get()->result_array();
+		//$data['summary'] = $tmp;
+		//var_dump($data);
         return $data;
 
+	}
+
+	public function _getSalesToday()
+	{
+		$filter = $this->config->item('filter_lens'); //define in app.php
+		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, si.item_category');
+        $this->db->from('sales_items AS si');
+        $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
+        $this->db->where_in('si.item_category', $filter);
+		$this->db->where('DATE(s.sale_time)=CURDATE()-1');
+        $this->db->group_by('si.item_category');
+        $this->db->order_by('si.item_category');
+        $data = array();
+        $data = $this->db->get()->result_array();
+        return $data;
 	}
 
 	public function _getDataColumns()
@@ -99,6 +146,7 @@ class Inventory_lens extends Report
 				array('id' => $this->lang->line('reports_sale_id')),
 				array('cat' => 'Loại mắt'),
 				array('quantity' => $this->lang->line('reports_quantity')),
+				array('sale_quantity'=>'Số lượng đã bán'),
 			)
 		);
 	}
