@@ -1370,7 +1370,8 @@ class Reports extends Secure_Controller
         $this->load->model('reports/Inventory_lens');
         $model = $this->Inventory_lens;
         $location_id = $this->input->post('location_id');
-        $category = $this->config->item('iKindOfLens')[$this->input->post('category')];
+        $category = $this->input->post('category');
+        $icate = $this->config->item('iKindOfLens');
         $result = 1;
 
         $inputs = array('location_id'=>$location_id,'category'=>$category);
@@ -1388,7 +1389,7 @@ class Reports extends Secure_Controller
         $data['header'] = array(
                                 'title'=>'Báo cáo tồn kho',
                                 'company_name'=>'',
-                                'description'=>$category,
+                                'description'=>$icate[$category],
                                 'brand'=>'',
                                 'customer'=>'',
                                 'ordered_date'=>date('d/m/Y'),
