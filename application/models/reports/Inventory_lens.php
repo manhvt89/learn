@@ -90,7 +90,7 @@ class Inventory_lens extends Report
 		$tmp = $this->db->get()->result_array();
 
 		$sales = $this->_getSalesToday();
-		if(empty($sale))
+		if(empty($sales))
 		{
 
 			foreach($tmp as $k=>$v)
