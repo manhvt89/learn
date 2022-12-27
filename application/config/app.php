@@ -210,20 +210,6 @@ Báo cáo Khác;
 
 $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','GỌNG <5T','GỌNG > 5T','G07','G08','G09','G10','G11','G12','G13','G14','G15',
             'KÍNH MÁT <1T','KÍNH MÁT <2T','KÍNH MÁT <3T','KÍNH MÁT <4T','KÍNH MÁT <5T','KÍNH MÁT > 5T','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
-        '1.56 CHEMI',
-        '1.56 KODAK', //ok
-        '1.60 KODAK', //ok
-        '1.67 KODAK', //ok
-        '1.56 CHEMI ASP PHOTO GRAY',//ok
-        '1.56 CHEMI Crystal U2', //ok
-        '1.56 CHEMI Crystal U6',//ok
-        '1.60 CHEMI U2',
-        '1.61 CHEMI Crystal U2', //ok
-        '1.60 CHEMI Crystal U6',//ok
-        '1.67 CHEMI Crystal U2', //ok
-        '1.67 CHEMI Crystal U6',//ok
-        '1.74 CHEMI Crystal U2', //ok
-        '1.56 TRÁNG CỨNG',
         'G01',
         'G02',
         'G03',
@@ -235,7 +221,11 @@ $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','G
         'M03',
         'M04',
         'M05',
-        'M06',
+        'M06'
+        );
+
+$config['filter_lens'] = $config['iKindOfLens'];
+$config['filter_contact_lens'] = array(
         'Ngâm-Nhỏ',
         'Lens Seed 1M Trong',
         'Lens Seed 1D Rich',
@@ -245,6 +235,4 @@ $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','G
         'CLALEN 1D Soul Brown',
         'CLALEN 1D Suzy Gray',
         'Lens Biomedics 1D',
-        'Lens Biomedics55 3M',
-        
-        );
+        'Lens Biomedics55 3M');

@@ -32,7 +32,7 @@ if(isset($error))
 	</div>
 	<div class="col-md-3">
 		<?php
-		if ($this->Employee->has_grant('reports_inventory', $this->session->userdata('person_id')))
+		if ($this->Employee->has_grant('reports_inventory'))
 		{
 		?>
 			<div class="panel panel-primary">
@@ -50,7 +50,11 @@ if(isset($error))
 					//show_report('', 'reports_inventory_import_contact_lens');
 				// FRAME
 					show_report('', 'reports_inventory_frame');
+			
+					//show_report('', 'reports_inventory_detail_lens');
 				?>
+				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_lens');?>"><?php echo 'Báo cáo chi tiết Mắt kính'; ?></a>
+				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_contact_lens');?>"><?php echo 'Báo cáo chi tiết Áp tròng'; ?></a>
 				</div>
 			</div>
 		<?php 
@@ -59,7 +63,7 @@ if(isset($error))
 	</div>
 	<div class="col-md-3">
 		<?php
-		if ($this->Employee->has_grant('reports_inventory', $this->session->userdata('person_id')))
+		if ($this->Employee->has_grant('reports_inventory'))
 		{
 			?>
 			<div class="panel panel-primary">

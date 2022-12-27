@@ -1349,7 +1349,7 @@ class Reports extends Secure_Controller
 		$this->load->view('reports/tabular', $data);
 	}
 
-    public function inventory_lens()
+    public function inventory_detail_lens()
     {
         $this->load->model('reports/Inventory_lens');
         $model = $this->Inventory_lens;
@@ -1359,7 +1359,7 @@ class Reports extends Secure_Controller
         $stock_locations['all'] = $this->lang->line('reports_all');
         $data['stock_locations'] = array_reverse($stock_locations, TRUE);
 
-        $this->load->view('reports/inventory_lens_input', $data);
+        $this->load->view('reports/inventory_detail_lens_input', $data);
     }
 
     /*
@@ -2223,7 +2223,7 @@ class Reports extends Secure_Controller
         echo json_encode($json);
     }
 
-    public function inventory_contact_lens()
+    public function inventory_detail_contact_lens()
     {
         $this->load->model('reports/Inventory_contact_lens');
         $model = $this->Inventory_contact_lens;
@@ -2233,7 +2233,7 @@ class Reports extends Secure_Controller
         $stock_locations['all'] = $this->lang->line('reports_all');
         $data['stock_locations'] = array_reverse($stock_locations, TRUE);
 
-        $this->load->view('reports/inventory_contact_lens_input', $data);
+        $this->load->view('reports/inventory_detail_contact_lens_input', $data);
     }
     public function ajax_inventory_contact_lens()
     {
@@ -3657,5 +3657,120 @@ class Reports extends Secure_Controller
         $json = array('result'=>$result,'data'=>$data);
         echo json_encode($json);
     }
+
+    //Added by ManhVT 26.12.2022
+    public function inventory_lens()
+    {
+        $this->load->model('reports/Inventory_lens');
+        $model = $this->Inventory_lens;
+        $data = array();
+        $data['item_count'] = $model->getCategoryDropdownArray();
+        $stock_locations = $this->xss_clean($this->Stock_location->get_allowed_locations());
+        $stock_locations['all'] = $this->lang->line('reports_all');
+        $data['stock_locations'] = array_reverse($stock_locations, TRUE);
+
+        $this->load->view('reports/inventory_lens_input', $data);
+    }
+
+    public function ajax_inventory_lens()
+    {
+        $this->load->model('reports/Inventory_lens');
+        $model = $this->Inventory_lens;
+        $location_id = $this->input->post('location_id');
+
+        $result = 1;
+
+        $inputs = array('location_id'=>$location_id);
+        $headers = $this->xss_clean($model->_getDataColumns());
+        //var_dump($headers);
+        $report_data = $model->_getData($inputs);
+        $data = null;
+        if(!$report_data)
+        {
+            $result = 0;
+        }else{
+            $summary_data = array();
+            $details_data = array();
+            $i = 1;
+            foreach($report_data['summary'] as $key => $row)
+            {
+
+                $summary_data[] = $this->xss_clean(array(
+                    'id' => $i,
+                    'cat' => $row['category'],
+                    'quantity' => number_format($row['quantity']),
+                ));
+                $i++;
+            }
+
+            $data = array(
+                'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
+                'summary_data' => $summary_data,
+                'report_data' =>$report_data
+            );
+
+        }
+
+
+        $json = array('result'=>$result,'data'=>$data);
+        echo json_encode($json);
+    }
+
+    public function inventory_contact_lens()
+    {
+        $this->load->model('reports/Inventory_lens');
+        $model = $this->Inventory_lens;
+        $data = array();
+        $data['item_count'] = $model->getCategoryDropdownArray();
+        $stock_locations = $this->xss_clean($this->Stock_location->get_allowed_locations());
+        $stock_locations['all'] = $this->lang->line('reports_all');
+        $data['stock_locations'] = array_reverse($stock_locations, TRUE);
+
+        $this->load->view('reports/inventory_contact_lens_input', $data);
+    }
+
+    public function ajax_inventory_total_contact_lens()
+    {
+        $this->load->model('reports/Inventory_contact_lens');
+        $model = $this->Inventory_contact_lens;
+        $location_id = $this->input->post('location_id');
+
+        $result = 1;
+
+        $inputs = array('location_id'=>$location_id);
+        $headers = $this->xss_clean($model->_getDataColumns());
+        //var_dump($headers);
+        $report_data = $model->_getData($inputs);
+        $data = null;
+        if(!$report_data)
+        {
+            $result = 0;
+        }else{
+            $summary_data = array();
+            $details_data = array();
+            $i = 1;
+            foreach($report_data['summary'] as $key => $row)
+            {
+
+                $summary_data[] = $this->xss_clean(array(
+                    'id' => $i,
+                    'cat' => $row['category'],
+                    'quantity' => number_format($row['quantity']),
+                ));
+                $i++;
+            }
+
+            $data = array(
+                'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
+                'summary_data' => $summary_data,
+                'report_data' =>$report_data
+            );
+
+        }
+        $json = array('result'=>$result,'data'=>$data);
+        echo json_encode($json);
+    }
+
+    
 }
 ?>
