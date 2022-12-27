@@ -130,7 +130,7 @@ class Inventory_lens extends Report
         $this->db->from('sales_items AS si');
         $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
         $this->db->where_in('si.item_category', $filter);
-		$this->db->where('DATE(s.sale_time)=CURDATE()-1');
+		$this->db->where('DATE(s.sale_time)=CURDATE()');
         $this->db->group_by('si.item_category');
         $this->db->order_by('si.item_category');
         $data = array();
