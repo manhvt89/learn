@@ -3699,7 +3699,7 @@ class Reports extends Secure_Controller
                     'id' => $i,
                     'cat' => $row['category'],
                     'quantity' => number_format($row['quantity']),
-                    'sale_quantity' => number_format($row['sale_quantity']),
+                    'sale_quantity' => number_format($row['sale_quantity'])==0?'-':number_format($row['sale_quantity']),
                 ));
                 $i++;
             }
