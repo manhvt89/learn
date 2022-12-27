@@ -223,5 +223,28 @@ $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','G
         '1.67 CHEMI Crystal U2', //ok
         '1.67 CHEMI Crystal U6',//ok
         '1.74 CHEMI Crystal U2', //ok
-        '1.56 TRÁNG CỨNG'
+        '1.56 TRÁNG CỨNG',
+        'G01',
+        'G02',
+        'G03',
+        'G04',
+        'G05',
+        'G06',
+        'M01',
+        'M02',
+        'M03',
+        'M04',
+        'M05',
+        'M06',
+        'Ngâm-Nhỏ',
+        'Lens Seed 1M Trong',
+        'Lens Seed 1D Rich',
+        'Lens Seed 1D Base',
+        'CLALEN 1D Latin',
+        'CLALEN 1D Alica Brown',
+        'CLALEN 1D Soul Brown',
+        'CLALEN 1D Suzy Gray',
+        'Lens Biomedics 1D',
+        'Lens Biomedics55 3M',
+        
         );
