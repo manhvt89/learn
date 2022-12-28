@@ -154,13 +154,14 @@ class Inventory_lens extends Report
 	public function _getSalesToday($inputs)
 	{
 		$filter = $this->config->item('filter_lens'); //define in app.php
-		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, si.item_category');
+		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, i.category as item_category');
         $this->db->from('sales_items AS si');
         $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
-        $this->db->where_in('si.item_category', $filter);
+		$this->db->join('items AS i', 'si.item_id = i.item_id');
+        $this->db->where_in('i.category', $filter);
 		$this->db->where('DATE(s.sale_time) BETWEEN '. $this->db->escape($inputs['fromDate']).' AND '.$this->db->escape($inputs['toDate']));
-        $this->db->group_by('si.item_category');
-        $this->db->order_by('si.item_category');
+        $this->db->group_by('i.category');
+        $this->db->order_by('i.category');
         $data = array();
         $data = $this->db->get()->result_array();
         return $data;
