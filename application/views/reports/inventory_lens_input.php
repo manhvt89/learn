@@ -30,6 +30,7 @@ if(isset($error))
 <div id="view_report_lens_category">
 
 </div>
+<div id="table_holder">
 <div id="toolbar">
 	<div class="pull-left form-inline" role="toolbar">
 		<!--
@@ -41,7 +42,7 @@ if(isset($error))
 	
 	</div>
 </div>
-<div id="table_holder"><table id="table"></table></div>
+<table id="table"></table></div>
 
 <?php $this->load->view("partial/footer"); ?>
 
