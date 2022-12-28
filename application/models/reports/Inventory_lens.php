@@ -89,7 +89,7 @@ class Inventory_lens extends Report
 		
 		$tmp = $this->db->get()->result_array();
 
-		$sales = $this->_getSalesToday();
+		$sales = $this->_getSalesToday($inputs);
 		if(empty($sales))
 		{
 
@@ -123,14 +123,14 @@ class Inventory_lens extends Report
 
 	}
 
-	public function _getSalesToday()
+	public function _getSalesToday($inputs)
 	{
 		$filter = $this->config->item('filter_lens'); //define in app.php
 		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, si.item_category');
         $this->db->from('sales_items AS si');
         $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
         $this->db->where_in('si.item_category', $filter);
-		$this->db->where('DATE(s.sale_time)=CURDATE()');
+		$this->db->where('DATE(s.sale_time) BETWEEN '. $this->db->escape($inputs['fromDate']).' AND '.$this->db->escape($inputs['toDate']));
         $this->db->group_by('si.item_category');
         $this->db->order_by('si.item_category');
         $data = array();
