@@ -3702,12 +3702,14 @@ class Reports extends Secure_Controller
             $i = 1;
             foreach($report_data['summary'] as $key => $row)
             {
-
+                $begin_quantity = $row['end_quantity'] + $row['sale_quantity'] - $row['receive_quantity'];
                 $summary_data[] = $this->xss_clean(array(
                     'id' => $i,
                     'cat' => $row['category'],
-                    'quantity' => number_format($row['quantity']),
+                    'begin_quantity' => number_format($begin_quantity),
+                    'end_quantity' => number_format($row['end_quantity']),
                     'sale_quantity' => number_format($row['sale_quantity'])==0?'-':number_format($row['sale_quantity']),
+                    'receive_quantity' => number_format($row['receive_quantity'])==0?'-':number_format($row['receive_quantity']),
                 ));
                 $i++;
             }

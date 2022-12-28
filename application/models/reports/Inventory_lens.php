@@ -68,7 +68,7 @@ class Inventory_lens extends Report
 	public function _getData(array $inputs)
 	{	
         $filter = $this->config->item('filter_lens'); //define in app.php
-	    $this->db->select('items.category, SUM(item_quantities.quantity) AS quantity, stock_locations.location_id');
+	    $this->db->select('items.category, SUM(item_quantities.quantity) AS end_quantity, stock_locations.location_id');
         $this->db->from('items AS items');
         $this->db->join('item_quantities AS item_quantities', 'items.item_id = item_quantities.item_id');
         $this->db->join('stock_locations AS stock_locations', 'item_quantities.location_id = stock_locations.location_id');
@@ -116,6 +116,34 @@ class Inventory_lens extends Report
 				$data['summary'][] = $v;
 			}
 		}
+
+		$receives = $this->_getReceive($inputs);
+		if(empty($receives))
+		{
+			foreach($data['summary'] as $k=>$v)
+			{
+				$v['receive_quantity'] = 0;
+				$data['summary'][$k] = $v;
+			}
+		} else{
+			$_receives = array();
+			foreach($receives as $k=>$v)
+			{
+				$_receives[$v['item_category']] = $v['quantity'];
+			}
+
+			foreach($data['summary'] as $k=>$v)
+			{
+				if(isset($_receives[$v['category']]))
+				{
+					$v['receive_quantity'] = $_receives[$v['category']];
+				} else{
+					$v['receive_quantity'] = 0;
+				}
+				$data['summary'][$k] = $v;
+			}
+
+		}
         //$data['summary'] = $this->db->get()->result_array();
 		//$data['summary'] = $tmp;
 		//var_dump($data);
@@ -138,6 +166,22 @@ class Inventory_lens extends Report
         return $data;
 	}
 
+	public function _getReceive($inputs)
+	{
+		$filter = $this->config->item('filter_lens'); //define in app.php
+		$this->db->select('r.receiving_time, SUM(ri.quantity_purchased) AS quantity, i.category');
+        $this->db->from('receivings_items AS ri');
+        $this->db->join('receivings AS r', 'ri.receiving_id = r.receiving_id');
+		$this->db->join('items AS i', 'ri.item_id = i.item_id');
+		$this->db->where_in('i.category', $filter);
+		$this->db->where('DATE(r.receiving_time) BETWEEN '. $this->db->escape($inputs['fromDate']).' AND '.$this->db->escape($inputs['toDate']));
+        $this->db->group_by('i.category');
+        $this->db->order_by('i.category');
+        $data = array();
+        $data = $this->db->get()->result_array();
+        return $data;
+	}
+
 	public function _getDataColumns()
 	{
 		return array(
@@ -145,8 +189,11 @@ class Inventory_lens extends Report
 			'summary' => array(
 				array('id' => $this->lang->line('reports_sale_id')),
 				array('cat' => 'Loại mắt'),
-				array('quantity' => $this->lang->line('reports_quantity')),
-				array('sale_quantity'=>'Số lượng đã bán'),
+				array('begin_quantity' => 'Đầu kỳ'),
+				array('receive_quantity'=>'Nhập'),
+				array('sale_quantity'=>'Bán'),
+				array('end_quantity' => 'Cuối kỳ'),
+				
 			)
 		);
 	}
