@@ -31,18 +31,19 @@ if(isset($error))
 
 </div>
 <div id="table_holder">
-<div id="toolbar">
-	<div class="pull-left form-inline" role="toolbar">
-		<!--
-		<button id="delete" class="btn btn-default btn-sm print_hide">
-			<span class="glyphicon glyphicon-trash">&nbsp</span><?php echo $this->lang->line("common_delete");?>
-		</button>
-		-->
-		<?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
-	
+	<div id="toolbar">
+		<div class="pull-left form-inline" role="toolbar">
+			<!--
+			<button id="delete" class="btn btn-default btn-sm print_hide">
+				<span class="glyphicon glyphicon-trash">&nbsp</span><?php echo $this->lang->line("common_delete");?>
+			</button>
+			-->
+			<?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
+		
+		</div>
 	</div>
+	<table id="table"></table>
 </div>
-<table id="table"></table></div>
 
 <?php $this->load->view("partial/footer"); ?>
 
