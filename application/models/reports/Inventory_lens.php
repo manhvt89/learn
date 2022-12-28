@@ -169,7 +169,7 @@ class Inventory_lens extends Report
 	public function _getReceive($inputs)
 	{
 		$filter = $this->config->item('filter_lens'); //define in app.php
-		$this->db->select('r.receiving_time, SUM(ri.quantity_purchased) AS quantity, i.category');
+		$this->db->select('r.receiving_time, SUM(ri.quantity_purchased) AS quantity, i.category as item_category');
         $this->db->from('receivings_items AS ri');
         $this->db->join('receivings AS r', 'ri.receiving_id = r.receiving_id');
 		$this->db->join('items AS i', 'ri.item_id = i.item_id');
