@@ -89,7 +89,7 @@ class Inventory_contact_lens extends Report
 	public function _getData(array $inputs)
 	{	
         $filter = $this->config->item('filter_contact_lens'); //define in app.php
-	    $this->db->select('items.category, SUM(item_quantities.quantity) AS quantity, stock_locations.location_id');
+	    $this->db->select('items.category, SUM(item_quantities.quantity) AS end_quantity, stock_locations.location_id');
         $this->db->from('items AS items');
         $this->db->join('item_quantities AS item_quantities', 'items.item_id = item_quantities.item_id');
         $this->db->join('stock_locations AS stock_locations', 'item_quantities.location_id = stock_locations.location_id');
