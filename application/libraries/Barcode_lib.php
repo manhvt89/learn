@@ -171,7 +171,7 @@ class Barcode_lib
 		return $display_table;
 	}
 
-	public function _display_barcode($item, $barcode_config) // @ mawt
+	public function _display_barcode($item, $barcode_config) // @gong
 	{
 		//var_dump($item);die();
 		$item['unit_price'] = $item['price'];
@@ -185,9 +185,9 @@ class Barcode_lib
 		$display_table .= "</div>";
 
 		$display_table .= "<div class='print-barcode_2'>";
-		$display_table .= "<div align='center'><b>".$barcode_config['store_name']."</b></div>";
+		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
 		
-		$display_table .= "<div align='center'>Chăm sóc đôi mắt bạn</div>";
+		$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
 		$display_table .= "<div align='center'>".$barcode_config['store_address']." - <b class='category-barcode'>".$item['item_category']."</b></div>";
 		$display_table .= "</div>";
 		
