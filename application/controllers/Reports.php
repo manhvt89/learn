@@ -3746,9 +3746,18 @@ class Reports extends Secure_Controller
         $model = $this->Inventory_contact_lens;
         $location_id = $this->input->post('location_id');
 
+        $_sFromDate = $this->input->post('fromDate');
+        $_sToDate = $this->input->post('toDate');
+
+        $_aFromDate = explode('/', $_sFromDate);
+        $_aToDate = explode('/', $_sToDate);
+        $_sFromDate = $_aFromDate[2] . '/' . $_aFromDate[1] . '/' . $_aFromDate[0];
+        $_sToDate = $_aToDate[2] . '/' . $_aToDate[1] . '/' . $_aToDate[0];
+        $location_id = $this->input->post('location_id');
         $result = 1;
 
-        $inputs = array('location_id'=>$location_id);
+        $inputs = array('location_id'=>$location_id, 'fromDate'=>$_sFromDate,'toDate'=>$_sToDate);
+
         $headers = $this->xss_clean($model->_getDataColumns());
         //var_dump($headers);
         $report_data = $model->_getData($inputs);
@@ -3762,11 +3771,14 @@ class Reports extends Secure_Controller
             $i = 1;
             foreach($report_data['summary'] as $key => $row)
             {
-
+                $begin_quantity = $row['end_quantity'] + $row['sale_quantity'] - $row['receive_quantity'];
                 $summary_data[] = $this->xss_clean(array(
                     'id' => $i,
                     'cat' => $row['category'],
-                    'quantity' => number_format($row['quantity']),
+                    'begin_quantity' => number_format($begin_quantity),
+                    'end_quantity' => number_format($row['end_quantity']),
+                    'sale_quantity' => number_format($row['sale_quantity'])==0?'-':number_format($row['sale_quantity']),
+                    'receive_quantity' => number_format($row['receive_quantity'])==0?'-':number_format($row['receive_quantity']),
                 ));
                 $i++;
             }

@@ -107,9 +107,99 @@ class Inventory_contact_lens extends Report
         $this->db->order_by('items.category');
 
         $data = array();
-        $data['summary'] = $this->db->get()->result_array();
+		
+		$tmp = $this->db->get()->result_array();
+
+		$sales = $this->_getSalesToday($inputs);
+		if(empty($sales))
+		{
+
+			foreach($tmp as $k=>$v)
+			{
+				$v['sale_quantity'] = 0;
+				$data['summary'][] = $v;
+			}
+			
+		} else {
+			$_sales = array();
+			foreach($sales as $k=>$v)
+			{
+				$_sales[$v['item_category']] = $v['quantity'];
+			}
+			foreach($tmp as $k=>$v)
+			{
+				if(isset($_sales[$v['category']]))
+				{
+					$v['sale_quantity'] = $_sales[$v['category']];
+				} else{
+					$v['sale_quantity'] = 0;
+				}
+				$data['summary'][] = $v;
+			}
+		}
+		if (empty($data['summary'])) {
+			$data['summary'] = array();
+		} else {
+			$receives = $this->_getReceive($inputs);
+			if (empty($receives)) {
+				foreach ($data['summary'] as $k => $v) {
+					$v['receive_quantity'] = 0;
+					$data['summary'][$k] = $v;
+				}
+			} else {
+				$_receives = array();
+				foreach ($receives as $k => $v) {
+					$_receives[$v['item_category']] = $v['quantity'];
+				}
+
+				foreach ($data['summary'] as $k => $v) {
+					if (isset($_receives[$v['category']])) {
+						$v['receive_quantity'] = $_receives[$v['category']];
+					} else {
+						$v['receive_quantity'] = 0;
+					}
+					$data['summary'][$k] = $v;
+				}
+
+			}
+		}
+        //$data['summary'] = $this->db->get()->result_array();
+		//$data['summary'] = $tmp;
+		//var_dump($data);
         return $data;
 
+	}
+
+	public function _getSalesToday($inputs)
+	{
+		$filter = $this->config->item('filter_lens'); //define in app.php
+		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, i.category as item_category');
+        $this->db->from('sales_items AS si');
+        $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
+		$this->db->join('items AS i', 'si.item_id = i.item_id');
+        $this->db->where_in('i.category', $filter);
+		$this->db->where('DATE(s.sale_time) BETWEEN '. $this->db->escape($inputs['fromDate']).' AND '.$this->db->escape($inputs['toDate']));
+        $this->db->group_by('i.category');
+        $this->db->order_by('i.category');
+        $data = array();
+        $data = $this->db->get()->result_array();
+        return $data;
+	}
+
+	public function _getReceive($inputs)
+	{
+		$filter = $this->config->item('filter_lens'); //define in app.php
+		$this->db->select('r.receiving_time, SUM(ri.quantity_purchased) AS quantity, i.category as item_category');
+        $this->db->from('receivings_items AS ri');
+        $this->db->join('receivings AS r', 'ri.receiving_id = r.receiving_id');
+		$this->db->join('items AS i', 'ri.item_id = i.item_id');
+		$this->db->where_in('i.category', $filter);
+		$this->db->where('DATE(r.receiving_time) BETWEEN '. $this->db->escape($inputs['fromDate']).' AND '.$this->db->escape($inputs['toDate']));
+        $this->db->group_by('i.category');
+        $this->db->order_by('i.category');
+        $data = array();
+        $data = $this->db->get()->result_array();
+        return $data;
 	}
 
 	public function _getDataColumns()
@@ -119,7 +209,11 @@ class Inventory_contact_lens extends Report
 			'summary' => array(
 				array('id' => $this->lang->line('reports_sale_id')),
 				array('cat' => 'Loại mắt'),
-				array('quantity' => $this->lang->line('reports_quantity')),
+				array('begin_quantity' => 'Đầu kỳ'),
+				array('receive_quantity'=>'Nhập'),
+				array('sale_quantity'=>'Bán'),
+				array('end_quantity' => 'Cuối kỳ'),
+				
 			)
 		);
 	}
