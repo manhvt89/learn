@@ -25,7 +25,7 @@
 					else:	
 					?>
 						<td><?php echo $key ?></td>
-					<?
+					<?php
 					endif;
 				endforeach;
 			?>
