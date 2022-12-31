@@ -37,7 +37,7 @@
 				foreach($cyls  as $cyl):
 					?>
 				<td><?php echo $cyl ?></td>
-					<?
+					<?php
 				endforeach;
 			?>
 			
