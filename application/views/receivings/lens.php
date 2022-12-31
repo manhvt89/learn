@@ -71,15 +71,15 @@
 			<td></td>
 			<?php
 				foreach($cyls  as $key=>$cyl):
-					if($key == 0):
+					if($key == 0){
 						?>
 						<td></td>
-				<?php	
-					else:	
+				<?php
+				} else {
 					?>
 						<td><?php echo $key ?></td>
 					<?
-					endif;
+				}
 				endforeach;
 			?>
 			
@@ -91,7 +91,7 @@
 					if($k > 0):
 					?>
 				<td><?php echo $cyl ?></td>
-					<?
+					<?php
 					endif;
 				endforeach;
 			?>
