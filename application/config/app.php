@@ -221,7 +221,8 @@ $config['filter'] = array('GỌNG <1T','GỌNG <2T','GỌNG <3T','GỌNG <4T','G
         'M03',
         'M04',
         'M05',
-        'M06'
+        'M06',
+        'Ngâm-Nhỏ',
         );
 
 $config['filter_lens'] = $config['iKindOfLens'];
