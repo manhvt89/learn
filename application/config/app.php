@@ -131,9 +131,9 @@ $config['iKindOfLens'] = array(
         '1.67 CHEMI Crystal U6',//ok
         '1.74 CHEMI Crystal U2', //ok
         
-        '1.56 KODAK', //ok
-        '1.60 KODAK', //ok
-        '1.67 KODAK', //ok
+        '1.56 KODAK Clean\'N\'CleAR', //ok
+        '1.60 KODAK Clean\'N\'CleAR', //ok
+        '1.67 KODAK Clean\'N\'CleAR', //ok
         
         '1.60 KODAK UV400 BLUE',//ok
         '1.60 HOYA NULUX SFT SV', //ok
