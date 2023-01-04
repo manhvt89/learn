@@ -50,9 +50,11 @@ if(isset($error))
 					//show_report('', 'reports_inventory_import_contact_lens');
 				// FRAME
 					show_report('', 'reports_inventory_frame');
+					//show_report('', 'reports_inventory_sun_glasses');
 			
 					//show_report('', 'reports_inventory_detail_lens');
 				?>
+				<a class="list-group-item" href="<?php echo site_url('reports/inventory_sun_glasses');?>"><?php echo 'Báo cáo kho kính mát'; ?></a>
 				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_lens');?>"><?php echo 'Báo cáo chi tiết Mắt kính'; ?></a>
 				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_contact_lens');?>"><?php echo 'Báo cáo chi tiết Áp tròng'; ?></a>
 				</div>
