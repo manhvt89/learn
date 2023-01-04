@@ -208,7 +208,7 @@ $config['barcode'] = 1;
 Báo cáo Khác;
 */
 
-$config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GONG 5+T','G07','G08','G09','G10','G11','G12','G13','G14','G15',
+$config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GONG +5T','G07','G08','G09','G10','G11','G12','G13','G14','G15',
         'G01',
         'G02',
         'G03',
@@ -217,7 +217,7 @@ $config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GON
         'G06'
         );
 
-$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT 5+T','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
+$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT +5T','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
       'Ngâm-Nhỏ'
     );
 
