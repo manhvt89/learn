@@ -155,9 +155,9 @@ $config['iKindOfLens'] = array(
         '1.56 TRÁNG CỨNG', //ok
         'ĐỔI MÀU KOREA',
         '1.49 CR Korea',//ok
-        '1.56 POLAROD KHÓI',//ok
-        '1.56 POLAROD XANH',//ok,
-        '1.56 POLAROD TRÀ',
+        '1.56 POLAROID KHÓI',//ok
+        '1.56 POLAROID XANH',//ok,
+        '1.56 POLAROID TRÀ',
         '1.56 KHÓI 1 MÀU CR',
         '1.56 KHÓI 2 MÀU CR',
         '1.56 TRÀ 1 MÀU CR',
@@ -218,16 +218,29 @@ $config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GON
         'G06'
         );
 
-$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT 5T+','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
-      'Ngâm-Nhỏ'
+$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT 5T+','M01','M02','M03','M04','M05','M06','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
+      'Ngâm-Nhỏ',
+      'Lens Seed 1M Trong',
+        'Lens Seed 1M Pure',
+        'Lens Seed 1D Rich',
+        'Lens Seed 1D Base',
+        'Lens Seed 1D Pure',
+        'CLALEN 1D Latin',
+        'CLALEN 1D Alica Brown',
+        'CLALEN 1D Soul Brown',
+        'CLALEN 1D Suzy Gray',
+        'Lens Biomedics 1D',
+        'Lens Biomedics55 3M'
     );
 
 $config['filter_lens'] = $config['iKindOfLens'];
 $config['filter_contact_lens'] = array(
         'Ngâm-Nhỏ',
         'Lens Seed 1M Trong',
+        'Lens Seed 1M Pure',
         'Lens Seed 1D Rich',
         'Lens Seed 1D Base',
+        'Lens Seed 1D Pure',
         'CLALEN 1D Latin',
         'CLALEN 1D Alica Brown',
         'CLALEN 1D Soul Brown',
