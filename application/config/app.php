@@ -218,7 +218,7 @@ $config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GON
         'G06'
         );
 
-$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT 5T+','M01','M02','M03','M04','M05','M06','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
+$config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5T','MAT 5T+','MAT 6T','M01','M02','M03','M04','M05','M06','M07','M08','M09','M10','M11','M12','M13','VẬT TƯ','M.HOYA','G.CHEMI',
       'Ngâm-Nhỏ',
       'Lens Seed 1M Trong',
         'Lens Seed 1M Pure',
