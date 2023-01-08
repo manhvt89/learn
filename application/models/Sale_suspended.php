@@ -6,7 +6,6 @@ class Sale_suspended extends CI_Model
 		$this->db->from('sales_suspended');
 		$this->db->where('lock < ',2);
 		$this->db->order_by('sale_id','desc');
-
 		return $this->db->get();
 	}
 
