@@ -154,6 +154,7 @@ class Sale_lib
 	public function empty_cart()
 	{
 		$this->CI->session->unset_userdata('sales_cart');
+		$this->set_quantity(0);
 	}
 	
 	public function get_comment() 
@@ -574,7 +575,7 @@ class Sale_lib
         }
 
 		$this->set_cart($items);
-
+		$this->calculate_quantity();
 		return TRUE;
 	}
 	
@@ -643,6 +644,7 @@ class Sale_lib
 			$line['total'] = $this->get_item_total($quantity, $price, $discount);
 			$line['discounted_total'] = $this->get_item_total($quantity, $price, $discount, TRUE);
 			$this->set_cart($items);
+			$this->calculate_quantity();
 		}
 
 		return FALSE;
@@ -653,6 +655,7 @@ class Sale_lib
 		$items = $this->get_cart();
 		unset($items[$line]);
 		$this->set_cart($items);
+		$this->calculate_quantity();
 	}
 
 	public function return_entire_sale($receipt_sale_id)
@@ -1095,7 +1098,38 @@ class Sale_lib
 	{
 		$this->CI->session->unset_userdata('edit'); 
 	}
-	
+	/* Added By ManhVT 06/01/2023 - add SL */
+	public function get_quantity()
+	{
+		if(!$this->CI->session->userdata('sale_quantity'))
+		{
+			$this->set_quantity(0);
+		}
+
+		return $this->CI->session->userdata('sale_quantity');
+	}
+
+	public function set_quantity($quantity)
+	{
+		$this->CI->session->set_userdata('sale_quantity', $quantity);
+	}
+
+	public function clear_quantity()
+	{
+		$this->CI->session->unset_userdata('sale_quantity');
+	}	
+	public function calculate_quantity()
+	{
+		$items = $this->get_cart();
+		$quantity = 0;
+		foreach ($items as $item)
+		{
+			$quantity = $quantity + $item['quantity'];
+		}
+		$this->set_quantity($quantity);
+
+		return false;
+	}
 }
 
 ?>

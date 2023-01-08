@@ -1031,6 +1031,7 @@ class Sales extends Secure_Controller
 	{		
 		$data['sale_id'] = $this->sale_lib->get_sale_id();
 		$data['cart'] = $this->sale_lib->get_cart();
+		$data['quantity'] = $this->sale_lib->get_quantity();
 		$data['points'] = $this->sale_lib->get_points();
 		$data['modes'] = array('sale' => $this->lang->line('sales_sale'), 'return' => $this->lang->line('sales_return'));
 		$data['mode'] = $this->sale_lib->get_mode();

@@ -131,6 +131,9 @@ if (isset($success))
 					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex)); ?>
 					<span class="ui-helper-hidden-accessible" role="status"></span>
 				</li>
+				<li class="pull-left" style="font-size: large; font-weight: bold">
+					<?php echo $this->lang->line('receivings_quantity').':'.$quantity; ?>
+				</li>
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
