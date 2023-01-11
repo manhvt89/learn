@@ -8,6 +8,9 @@
         <a data-toggle="tab" href="#general_tab" title="<?php echo $this->lang->line('config_general_configuration'); ?>"><?php echo $this->lang->line('config_general'); ?></a>
     </li>
     <li role="presentation">
+        <a data-toggle="tab" href="#product_tab" title="Thiết lập sản phẩm">Sản phẩm</a>
+    </li>
+    <li role="presentation">
         <a data-toggle="tab" href="#locale_tab" title="<?php echo $this->lang->line('config_locale_configuration'); ?>"><?php echo $this->lang->line('config_locale'); ?></a>
     </li>
     <li role="presentation">
@@ -42,6 +45,9 @@
     </div>
     <div class="tab-pane" id="general_tab">
         <?php $this->load->view("configs/general_config"); ?>
+    </div>
+    <div class="tab-pane" id="product_tab">
+        <?php $this->load->view("configs/product_config"); ?>
     </div>
     <div class="tab-pane" id="locale_tab">
         <?php $this->load->view("configs/locale_config"); ?>

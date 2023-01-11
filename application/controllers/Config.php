@@ -313,6 +313,16 @@ class Config extends Secure_Controller
 		$data['logo_exists'] = $this->config->item('company_logo') != '';
 		
 		$data = $this->xss_clean($data);
+
+		$data['lens_product'] = $this->config->item('iKindOfLens');
+
+		$data['contact_lens_product'] = $this->config->item('filter_contact_lens');
+
+		$data['frame_product'] = $this->config->item('filter');
+
+		$data['glasses_product'] = $this->config->item('filter_sun_glasses');
+
+		$data['other_product'] = $this->config->item('other_filter');
 		
 		// load all the license statements, they are already XSS cleaned in the private function
 		$data['licenses'] = $this->_licenses();
@@ -706,5 +716,20 @@ class Config extends Secure_Controller
     		redirect('no_access/config');
     	}
     }
+
+	public function save_products()
+	{
+		$_data = array(
+				'iKindOfLens'=>$this->input->post('iKindOfLens'),
+				'filter_sun_glasses'=>$this->input->post('filter_sun_glasses'),
+				'filter_contact_lens'=>$this->input->post('filter_contact_lens'),
+				'filter'=>$this->input->post('filter'),
+				'filter_other'=>$this->input->post('other_filter')
+			);
+
+		$result = $this->Appconfig->batch_save($_data);
+		
+		echo json_encode(array('success' => 1, 'message' =>'Đã lưu thành công'));
+	}
 }
 ?>

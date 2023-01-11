@@ -7,7 +7,43 @@ function load_config()
     //var_dump($CI->session->userdata('person_id'));
     foreach($CI->Appconfig->get_all()->result() as $app_config)
     {	
-        $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($app_config->value));
+        if('iKindOfLens' == $app_config->key)
+        {
+            $value = explode("\n",$app_config->value);
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
+            $_arrTmp = array();
+            foreach($value as $v)
+            {
+                $_arrTmp[$v] = $v;
+            }
+            $CI->config->set_item('KindOfLens', $_arrTmp);
+            
+            $CI->config->set_item('filter_lens', $CI->security->xss_clean($value));
+        } 
+        elseif('filter' == $app_config->key)
+        {
+            $value = explode("\n",$app_config->value);
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
+        } 
+        elseif('filter_sun_glasses'== $app_config->key)
+        {
+            $value = explode("\n",$app_config->value);
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
+
+        } 
+        elseif('filter_contact_lens'== $app_config->key)
+        {
+            $value = explode("\n",$app_config->value);
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
+        }
+        elseif('filter_other' == $app_config->key)
+        {
+            $value = explode("\n",$app_config->value);
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
+        }
+        else {
+            $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($app_config->value));
+        }
     }
     
     //Loads all the language files from the language directory

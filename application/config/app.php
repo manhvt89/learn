@@ -120,74 +120,6 @@ $config['hysphs'] = array(
                             '8.00',
                         );
 
-$config['iKindOfLens'] = array(
-        '1.56 CHEMI ASP PHOTO GRAY',//ok
-        '1.56 CHEMI', //ok
-        '1.56 CHEMI Crystal U2', //ok
-        '1.56 CHEMI Crystal U6',//ok
-        '1.61 CHEMI Crystal U2', //ok
-        '1.60 CHEMI Crystal U6',//ok
-        '1.67 CHEMI Crystal U2', //ok
-        '1.67 CHEMI Crystal U6',//ok
-        '1.74 CHEMI Crystal U2', //ok
-        
-        '1.56 KODAK Clean\'N\'CleAR', //ok
-        '1.60 KODAK Clean\'N\'CleAR', //ok
-        '1.67 KODAK Clean\'N\'CleAR', //ok
-        
-        '1.60 KODAK UV400 BLUE',//ok
-        '1.60 HOYA NULUX SFT SV', //ok
-        '1.67 HOYA NULUX SFT SV',//ok        
-        '1.60 ESSILOR CRIZAL ALIZE ',//ok
-        
-        '1.56 NAHAMI CRYSTAL COATED',
-        '1.60 NAHAMI SUPER HMC A+', //ok
-        '1.67 NAHAMI SUPER HMC',//ok
-        '1.60 U1 ECOVIS', //ok
-        '1.56 KOREA TC',//ok
-        '1.56 Đổi màu TC',//ok
-        '1.56 ĐM PQ Korea',//ok
-        '1.56 CR Korea',//ok
-        '1.56 Polaroid CR Korea',//ok
-        //'1.56 2 Tròng TC Korea', //Chua ho tro da trong bao cao
-        //'1.56 2 Tròng QP TC Korea',//Chua ho tro da trong bao cao
-        '1.60 U1 ECOVIS', //ok
-        '1.56 TRÁNG CỨNG', //ok
-        'ĐỔI MÀU KOREA',
-        '1.49 CR Korea',//ok
-        '1.56 POLAROID KHÓI',//ok
-        '1.56 POLAROID XANH',//ok,
-        '1.56 POLAROID TRÀ',
-        '1.56 KHÓI 1 MÀU CR',
-        '1.56 KHÓI 2 MÀU CR',
-        '1.56 TRÀ 1 MÀU CR',
-        '1.56 TRÀ 2 MÀU CR',
-        '1.56 XANH 1 MÀU CR'
-        );
-
-$_arrTmp = array();
-foreach($config['iKindOfLens'] as $v)
-{
-    $_arrTmp[$v] = $v;
-}
-$config['KindOfLens'] = $_arrTmp;
-/*$config['KindOfLens'] = array(
-    '1.56 CHEMI' => '1.56 CHEMI',
-    '1.60 U2 CHEMI' => '1.60 U2 CHEMI',
-    '1.67 U2 CHEMI' => '1.67 U2 CHEMI',
-    '1.56 KODAK FSV,UV400 Clean\'N\'CleAR' => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
-    '1.60 KODAK FSV,UV400 Clean\'N\'CleAR' => '1.60 KODAK FSV,UV400 Clean\'N\'CleAR',
-    '1.67 KODAK FSV,UV400 Clean\'N\'CleAR' => '1.67 KODAK FSV,UV400 Clean\'N\'CleAR',
-    '1.60 ESSILOR CRIZAL ALIZE UV' => '1.60 ESSILOR CRIZAL ALIZE UV',
-    '1.60 HOYA - NULUX SFT SV' => '1.60 HOYA - NULUX SFT SV',
-    '1.60 NAHAmi SUPER HMC A+'=>'1.60 NAHAmi SUPER HMC A+',
-    '1.61 CHEMI Crystal U2'=>'1.61 CHEMI Crystal U2',
-    '1.67 HOYA - NULUX SFT SV'=>'1.67 HOYA - NULUX SFT SV',
-    '1.67 CHEMI Crystal U2'=>'1.67 CHEMI Crystal U2',
-    '1.49 CR Korea'=>'1.49 CR Korea',
-    '1.67 CHEMI Crystal U6'=>'1.67 CHEMI Crystal U6',
-    );
-*/
 $config['exclude_module'] = array(
     'secure_controller',
     'no_access',
@@ -208,7 +140,7 @@ $config['barcode'] = 1;
 /*
 Báo cáo Khác;
 */
-
+/*
 $config['filter'] = array('GONG 1T','GONG 2T','GONG 3T','GONG 4T','GONG 5T','GONG 5T+','G07','G08','G09','G10','G11','G12','G13','G14','G15',
         'G01',
         'G02',
@@ -233,7 +165,6 @@ $config['filter_sun_glasses'] = array('MAT 1T','MAT 2T','MAT 3T','MAT 4T','MAT 5
         'Lens Biomedics55 3M'
     );
 
-$config['filter_lens'] = $config['iKindOfLens'];
 $config['filter_contact_lens'] = array(
         'Ngâm-Nhỏ',
         'Lens Seed 1M Trong',
@@ -247,3 +178,4 @@ $config['filter_contact_lens'] = array(
         'CLALEN 1D Suzy Gray',
         'Lens Biomedics 1D',
         'Lens Biomedics55 3M');
+        */
