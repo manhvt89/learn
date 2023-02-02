@@ -87,14 +87,14 @@ function get_sales_manage_table_headers()
 	$CI =& get_instance();
 
 	$headers = array(
-		array('sale_id' => $CI->lang->line('common_id')),
-		array('sale_time' => $CI->lang->line('sales_sale_time')),
-		array('customer_name' => $CI->lang->line('customers_customer')),
-		array('amount_due' => $CI->lang->line('sales_amount_due')),
-		array('amount_tendered' => $CI->lang->line('sales_amount_tendered')),
-		array('change_due' => $CI->lang->line('sales_change_due')),
-		array('phone_number' => $CI->lang->line('sales_customer_phone')),
-		array('payment_type'=>'Hình thức thanh toán')
+		array('sale_id' => $CI->lang->line('common_id'),'halign'=>'center', 'align'=>'right'),
+		array('sale_time' => $CI->lang->line('sales_sale_time'),'halign'=>'center', 'align'=>'left'),
+		array('customer_name' => $CI->lang->line('customers_customer'),'halign'=>'center', 'align'=>'left'),
+		array('amount_due' => $CI->lang->line('sales_amount_due'),'halign'=>'center', 'align'=>'right'),
+		array('amount_tendered' => $CI->lang->line('sales_amount_tendered'),'halign'=>'center', 'align'=>'right'),
+		array('change_due' => $CI->lang->line('sales_change_due'),'halign'=>'center', 'align'=>'right'),
+		array('phone_number' => $CI->lang->line('sales_customer_phone'),'halign'=>'center', 'align'=>'left'),
+		array('payment_type'=>'Hình thức thanh toán','halign'=>'center', 'align'=>'left')
 	);
 	
 	if($CI->config->item('invoice_enable') == TRUE)
@@ -413,19 +413,17 @@ function transform_headers($array, $readonly = FALSE, $editable = TRUE)
 
 	foreach($array as $element)
 	{
-		reset($element);
+		reset($element); // move the first item of element
 		$result[] = array('field' => key($element),
 			'title' => current($element),
-			'switchable' => isset($element['switchable']) ?
-				$element['switchable'] : !preg_match('(^$|&nbsp)', current($element)),
-			'sortable' => isset($element['sortable']) ?
-				$element['sortable'] : current($element) != '',
-			'checkbox' => isset($element['checkbox']) ?
-				$element['checkbox'] : FALSE,
-			'class' => isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ?
-				'print_hide' : '',
-			'sorter' => isset($element['sorter']) ?
-				$element ['sorter'] : '');
+			'switchable' => isset($element['switchable']) ? $element['switchable'] : !preg_match('(^$|&nbsp)', current($element)),
+			'sortable' => isset($element['sortable']) ? $element['sortable'] : current($element) != '',
+			'checkbox' => isset($element['checkbox']) ? $element['checkbox'] : FALSE,
+			'class' => isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ? 'print_hide' : '',
+			'sorter' => isset($element['sorter']) ? $element ['sorter'] : '',
+			'halign'=>isset($element['halign']) ? $element ['halign'] : '',
+			'align'=>isset($element['align']) ? $element ['align'] : '',
+		);
 	}
 	return json_encode($result);
 }
@@ -817,5 +815,87 @@ function get_item_kit_data_row($item_kit, $controller)
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 		));
 }
+
+//Added by ManhVT - 26/01/2023 - 
+// Bổ sung chức năng hiển thị danh sách đơn đặt hàng
+
+function get_purchases_manage_table_headers()
+{
+	$CI =& get_instance();
+
+	$headers = array(
+		array('purchase_id' => $CI->lang->line('common_id'),'halign'=>'center', 'align'=>'right'),
+		array('purchase_time' => 'Ngày tạo','halign'=>'center','align'=>'left'),
+		array('name' => 'Tiêu đề ','halign'=>'center', 'align'=>'left'),
+		array('total_quantity' => 'Số lượng','halign'=>'center', 'align'=>'right'),
+		array('total_amount' => 'Tổng tiền','halign'=>'center', 'align'=>'right'),
+		array('employeer' => 'Người tạo','halign'=>'center', 'align'=>'left'),
+		array('supplier'=>'Nhà cung cấp','halign'=>'center', 'align'=>'left'),
+		array('completed'=>'Trạng thái','halign'=>'center', 'align'=>'left'),
+	);
+	
+	return transform_headers(array_merge($headers, array(array('purchase' => '&nbsp', 'sortable' => FALSE))),true);
+}
+
+function get_purchase_data_row($item)
+{
+	$CI =& get_instance();
+	$controller_name = $CI->uri->segment(1);
+	//var_dump($sale);
+	$row = array (
+		'purchase_id' => $item->id,
+		'purchase_time' => date( $CI->config->item('dateformat') . ' ' . $CI->config->item('timeformat'), strtotime($item->purchase_time) ),
+		'name' => $item->name,
+		'total_quantity' => number_format($item->total_quantity,0,',','.'),
+		'total_amount' => number_format($item->total_amount,0,',','.'),
+		'employeer' => '',
+		'supplier' => '',		
+		'completed'=>((int)$item->completed != 0)? $CI->config->item('caPOStatus')[(int)$item->completed]: ($item->parent_id==0?$CI->config->item('caPOStatus')[(int)$item->completed]:'Đã chỉnh sửa')
+	);
+
+
+	$row['receipt'] = anchor($controller_name."/receipt/$item->purchase_uuid", '<span class="glyphicon glyphicon-usd"></span>',
+		array('title' => $CI->lang->line('sales_show_receipt'))
+	);
+	/*
+	if($item->completed == 0) {
+		$row['edit'] = anchor($controller_name . "/editpurchase/$item->purchase_uuid", '<span class="glyphicon glyphicon-edit"></span>',
+			array('title' => $CI->lang->line($controller_name . '_update'))
+		);
+	}else{
+		$row['edit'] = anchor($controller_name."/receipt/$item->purchase_uuid", '<span class="glyphicon glyphicon-ok"></span>',
+			array('title' => $CI->lang->line('sales_show_receipt'))
+		);
+	}
+	*/
+	$row['edit'] = anchor($controller_name."/receipt/$item->purchase_uuid", '<span class="glyphicon glyphicon-ok"></span>',
+			array('title' => $CI->lang->line('sales_show_receipt'))
+		);
+	return $row;
+}
+
+function get_purchase_data_last_row($sales)
+{
+	$CI =& get_instance();
+	$sum_amount_due = 0;
+	$sum_amount_tendered = 0;
+	$sum_change_due = 0;
+
+	foreach($sales->result() as $key=>$sale)
+	{
+		$sum_amount_due += $sale->amount_due;
+		$sum_amount_tendered += $sale->amount_tendered;
+		$sum_change_due += $sale->change_due;
+	}
+
+	return array(
+		'sale_id' => '-',
+		'sale_time' => '<b>'.$CI->lang->line('sales_total').'</b>',
+		'amount_due' => '<b>'.to_currency($sum_amount_due).'</b>',
+		'amount_tendered' => '<b>'. to_currency($sum_amount_tendered).'</b>',
+		'change_due' => '<b>'.to_currency($sum_change_due).'</b>'
+	);
+}
+//[[!-- Added by ManhVT - 26/01/2023 - 
 
 ?>

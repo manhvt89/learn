@@ -179,3 +179,13 @@ $config['filter_contact_lens'] = array(
         'Lens Biomedics 1D',
         'Lens Biomedics55 3M');
         */
+
+//TRạng thái PO
+
+$config['caPOStatus'] = array(
+    0=>'Mới tạo', // Có thể sửa
+    1=>'Yêu cầu sửa lại', // Có thể sửa
+    2=>'Đang chờ phê duyệt',
+    3=>'Đã phê duyệt',
+    4=>'Đã nhập hàng'
+);

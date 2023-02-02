@@ -637,5 +637,94 @@ function get_fullname($firstname='',$lastname='')
 
     return $_sFullName;
 }
+/**
+ * Summary of chuan_hoa_array
+ * @param mixed $a
+ * @return array<int>
+ */
+function chuan_hoa_array($a,$field)
+{
+	if(!is_array($a))
+		return array();
+	$b = $a;
+	$aR = array();
+	$i = 0;
+	$n =0;
+	foreach($a as $k=>$v)
+	{
+		$i++;
+		
+		unset($b[$k]);
+		foreach($b as $key=>$value)
+		{
+			if(($value[$field] === $v[$field]))
+			{
+				$_sK = strval($b[$key][$field]);
+				$aR[$_sK] = 0;
+				unset($b[$key]);
+			}
+		
+			$n++;
+		}
+	}
+	return $aR;
+}
+/**
+ * Summary of check_dup
+ * @param mixed $a
+ * @return array
+ */
+function check_dup(&$a, $field)
+{
+	if(!is_array($a)) 
+		return array();
+	$_aR = chuan_hoa_array($a, $field);
+    if(empty($_aR))
+    {
+        return true; //không $field trùng
+    }
+	foreach($_aR as $k=>$v)
+	{
+		foreach($a as $key=>$value)
+		{
+            $_theItem = &$a[$key];            
+			if((string)$value[$field] === (string)$k)
+			{
+                if ($_theItem['status'] != 9) {
+                    $_theItem['status'] = 6;
+                }
+			}
+		}
+	}
+	return false; // có trùng và đã xử lý
+}
+/**
+ * Summary of isEmptyRow  check row in excel is empty
+ * @param array $row
+ * @param int $maxCols
+ * @return bool
+ */
+function isEmptyRow($row,$maxCols) {
+    for($i =0; $i < $maxCols; $i++){
+
+        if ('' !== $row[$i]) return false;
+    }
+    return true;
+}
+
+function extract_price_excel_to_vnd($value)
+{
+    //1 remove .00
+    $_aTmp = explode('.', $value);
+    $_strTmp = $_aTmp[0];
+    //2 replace ',' to ''
+    $_strTmp = str_replace(',', '', $_strTmp);
+    if(is_numeric($_strTmp))
+    {
+        return (int) $_strTmp;
+    } else {
+        return 0;
+    }
+}
 
 ?>

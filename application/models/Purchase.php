@@ -10,6 +10,17 @@ class Purchase extends CI_Model
 
 		return $this->db->get();
 	}
+
+	public function get_info_uuid($uuid)
+	{	
+		$this->db->from('purchases');
+		$this->db->join('people', 'people.person_id = purchases.supplier_id', 'LEFT');
+		$this->db->join('suppliers', 'suppliers.person_id = purchases.supplier_id', 'LEFT');
+		$this->db->where('purchase_uuid', $uuid);
+
+		return $this->db->get();
+	}
+
 	/*
 	public function get_receiving_by_reference($reference)
 	{
@@ -60,18 +71,19 @@ class Purchase extends CI_Model
 		return $this->db->update('purchases', $data);
 	}
 	// Save session to DB; create draff
-	public function save($items, $supplier_id, $employee_id, $name, $code ='POxxx' ,$comment = '',$completed = 0)
+	public function save($items,$quantity, $supplier_id, $employee_id, $name, $code ='POxxx' ,$comment = '',$completed = 0)
 	{
 		if(count($items) == 0)
 		{
 			return -1;
 		}
-
+		$_dCreatedTime = date('Y-m-d H:i:s');
 		$_aPurchaseData = array(
-			'purchase_time' => date('Y-m-d H:i:s'),
+			'purchase_time' => $_dCreatedTime,
 			'supplier_id' => $this->Supplier->exists($supplier_id) ? $supplier_id : 0,
 			'employee_id' => $employee_id,
 			'name' => $name,
+			'total_quantity'=>$quantity,
 			'code' => $code,
 			'completed'=>$completed,
 			'comment' => $comment
@@ -85,19 +97,133 @@ class Purchase extends CI_Model
 
 		foreach($items as $line=>$item)
 		{
-			$cur_item_info = $this->Item->get_info($item['item_id']);
+			if($item['status'] != 9) // Insert New products
+			{
+				if(!$this->Item->item_number_exists($item['item_number'])) // Nếu chưa tồn tại sp với barcode, tạo sản phẩm mới;
+				{
+					//$_iItemId = 0;
+					// Tạo mới sản phẩm;
+					$item_data = array(
+                        'name'					=> $item['item_name'],
+                        'description'			=> '',
+                        'category'				=> $item['item_category'],
+                        'cost_price'			=> $item['item_price'],
+                        'unit_price'			=> $item['item_u_price'],
+                        'reorder_level'			=> 0,
+                        'supplier_id'			=> $supplier_id,
+                        'allow_alt_description'	=> '0',
+                        'is_serialized'			=> '0',
+                        'custom1'				=> '',
+                        'custom2'				=> '',
+                        'custom3'				=> '',
+                        'custom4'				=> '',
+                        'custom5'				=> '',
+                        'custom6'				=> '',
+                        'custom7'				=> '',
+                        'custom8'				=> '',
+                        'custom9'				=> '',
+                        'custom10'				=> ''
+                    );
+					$item_data['item_number']=$item['item_number'];
 
-			$_aPurchasesItemsData = array(
-				'purchase_id' => $_iPurchaseID,
-				'item_id' => $item['item_id'],
-				'line' => $line,				
-				'item_quantity' => $item['quantity'],
-				'item_price' => $item['price'], // Giá nhập 
-				'item_name' => $cur_item_info['name'],
-				'item_number'=>$cur_item_info['item_number'],
-				'item_category' => $cur_item_info['category']
-			);
-			$this->db->insert('purchases_items', $_aPurchasesItemsData);
+					if ($this->Item->save($item_data)) 
+					{
+						$items_taxes_data = NULL;
+						//tax 1
+						$items_taxes_data[] = array('name' => 'Tax', 'percent' => '8');
+						// save tax values
+						if (count($items_taxes_data) > 0) {
+							$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+						}
+
+						// quantities & inventory Info
+
+						//$emp_info = $this->Employee->get_info($employee_id);
+						$comment = 'Tạo từ PO';
+						// array to store information if location got a quantity
+						$item_quantity_data = array(
+							'item_id' => $item_data['item_id'],
+							'location_id' => 1,
+							'quantity' => 0,
+						);
+						$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+
+						$excel_data = array(
+							'trans_items' => $item_data['item_id'],
+							'trans_user' => $employee_id,
+							'trans_comment' => $comment,
+							'trans_location' => 1,
+							'trans_inventory' => 0
+						);
+
+						$this->Inventory->insert($excel_data);
+
+						$_aPurchasesItemsData = array(
+							'purchase_id' => $_iPurchaseID,
+							'created_time' => $_dCreatedTime,
+							'item_id' => $item_data['item_id'],
+							'item_name' => $item['item_name'],
+							'item_number' => $item['item_number'],
+							'item_quantity' => $item['item_quantity'],
+							'item_price' => $item['item_price'],
+							// Giá nhập 
+							'item_u_price' => $item['item_u_price'],
+							'item_category' => $item['item_category'],
+							'line' => $line,
+							'type' => 2 //Đã thêm vào bảng items
+						);
+						$this->db->insert('purchases_items', $_aPurchasesItemsData);
+					} else {
+						$_aPurchasesItemsData = array(
+							'purchase_id' => $_iPurchaseID,
+							'created_time' => $_dCreatedTime,
+							'item_id' => 0,
+							'item_name' => $item['item_name'],
+							'item_number' => $item['item_number'],
+							'item_quantity' => $item['item_quantity'],
+							'item_price' => $item['item_price'],
+							// Giá nhập 
+							'item_u_price' => $item['item_u_price'],
+							'item_category' => $item['item_category'],
+							'line' => $line,
+							'type' => 2 //đã thêm vào bảng items nhưng lỗi (check item_id=0)
+						);
+						$this->db->insert('purchases_items', $_aPurchasesItemsData);
+					}
+				} else {
+					$_aPurchasesItemsData = array(
+						'purchase_id' => $_iPurchaseID,
+						'created_time'=>$_dCreatedTime,
+						'item_id' => 0,
+						'item_name' => $item['item_name'],
+						'item_number'=>$item['item_number'],
+						'item_quantity' => $item['item_quantity'],
+						'item_price' => $item['item_price'], // Giá nhập 
+						'item_u_price'=> $item['item_u_price'],
+						'item_category' => $item['item_category'],
+						'line' => $line,
+						'type'=>3 //Chưa thêm đc vào bảng items
+					);
+					$this->db->insert('purchases_items', $_aPurchasesItemsData);
+				}
+			} else { //Sản phẩm đã tồn tại trong items table
+				$cur_item_info = $this->Item->get_info_by_id_or_number($item['item_number']);
+				$_aPurchasesItemsData = array(
+					'purchase_id' => $_iPurchaseID,
+					'created_time'=>$_dCreatedTime,
+					'item_id' => $cur_item_info->item_id,
+					'item_name' => $cur_item_info->name,
+					'item_number'=>$cur_item_info->item_number,
+					'item_quantity' => $item['item_quantity'],
+					'item_price' => $item['item_price'], // Giá nhập 
+					'item_category' => $cur_item_info->category,
+					'line' => $line,
+					'type'=>0 //Sản phẩm cũ
+				);
+				$this->db->insert('purchases_items', $_aPurchasesItemsData);
+			}
+
+			
 		}
 
 		$this->db->trans_complete();
@@ -185,5 +311,233 @@ class Purchase extends CI_Model
 			)'
 		);
 	}
+
+	public function search($search, $filters, $rows = 0, $limit_from = 0, $sort = 'purchase_time', $order = 'desc')
+	{
+		
+
+		$this->db->select('
+				purchases.id AS purchase_id,
+				purchases.*	');
+
+		$this->db->from('purchases as purchases');
+		$this->db->where('curent', 1);
+		$this->db->where('DATE(purchases.purchase_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		
+		if(!empty($search))
+		{
+					
+			$this->db->group_start();
+				// customer last name
+				$this->db->like('purchases.name', $search);
+				// customer first name
+			$this->db->group_end();
+			
+		}
+
+		//var_dump($this->db);
+		if($filters['new'] != FALSE)
+		{
+			$this->db->group_start();
+				$this->db->like('purchases.completed', 0, 'after');			
+				$this->db->like('purchases.parent_id', 0, 'after');			
+			$this->db->group_end();
+		}
+		if($filters['cancel'] != FALSE)
+		{
+			$this->db->group_start();
+				$this->db->like('purchases.completed', 3, 'after');				
+			$this->db->group_end();
+		}
+
+		$this->db->group_by('purchases.id');
+		$this->db->order_by($sort, $order);
+
+		if($rows > 0)
+		{
+			$this->db->limit($rows, $limit_from);
+		}
+
+		return $this->db->get();
+	}
+
+	public function get_found_rows($search, $filters)
+	{
+		return $this->search($search, $filters,0,0,'id','desc')->num_rows();
+	}
+
+	public function _save($items,$quantity, $supplier_id, $employee_id, $name, $code ='POxxx' ,$comment = '',$completed = 0,$parent_id=0)
+	{
+		if(count($items) == 0)
+		{
+			return -1;
+		}
+		$_dCreatedTime = date('Y-m-d H:i:s');
+		$_aPurchaseData = array(
+			'purchase_time' => $_dCreatedTime,
+			'supplier_id' => $this->Supplier->exists($supplier_id) ? $supplier_id : 0,
+			'employee_id' => $employee_id,
+			'name' => $name,
+			'total_quantity'=>$quantity,
+			'code' => $code,
+			'completed'=>$completed,
+			'comment' => $comment,
+			'parent_id'=>$parent_id,
+			'curent'=>1
+		);
+		$_ParrentUpdateData = array(
+			'curent' => 0,
+			'edited_time' => $_dCreatedTime,
+			'edited_employee_id' => $employee_id
+		);
+
+		//Run these queries as a transaction, we want to make sure we do all or nothing
+		$this->db->trans_start();
+		$this->update($_ParrentUpdateData,$parent_id);
+
+		$this->db->insert('purchases', $_aPurchaseData);
+		$_iPurchaseID = $this->db->insert_id();
+
+		foreach($items as $line=>$item)
+		{
+			if($item['status'] != 9) // Insert New products
+			{
+				if(!$this->Item->item_number_exists($item['item_number'])) // Nếu chưa tồn tại sp với barcode, tạo sản phẩm mới;
+				{
+					//$_iItemId = 0;
+					// Tạo mới sản phẩm;
+					$item_data = array(
+                        'name'					=> $item['item_name'],
+                        'description'			=> '',
+                        'category'				=> $item['item_category'],
+                        'cost_price'			=> $item['item_price'],
+                        'unit_price'			=> $item['item_u_price'],
+                        'reorder_level'			=> 0,
+                        'supplier_id'			=> $supplier_id,
+                        'allow_alt_description'	=> '0',
+                        'is_serialized'			=> '0',
+                        'custom1'				=> '',
+                        'custom2'				=> '',
+                        'custom3'				=> '',
+                        'custom4'				=> '',
+                        'custom5'				=> '',
+                        'custom6'				=> '',
+                        'custom7'				=> '',
+                        'custom8'				=> '',
+                        'custom9'				=> '',
+                        'custom10'				=> ''
+                    );
+					$item_data['item_number']=$item['item_number'];
+
+					if ($this->Item->save($item_data)) 
+					{
+						$items_taxes_data = NULL;
+						//tax 1
+						$items_taxes_data[] = array('name' => 'Tax', 'percent' => '8');
+						// save tax values
+						if (count($items_taxes_data) > 0) {
+							$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+						}
+
+						// quantities & inventory Info
+
+						//$emp_info = $this->Employee->get_info($employee_id);
+						$comment = 'Tạo từ PO';
+						// array to store information if location got a quantity
+						$item_quantity_data = array(
+							'item_id' => $item_data['item_id'],
+							'location_id' => 1,
+							'quantity' => 0,
+						);
+						$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+
+						$excel_data = array(
+							'trans_items' => $item_data['item_id'],
+							'trans_user' => $employee_id,
+							'trans_comment' => $comment,
+							'trans_location' => 1,
+							'trans_inventory' => 0
+						);
+
+						$this->Inventory->insert($excel_data);
+
+						$_aPurchasesItemsData = array(
+							'purchase_id' => $_iPurchaseID,
+							'created_time' => $_dCreatedTime,
+							'item_id' => $item_data['item_id'],
+							'item_name' => $item['item_name'],
+							'item_number' => $item['item_number'],
+							'item_quantity' => $item['item_quantity'],
+							'item_price' => $item['item_price'],
+							// Giá nhập 
+							'item_u_price' => $item['item_u_price'],
+							'item_category' => $item['item_category'],
+							'line' => $line,
+							'type' => 2 //Đã thêm vào bảng items
+						);
+						$this->db->insert('purchases_items', $_aPurchasesItemsData);
+					} else {
+						$_aPurchasesItemsData = array(
+							'purchase_id' => $_iPurchaseID,
+							'created_time' => $_dCreatedTime,
+							'item_id' => 0,
+							'item_name' => $item['item_name'],
+							'item_number' => $item['item_number'],
+							'item_quantity' => $item['item_quantity'],
+							'item_price' => $item['item_price'],
+							// Giá nhập 
+							'item_u_price' => $item['item_u_price'],
+							'item_category' => $item['item_category'],
+							'line' => $line,
+							'type' => 2 //đã thêm vào bảng items nhưng lỗi (check item_id=0)
+						);
+						$this->db->insert('purchases_items', $_aPurchasesItemsData);
+					}
+				} else {
+					$_aPurchasesItemsData = array(
+						'purchase_id' => $_iPurchaseID,
+						'created_time'=>$_dCreatedTime,
+						'item_id' => 0,
+						'item_name' => $item['item_name'],
+						'item_number'=>$item['item_number'],
+						'item_quantity' => $item['item_quantity'],
+						'item_price' => $item['item_price'], // Giá nhập 
+						'item_u_price'=> $item['item_u_price'],
+						'item_category' => $item['item_category'],
+						'line' => $line,
+						'type'=>3 //Chưa thêm đc vào bảng items
+					);
+					$this->db->insert('purchases_items', $_aPurchasesItemsData);
+				}
+			} else { //Sản phẩm đã tồn tại trong items table
+				$cur_item_info = $this->Item->get_info_by_id_or_number($item['item_number']);
+				$_aPurchasesItemsData = array(
+					'purchase_id' => $_iPurchaseID,
+					'created_time'=>$_dCreatedTime,
+					'item_id' => $cur_item_info->item_id,
+					'item_name' => $cur_item_info->name,
+					'item_number'=>$cur_item_info->item_number,
+					'item_quantity' => $item['item_quantity'],
+					'item_price' => $item['item_price'], // Giá nhập 
+					'item_category' => $cur_item_info->category,
+					'line' => $line,
+					'type'=>0 //Sản phẩm cũ
+				);
+				$this->db->insert('purchases_items', $_aPurchasesItemsData);
+			}
+
+			
+		}
+
+		$this->db->trans_complete();
+		
+		if($this->db->trans_status() === FALSE)
+		{
+			return -1;
+		}
+
+		return $_iPurchaseID;
+	}
+
 }
 ?>

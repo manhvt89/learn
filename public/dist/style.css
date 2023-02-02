@@ -527,11 +527,36 @@ td .input-test {
     padding-left: 20px;
 }
 
-#table_holder{
+#table_holder {
     padding-top: 10px;
 }
 
-@media print {
+#register .po-error07 td {
+    background-color: bisque;
+}
+
+#register .po-error06 td {
+    background-color: coral;
+}
+
+.row #po_wrapper {
+    width: 75%;
+    float: left;
+    font-size: 13px;
+}
+
+.row #overall_po {
+    width: 24%;
+    float: left;
+    margin-left: .1em;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    font-size: 13px;
+    text-align: center;
+    background-color: #BBB;
+}
+
+. @media print {
     /*
     Edit for BILL
     *

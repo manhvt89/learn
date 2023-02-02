@@ -54,7 +54,7 @@ class Receiving extends CI_Model
 		return $this->db->update('receivings', $receiving_data);
 	}
 
-	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $receiving_id = FALSE)
+	public function save($items, $supplier_id, $employee_id, $comment, $reference, $payment_type, $receiving_id = FALSE,$purchase_id=0)
 	{
 		if(count($items) == 0)
 		{
@@ -72,6 +72,18 @@ class Receiving extends CI_Model
 
 		//Run these queries as a transaction, we want to make sure we do all or nothing
 		$this->db->trans_start();
+		//Thêm mới bởi ManhVT;
+		// Update purchase khi thực hiện nhập kho
+		if($purchase_id != 0)
+		{
+			//update Purachse
+			$_ParrentUpdateData = array(
+				'completed' => 4
+			);
+			//Run these queries as a transaction, we want to make sure we do all or nothing
+			$this->Purchase->update($_ParrentUpdateData,$purchase_id);
+		}
+		//Hết
 
 		$this->db->insert('receivings', $receivings_data);
 		$receiving_id = $this->db->insert_id();

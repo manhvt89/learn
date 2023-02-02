@@ -33,3 +33,4 @@ $lang['account_new_income'] = 'Tạo phiếu thu';
 $lang['common_new_income'] = 'Tạo phiếu thu';
 $lang['module_roles'] = "Phân quyền";
 $lang['module_barcodes'] = "In Barcode";
+$lang['module_purchases'] = "Đơn đặt hàng";

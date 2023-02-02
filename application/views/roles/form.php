@@ -253,8 +253,8 @@
 	//$(document).ready(function()
 	(function($)
 	{
-		$('#unit_price').number(true,0);
-		$('#cost_price').number(true,0);
+		$('#unit_price').number(true,0,',','.');
+		$('#cost_price').number(true,0,',','.');
 		$("#new").click(function() {
 			stay_open = true;
 			$("#item_form").submit();

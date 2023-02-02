@@ -776,7 +776,7 @@ $(document).ready(function()
 		);
 	});
 
-	$('#shipping_fee').number(true,0);
+	$('#shipping_fee').number(true,0,',','.');
 
 	$("#item").autocomplete(
 	{

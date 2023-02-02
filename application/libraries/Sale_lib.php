@@ -252,6 +252,7 @@ class Sale_lib
 	// Multiple Payments
 	public function add_payment($payment_type, $payment_amount,$payment_kind='',$payment_id=0)
 	{
+		//echo $payment_amount;
 		$paymentalls = $this->get_payments();
 		$payments_reserve = array();
 		$payments = array();
@@ -1130,6 +1131,13 @@ class Sale_lib
 
 		return false;
 	}
+
+	/**
+	 * Thêm mới ManhVT, phục vụ thực hiện từng bước quy trình bán hàng.
+	 * -- [1] Khám mắt
+	 * -- [2] Xuất hàng - In phiếu (xuất hàng - bán hàng); chỉnh sửa nếu có; có thể có tạm ứng
+	 * -- [3] Thanh toán (Hoàn thành đơn hàng);
+	 */
 }
 
 ?>

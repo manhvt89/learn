@@ -68,3 +68,4 @@ $lang["common_export_excel_no"] = "Không xuất";
 $lang["common_required"] = "Yêu cầu";
 $lang["common_id"] = "Id";
 $lang['common_facebook_url'] = 'Facebook URL';
+$lang['purchases_no_purchases_to_display'] = 'Chưa có phiếu đặt hàng nào';

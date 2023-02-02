@@ -378,6 +378,29 @@ class Receiving_lib
 		
 		return $total;
 	}
+	/*
+	Thêm bởi ManhVT, cập nhật thêm PO cho nhập kho;
+	Mỗi phiếu nhâpj kho cần có một đơn yêu cầu nhập (PO)
+	*/
+	public function get_purchase_id()
+	{
+		if(!$this->CI->session->userdata('purchase_id'))
+		{
+			$this->set_quantity(0);
+		}
+
+		return $this->CI->session->userdata('purchase_id');
+	}
+
+	public function set_purchase_id($id)
+	{
+		$this->CI->session->set_userdata('purchase_id', $id);
+	}
+
+	public function clear_purchase_id()
+	{
+		$this->CI->session->unset_userdata('purchase_id');
+	}
 }
 
 ?>

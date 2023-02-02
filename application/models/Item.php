@@ -37,6 +37,17 @@ class Item extends CI_Model
 	}
 
 	/*
+	get item in cart to check
+	*/
+	public function get_items_in_cart($_aItemNUmber)
+	{
+		$this->db->from('items');
+		$this->db->where_in('item_number', $_aItemNUmber);
+		return $this->db->get()->result();
+
+	}
+
+	/*
 	Gets total of rows
 	*/
 	public function get_total_rows()

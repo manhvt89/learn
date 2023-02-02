@@ -82,7 +82,7 @@ class Receivings extends Secure_Controller
 		$item_id_or_number_or_item_kit_or_receipt = $this->input->post('item');
 		$quantity = ($mode == 'receive' || $mode == 'requisition') ? 1 : -1;
 		$item_location = $this->receiving_lib->get_stock_source();
-
+		//var_dump($item_location);
 		if($mode == 'return' && $this->Receiving->is_valid_receipt($item_id_or_number_or_item_kit_or_receipt))
 		{
 			$this->receiving_lib->return_entire_receiving($item_id_or_number_or_item_kit_or_receipt);
@@ -197,6 +197,7 @@ class Receivings extends Secure_Controller
 		$data['payment_type'] = $this->input->post('payment_type');
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('receivings');
 		$data['stock_location'] = $this->receiving_lib->get_stock_source();
+		$data['purchase_id'] = $this->receiving_lib->get_purchase_id();
 		if($this->input->post('amount_tendered') != NULL)
 		{
 			$data['amount_tendered'] = $this->input->post('amount_tendered');
@@ -228,7 +229,7 @@ class Receivings extends Secure_Controller
 		}
 
 		//SAVE receiving to database
-		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['stock_location']);
+		$data['receiving_id'] = 'RECV ' . $this->Receiving->save($data['cart'], $supplier_id, $employee_id, $data['comment'], $data['reference'], $data['payment_type'], $data['stock_location'], $data['purchase_id']);
 
 		$data = $this->xss_clean($data);
 
