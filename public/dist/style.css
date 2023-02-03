@@ -556,7 +556,7 @@ td .input-test {
     background-color: #BBB;
 }
 
-. @media print {
+@media print {
     /*
     Edit for BILL
     *
