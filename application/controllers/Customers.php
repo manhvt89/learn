@@ -59,7 +59,7 @@ class Customers extends Persons
 	*/
 	public function suggest()
 	{
-		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->get('term'), TRUE));
+		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->get('term'), FALSE));
 		echo json_encode($suggestions);
 	}
 

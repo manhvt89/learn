@@ -135,7 +135,7 @@ class Barcode_lib
 		try
 		{
 			// Code128 is the default and used in this case for the receipts
-			$barcode = $this->get_barcode_instance('Code39');
+			$barcode = $this->get_barcode_instance('Code128');
 
 			// set the receipt number to generate the barcode for
 			$barcode->setData($barcode_content);

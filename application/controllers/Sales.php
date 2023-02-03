@@ -83,6 +83,7 @@ class Sales extends Secure_Controller
 						'start_date' => $this->input->get('start_date'),
 						'end_date' => $this->input->get('end_date'),
 						'only_cash' => FALSE,
+						'pending'=>FALSE, //added 03.02.2023 - manhvt
 						'only_invoices' => $this->config->item('invoice_enable') && $this->input->get('only_invoices'),
 						'is_valid_receipt' => $this->Sale->is_valid_receipt($search));
 
@@ -92,7 +93,10 @@ class Sales extends Secure_Controller
 			echo 'Invalid Data';
 			exit();
 		}
+		//var_dump($this->input->get('filters'));
 		$filledup = array_fill_keys($this->input->get('filters'), TRUE);
+		//var_dump($filledup);
+		//die();
 		$filters = array_merge($filters, $filledup);
 
 		$sales = $this->Sale->search($search, $filters, $limit, $offset, $sort, $order, $this->logedUser_type, $this->logedUser_id);
@@ -405,7 +409,7 @@ class Sales extends Secure_Controller
 	}
 
 
-	public function before_complete() // Đặt trước;
+	public function before_complete() // Xuất đơn hàng;
 	{
 		$data = array();
 		$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric_zero');
@@ -454,17 +458,19 @@ class Sales extends Secure_Controller
 			//die();
 			if (count($data['payments']) == 0) {
 				$data['error'] = 'Chưa thêm thanh toán, kiểm tra lại thông tin';
-
 				$this->_reload($data);
 			} else {
 				if (isset($data['payments'][$this->lang->line('sales_reserve_money')])) {
 					$old_payments = $data['payments'][$this->lang->line('sales_reserve_money')];
 				} else {
-					$old_payments = null;
+					$old_payments = array();
 				}
 				//var_dump($old_payments);die();
-				foreach ($old_payments as $item) {
-					$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
+				if(!empty($old_payments))
+				{
+					foreach ($old_payments as $item) {
+						$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
+					}
 				}
 				/* if (isset($data['payments'][$this->lang->line('sales_paid_money')])) {
 					$new_payments = $data['payments'][$this->lang->line('sales_paid_money')];
@@ -481,8 +487,8 @@ class Sales extends Secure_Controller
 				$test_id = $this->sale_lib->get_test_id();
 				$kxv_id = 0;
 				$doctor_id = 0;
-				if (!isset($test_id)) {
-					$test_id = 0;
+				if ($test_id == 0) {
+					
 				} else {
 					//echo $test_id;die();
 					$test_info = $this->Testex->get_info($test_id);
@@ -497,7 +503,7 @@ class Sales extends Secure_Controller
 					$data['error'] = $this->lang->line('sales_invoice_number_duplicate');
 					$this->_reload($data);
 				} else {
-					$ctv_id = $this->input->post('hidden_ctv');
+					$ctv_id = $this->input->post('ctvs');
 					$invoice_number = $this->sale_lib->is_invoice_number_enabled() ? $invoice_number : null;
 					$data['invoice_number'] = $invoice_number;
 					$data['sale_id_num'] = $this->Sale->save(
@@ -523,7 +529,8 @@ class Sales extends Secure_Controller
 					if ($data['sale_id_num'] == -1) {
 						$data['error_message'] = $this->lang->line('sales_transaction_failed');
 					} else {
-						$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+						//$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+						$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['code']); // Barcode của mã hóa đơn
 					}
 
 					$data['cur_giftcard_value'] = $this->sale_lib->get_giftcard_remainder();
@@ -534,6 +541,7 @@ class Sales extends Secure_Controller
 						$this->load->view('sales/invoice', $data);
 					} else {
 						/*
+						** Block QRcode
 						** Thêm barcode vào đơn hàng
 						** QRCode vào đơn hàng
 						*/
@@ -1396,6 +1404,32 @@ class Sales extends Secure_Controller
 	public function price_edit()
 	{
 		exit();
+	}
+
+	public function pending()
+	{
+		
+		$data['table_headers'] = get_sales_manage_table_headers();
+
+		// filters that will be loaded in the multiselect dropdown
+		if($this->config->item('invoice_enable') == TRUE)
+		{
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),
+									'only_invoices' => $this->lang->line('sales_invoice_filter'));
+		}
+		else
+		{
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),'tt'=>'tt');
+		}
+
+		if ($this->Employee->has_grant('sales_index')) {
+			$data['is_created'] = 1;
+		} else {
+			$data['is_created'] = 0;
+		}
+		
+		$this->load->view('sales/pending', $data);
+		
 	}
 }
 ?>

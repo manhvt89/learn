@@ -146,6 +146,7 @@
 		<?php
 		$only_sale_check = FALSE;
 		$show_giftcard_remainder = FALSE;
+		$_has_prepaid = FALSE;
 
 		if(!empty($payments[$this->lang->line('sales_reserve_money')]))
 		{
@@ -156,12 +157,15 @@
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
 
 				$_sTitleDislayReceipt = 'Đặt trước - Phương thức thanh toán (' . $payment['payment_type']. ')';
-				?>
+				if ($payment['payment_amount'] > 0) {
+					$_has_prepaid = TRUE;
+					?>
 				<tr class="total_reserve">
-					<td colspan="4" style="text-align:right;"><?php echo  $_sTitleDislayReceipt; ?></td>
-					<td class="total-value" data-th="<?php echo  $_sTitleDislayReceipt; ?>"><?php echo number_format($payment['payment_amount'] * 1); ?></td>
+					<td colspan="4" style="text-align:right;"><?php echo $_sTitleDislayReceipt; ?></td>
+					<td class="total-value" data-th="<?php echo $_sTitleDislayReceipt; ?>"><?php echo number_format($payment['payment_amount'] * 1); ?></td>
 				</tr>
 				<?php
+				}
 			}
 		}
 
@@ -192,10 +196,12 @@
 		<?php 
 		}
 		?>
+		<?php if($_has_prepaid): //không có trả trước?>
 		<tr class="total_blance">
 			<td colspan="4" style="text-align:right;"> <?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due_1') ; ?> </td>
 			<td class="total-value" data-th="<?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due_1') ; ?> "><?php echo number_format($amount_change >= 0 ? $amount_change : $amount_change * -1); ?></td>
 		</tr>
+		<?php endif; ?>
 	</table>
 	<div class="employee_signal">
 		<div>Nhân viên bán hàng</div>

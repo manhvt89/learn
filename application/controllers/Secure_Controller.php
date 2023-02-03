@@ -129,7 +129,7 @@ class Secure_Controller extends CI_Controller
 	{
         $str = str_replace(',','',$str);
 		
-		if(parse_decimals($str) == 0)
+		if(parse_decimals($str) < 0)
 		{
 			return FALSE;
 		} else {

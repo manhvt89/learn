@@ -516,7 +516,7 @@ class Purchase_lib
 	{
 		if(!$this->CI->session->userdata('purchase_id'))
 		{
-			$this->set_quantity(0);
+			$this->set_purchase_id(0);
 		}
 
 		return $this->CI->session->userdata('purchase_id');

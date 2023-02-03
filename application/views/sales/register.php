@@ -50,10 +50,9 @@ if (isset($success))
 				?>
 
 				<li class="pull-right">
-					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
-							title='<?php echo $this->lang->line('sales_suspended_sales'); ?>'>
-						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?=$this->lang->line('sales_suspended_sales'); ?>
-					</button>
+				<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách chờ thanh toán',
+							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách chờ thanh toán')); ?>
+					
 				</li>
 
 				<?php
@@ -96,10 +95,8 @@ if (isset($success))
 					?>
 
 					<li class="pull-right">
-						<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
-								title='<?php echo $this->lang->line('sales_suspended_sales'); ?>'>
-							<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspended_sales'); ?>
-						</button>
+					<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách chờ thanh toán',
+							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách chờ thanh toán')); ?>
 					</li>
 
 					<?php
@@ -530,8 +527,8 @@ if (isset($success))
 				</tr>
 			</table>
 
-			<?php echo anchor($controller_name."/remove_customer", '<span class="glyphicon glyphicon-remove">&nbsp</span>' . $this->lang->line('common_remove').' '.$this->lang->line('customers_customer'),
-								array('class'=>'btn btn-danger btn-sm', 'id'=>'remove_customer_button', 'title'=>$this->lang->line('common_remove').' '.$this->lang->line('customers_customer'))); ?>
+			<?php echo anchor($controller_name."/remove_customer", '<span class="glyphicon glyphicon-remove">&nbsp</span>'.'Đổi khách hàng',
+								array('class'=>'btn btn-danger btn-sm', 'id'=>'remove_customer_button', 'title'=>'Đổi khách hàng')); ?>
 		<?php
 		}
 		else
@@ -690,7 +687,7 @@ if (isset($success))
 						<?php if($this->sale_lib->get_edit() == 1):?>
 						<?php else : ?>
 							<?php if(empty($payments['Thanh toán'])): ?>
-							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Đặt trước</div>
+							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Xuất hàng</div>
 							<?php endif; ?>		
 						<?php endif; ?>
 							<div class='btn btn-sm btn-success pull-right' id='add_payment_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span><?php echo $this->lang->line('sales_add_payment'); ?></div>
@@ -743,7 +740,7 @@ if (isset($success))
 			<?php echo form_open($controller_name."/cancel", array('id'=>'buttons_form')); ?>
 				<div class="form-group" id="buttons_sale">
 					<?php echo form_input(array('name'=>'hidden_form', 'id'=>'hidden_form', 'class'=>'form-control input-sm', 'value'=>'1', 'type'=>'hidden')); ?>
-					<div class='btn btn-sm btn-default pull-left' id='suspend_sale_button'><span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspend_sale'); ?></div>
+					<!-- <div class='btn btn-sm btn-default pull-left' id='suspend_sale_button'><span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_suspend_sale'); ?></div> -->
 					<?php echo form_input(array('name'=>'hidden_ctv', 'id'=>'hidden_ctv', 'class'=>'form-control input-sm', 'value'=>'', 'type'=>'hidden')); ?>
 
 					<div class='btn btn-sm btn-danger pull-right' id='cancel_sale_button'><span class="glyphicon glyphicon-remove">&nbsp</span><?php echo $this->lang->line('sales_cancel_sale'); ?></div>

@@ -364,7 +364,7 @@ class Test extends Secure_Controller
         $test_id = $this->input->post('test_id');
         $this->test_lib->set_test_id($test_id);
         $this->test_lib->set_cart($test_id);
-		/* remove by ManhVT 12.01.2023
+		/* remove by ManhVT 12.01.2023 
         $employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
         $employee_info = $this->Employee->get_info($employee_id);
 		$data['employee'] = $employee_info->last_name . ' ' . $employee_info->first_name;

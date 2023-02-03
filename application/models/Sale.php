@@ -185,13 +185,19 @@ class Sale extends CI_Model
 		$this->db->join('sales_payments_temp AS payments', 'sales.sale_id = payments.sale_id', 'left outer');
 		$this->db->join('sales_items_taxes_temp AS sales_items_taxes', 'sales_items.sale_id = sales_items_taxes.sale_id AND sales_items.item_id = sales_items_taxes.item_id', 'left outer');
 
-		$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		
 		if($bUser_type == 2)
 		{
+			$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 			$this->db->where('sales.ctv_id',$iUser_Id);
 		}else{
-			$this->db->or_where('status',1);
+			if(!$filters['pending'])
+			{
+				$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+				$this->db->where('status', 0);
+			} else {
+				$this->db->where('status', 1);
+			}
 		}
 		if(!empty($search))
 		{

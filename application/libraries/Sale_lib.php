@@ -756,6 +756,9 @@ class Sale_lib
 		$this->clear_points();
 		$this->clear_paid_points();
 		$this->clear_edit();
+		$this->clear_status();
+		$this->clear_parent_id();
+		$this->clear_current();
 	}
 	
 	public function is_customer_taxable()
@@ -966,6 +969,10 @@ class Sale_lib
 	}
 	public function get_test_id()
 	{
+		if(!$this->CI->session->userdata('sale_test_id'))
+		{
+			$this->set_test_id(0);
+		}
 		return $this->CI->session->userdata('sale_test_id');
 	}
 
@@ -1137,7 +1144,63 @@ class Sale_lib
 	 * -- [1] Khám mắt
 	 * -- [2] Xuất hàng - In phiếu (xuất hàng - bán hàng); chỉnh sửa nếu có; có thể có tạm ứng
 	 * -- [3] Thanh toán (Hoàn thành đơn hàng);
+	 * Ngày 02.02.2023
 	 */
+	public function set_parent_id($parent_id)
+	{
+		$this->CI->session->set_userdata('parent_id', $parent_id);
+	}
+	public function get_parent_id()
+	{
+		if(!$this->CI->session->userdata('parent_id'))
+		{
+			$this->set_parent_id(0);
+		}
+		return $this->CI->session->userdata('parent_id');
+	}
+
+	public function clear_parent_id()
+	{
+		$this->CI->session->unset_userdata('parent_id');
+	}
+
+	public function set_current($current)
+	{
+		$this->CI->session->set_userdata('current', $current);
+	}
+	public function get_current()
+	{
+		if(!$this->CI->session->userdata('current'))
+		{
+			$this->set_current(1); // Mặc định đơn hàng này đang có hiệu lực; nếu = 0 đơn hàng không có hiệu lực
+		}
+		return $this->CI->session->userdata('current');
+	}
+
+	public function clear_current()
+	{
+		$this->CI->session->unset_userdata('current');
+	}
+
+	public function set_status($status)
+	{
+		$this->CI->session->set_userdata('status', $status);
+	}
+	public function get_status()
+	{
+		if(!$this->CI->session->userdata('status'))
+		{
+			$this->set_status(1); // Trạng thái chưa thanh toán, hoặc thanh toán 1 phần (tạm ứng)
+		}
+		return $this->CI->session->userdata('status');
+	}
+
+	public function clear_status()
+	{
+		$this->CI->session->unset_userdata('status');
+	}
+
+	
 }
 
 ?>
