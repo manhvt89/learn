@@ -18,6 +18,15 @@ $config['cyls'] = array(
                             '3.50',
                             '3.75',
                             '4.00',
+                            '4.25',
+                            '4.50',
+                            '4.75',
+                            '5.00',
+                            '5.25',
+                            '5.50',
+                            '5.75',
+                            '6.00',
+
                         );
 $config['mysphs'] = array(
                             '-',
@@ -189,3 +198,5 @@ $config['caPOStatus'] = array(
     3=>'Đã phê duyệt',
     4=>'Đã nhập hàng'
 );
+
+$config['default_city'] = 'Hà Nội';

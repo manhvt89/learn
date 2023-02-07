@@ -103,7 +103,7 @@ class Account extends Secure_Controller
 	public function get_row($row_id)
 	{
 		$sale_info = $this->Accounting->get_info($row_id)->row();
-		$data_row = $this->xss_clean(get_sale_data_row($sale_info, $this));
+		$data_row = $this->xss_clean(get_sale_data_row($sale_info));
 
 		echo json_encode($data_row);
 	}
@@ -118,12 +118,14 @@ class Account extends Secure_Controller
 
 		$filters = array('type' => 'all',
 			'location_id' => 'all',
+			'sale_type' => 'sales',
 			'start_date' => $this->input->get('start_date'),
 			'end_date' => $this->input->get('end_date'));
 
 		// check if any filter is set in the multiselect dropdown
 		$filledup = array_fill_keys($this->input->get('filters'), TRUE);
 		$filters = array_merge($filters, $filledup);
+
 		$sales = $this->Accounting->search($search, $filters, $limit, $offset, $sort, $order);
 		$total_rows = $this->Accounting->get_found_rows($search, $filters);
 		//$payments = $this->Testex->get_payments_summary($search, $filters);
@@ -132,7 +134,9 @@ class Account extends Secure_Controller
 
         $permission = true;
         $accounting = $this->Accounting->get_accounting_summary($filters);
-        $accounting_summary = $this->xss_clean(get_accounting_manage_summary($accounting, $this));
+		$revenue = $this->Accounting->get_revenue_summary($filters);
+		//var_dump($revenue);
+        $accounting_summary = $this->xss_clean(get_accounting_manage_summary($accounting, $revenue, $this));
 
 		$data_rows = array();
         if($permission)

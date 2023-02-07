@@ -103,7 +103,7 @@ class Test extends Secure_Controller
 	public function get_row($row_id)
 	{
 		$sale_info = $this->Sale->get_info($row_id)->row();
-		$data_row = $this->xss_clean(get_sale_data_row($sale_info, $this));
+		$data_row = $this->xss_clean(get_sale_data_row($sale_info));
 		echo json_encode($data_row);
 	}
 

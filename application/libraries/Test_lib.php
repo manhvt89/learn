@@ -83,7 +83,7 @@ class Test_lib
 									</tr>
 									<tr>
 										<td></td>
-										<td colspan='6'>".$test['note']."</td>
+										<td colspan='6'>".nl2br($test['note'])."</td>
 									</tr>
 									
 </tbody>

@@ -65,10 +65,27 @@ class Accounting extends CI_Model
 			$yesterday_totol_data = $this->get_daily_total_info('yesterday');
 			if($yesterday_totol_data)
 			{
+
+				$_LastDate = $yesterday_totol_data['created_time'];
+
+				$filters['start_date'] = date('Y-m-d', strtotime($_LastDate));
+				$filters['end_date'] = date('Y-m-d', strtotime($_LastDate));
+				$_rsTotal = $this->get_accounting_summary($filters);
+
+				$begin = $_rsTotal['starting'] + $_rsTotal['in'] - $_rsTotal['po'];
+				$end = 0;
+
 				$daily_total_data = array(
 					'created_time' =>time(),
-					'begining_amount' => $yesterday_totol_data['ending_amount'],
-					'ending_amount' => $yesterday_totol_data['ending_amount'],
+					'begining_amount' => $begin,
+					'ending_amount' => $end,
+					'increase_amount' => 0,
+					'decrease_amount' => 0 );
+
+				$daily_total_data = array(
+					'created_time' =>time(),
+					'begining_amount' => $begin,
+					'ending_amount' => $end,
 					'increase_amount' => 0,
 					'decrease_amount' => 0 );
 
@@ -102,13 +119,24 @@ class Accounting extends CI_Model
 	{
 		$daily_total_id = 0;
 		if(!$this->exists()){
-			$yesterday_totol_data = $this->get_daily_total_info('yesterday');
+			//$yesterday_totol_data = $this->get_daily_total_info('yesterday');
+			$the_last_total_data = $this->get_the_last_total_daily();
+			$yesterday_totol_data = $the_last_total_data;
 			if($yesterday_totol_data)
 			{
+				$_LastDate = $yesterday_totol_data['created_time'];
+
+				$filters['start_date'] = date('Y-m-d', strtotime($_LastDate));
+				$filters['end_date'] = date('Y-m-d', strtotime($_LastDate));
+				$_rsTotal = $this->get_accounting_summary($filters);
+
+				$begin = $_rsTotal['starting'] + $_rsTotal['in'] - $_rsTotal['po'];
+				$end = 0;
+
 				$daily_total_data = array(
 					'created_time' =>time(),
-					'begining_amount' => $yesterday_totol_data['ending_amount'],
-					'ending_amount' => $yesterday_totol_data['ending_amount'],
+					'begining_amount' => $begin,
+					'ending_amount' => $end,
 					'increase_amount' => 0,
 					'decrease_amount' => 0 );
 
@@ -146,10 +174,10 @@ class Accounting extends CI_Model
 			//2. Update daily_record
 			//- ending_amount = ending_amount - $payout_data['amount']
 			// - decrease_amount = decrease_amount + $payout_data['amount']
-			$daily_rs['ending_amount'] = $daily_rs['ending_amount'] + $income_data['amount'] ;
-			$daily_rs['increase_amount'] = $daily_rs['increase_amount'] + $income_data['amount'];
-			$this->db->where('daily_total_id', $daily_total_id);
-			$this->db->update('daily_total', $daily_rs);
+			//$daily_rs['ending_amount'] = $daily_rs['ending_amount'] + $income_data['amount'] ;
+			//$daily_rs['increase_amount'] = $daily_rs['increase_amount'] + $income_data['amount'];
+			//$this->db->where('daily_total_id', $daily_total_id);
+			//$this->db->update('daily_total', $daily_rs);
 			$this->db->trans_complete();
 			$success = $this->db->trans_status();
 			return $success;
@@ -163,13 +191,25 @@ class Accounting extends CI_Model
 	{
 		$daily_total_id = 0;
 		if(!$this->exists()){
-			$yesterday_totol_data = $this->get_daily_total_info('yesterday');
+			// Nếu ngày hôm nay chưa tồn tại, lấy ngày gần nhất (fix bug nghỉ nhiều ngày);
+			//$yesterday_totol_data = $this->get_daily_total_info('yesterday');
+			$the_last_total_data = $this->get_the_last_total_daily();
+			$yesterday_totol_data = $the_last_total_data;
 			if($yesterday_totol_data)
 			{
+				$_LastDate = $yesterday_totol_data['created_time'];
+
+				$filters['start_date'] = date('Y-m-d', strtotime($_LastDate));
+				$filters['end_date'] = date('Y-m-d', strtotime($_LastDate));
+				$_rsTotal = $this->get_accounting_summary($filters);
+
+				$begin = $_rsTotal['starting'] + $_rsTotal['in'] - $_rsTotal['po'];
+				$end = 0;
+
 				$daily_total_data = array(
 					'created_time' =>time(),
-					'begining_amount' => $yesterday_totol_data['ending_amount'],
-					'ending_amount' => $yesterday_totol_data['ending_amount'],
+					'begining_amount' => $begin,
+					'ending_amount' => $end,
 					'increase_amount' => 0,
 					'decrease_amount' => 0 );
 
@@ -201,10 +241,12 @@ class Accounting extends CI_Model
 				$payout_data['code'] = 'NB-'.time();
 				$payout_data['payment_id'] = 0;//don't user
 				$payout_data['sale_id'] = 0;//don't user
-			}else {
+			}elseif($payout_data['kind'] == 2) {
 				//$payout_data['kind'] = 0; //don't user
 				$payout_data['payment_id'] = 0;//don't user
 				$payout_data['sale_id'] = 0;//don't user
+			} else{
+
 			}
 			//var_dump($payout_data);
 			$this->db->trans_start();
@@ -213,10 +255,10 @@ class Accounting extends CI_Model
 			//2. Update daily_record
 			//- ending_amount = ending_amount - $payout_data['amount']
 			// - decrease_amount = decrease_amount + $payout_data['amount']
-			$daily_rs['ending_amount'] = $daily_rs['ending_amount'] - $payout_data['amount'] ;
-			$daily_rs['decrease_amount'] = $daily_rs['decrease_amount'] + $payout_data['amount'];
-			$this->db->where('daily_total_id', $daily_total_id);
-			$this->db->update('daily_total', $daily_rs);
+			//$daily_rs['ending_amount'] = $daily_rs['ending_amount'] - $payout_data['amount'] ;
+			//$daily_rs['decrease_amount'] = $daily_rs['decrease_amount'] + $payout_data['amount'];
+			//$this->db->where('daily_total_id', $daily_total_id);
+			//$this->db->update('daily_total', $daily_rs);
 			$this->db->trans_complete();
 			$success = $this->db->trans_status();
 			if($success)
@@ -371,13 +413,58 @@ class Accounting extends CI_Model
 		$payout_amount_nb = $this->db->get()->result_array();
 
 		$payout_nb = $payout_amount_nb[0]['amount'];
+
+		$this->db->select('SUM(amount) AS pc');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',1); //Chi
+		$this->db->where('sale_id >',0);
+		$payout_customer = $this->db->get()->result_array();
+		//var_dump($payout_customer);
+		$payout_c = $payout_customer[0]['pc'];
 		// consider Gift Card as only one type of payment and do not show "Gift Card: 1, Gift Card: 2, etc." in the total
-		$payments = array('in' => $income, 'po' => $payout, 'starting' => $starting,'ending'=>$ending,'nb'=>$payout_nb);
+		$payments = array('in' => $income, 'po' => $payout, 'starting' => $starting,'ending'=>$ending,'nb'=>$payout_nb,'pc'=>$payout_c);
 
 
 		return $payments;
 	}
 
+	public function get_revenue_summary($filters)
+	{
+		$this->db->select('payment_type, count(*) AS count, SUM(payment_amount) AS payment_amount');
+		$this->db->from('sales');
+		$this->db->join('sales_payments', 'sales_payments.sale_id = sales.sale_id');
+		$this->db->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'left');
+		$this->db->join('customers AS customer', 'sales.customer_id = customer.person_id', 'left');
+
+		$this->db->where('DATE(sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->group_by('payment_type');
+
+		$payments = $this->db->get()->result_array();
+
+		// consider Gift Card as only one type of payment and do not show "Gift Card: 1, Gift Card: 2, etc." in the total
+		$gift_card_count = 0;
+		$gift_card_amount = 0;
+		foreach($payments as $key=>$payment)
+		{
+			if( strstr($payment['payment_type'], $this->lang->line('sales_giftcard')) != FALSE )
+			{
+				$gift_card_count  += $payment['count'];
+				$gift_card_amount += $payment['payment_amount'];
+
+				// remove the "Gift Card: 1", "Gift Card: 2", etc. payment string
+				unset($payments[$key]);
+			}
+		}
+
+		if($gift_card_count > 0)
+		{
+			$payments[] = array('payment_type' => $this->lang->line('sales_giftcard'), 'count' => $gift_card_count, 'payment_amount' => $gift_card_amount);
+		}
+
+		return $payments;
+	}
+	
 
 	// - OLD CODE TO REFERENCE -------------
 
@@ -966,6 +1053,80 @@ class Accounting extends CI_Model
 
 		// drop the temporary table to contain memory consumption as it's no longer required
 		$this->db->query('DROP TEMPORARY TABLE IF EXISTS ' . $this->db->dbprefix('sales_payments_temp'));
+	}
+
+	public function get_the_last_total_daily()
+	{
+		$query = $this->db->query("SELECT * FROM daily_total ORDER BY daily_total_id DESC LIMIT 1");
+		$result = $query->result_array();
+		if(!empty($result))
+		{
+			return $result[0];
+		}else{
+			return null;
+		}
+	}
+
+	public function get_totals_of_the_day($date)
+	{
+		$filters['start_date'] = $date;
+		$filters['end_date'] = $date;
+		// get payment summary
+		$this->db->select('SUM(amount) AS amount');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',0); // Thu
+
+		$income_amount = $this->db->get()->result_array();
+
+		//$starting_amount = $this->get_daily_total_info($this->db->escape($filters['start_date']));
+		if($income_amount)
+		{
+			$income = $income_amount[0]['amount'];
+		}else{
+			$income = 0;
+		}
+
+
+		$this->db->select('SUM(amount) AS amount');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',1); //Chi
+		$payout_amount = $this->db->get()->result_array();
+
+		$payout = $payout_amount[0]['amount'];
+		/*
+		if($starting_amount) {
+			$starting = $starting_amount['begining_amount'];
+		}else{
+			$starting = 0;
+		}
+		*/
+		$starting = 0;
+		$ending = $starting + $income - $payout;
+
+		$this->db->select('SUM(amount) AS amount');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',1); //Chi
+		$this->db->where('kind',1); // Nội bộ
+		$payout_amount_nb = $this->db->get()->result_array();
+
+		$payout_nb = $payout_amount_nb[0]['amount'];
+
+		$this->db->select('SUM(amount) AS pc');
+		$this->db->from('total as total');
+		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('type',1); //Chi
+		$this->db->where('sale_id >',0);
+		$payout_customer = $this->db->get()->result_array();
+		//var_dump($payout_customer);
+		$payout_c = $payout_customer[0]['pc'];
+		// consider Gift Card as only one type of payment and do not show "Gift Card: 1, Gift Card: 2, etc." in the total
+		$payments = array('in' => $income, 'po' => $payout, 'starting' => $starting,'ending'=>$ending,'nb'=>$payout_nb,'pc'=>$payout_c);
+
+
+		return $payments;
 	}
 }
 ?>

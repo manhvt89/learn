@@ -24,6 +24,11 @@ if (isset($success))
 	<?php echo form_open($controller_name."/change_mode", array('id'=>'mode_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
+			<?php if($this->Employee->has_grant('purchases_lens')): ?>
+				<li class="pull-right">
+					<div class='btn btn-sm btn-success pull-right' id='lens_receiving_button'><span class="glyphicon">&nbsp</span><?php echo 'Nhập mắt từ bảng'; ?></div>
+				</li>
+				<?php endif; ?>
 				<?php if($this->Employee->has_grant('receivings_lens')): ?>
 					<li class="pull-right">
 					<button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/excel_import"); ?>'
@@ -45,6 +50,7 @@ if (isset($success))
 				?>
 				
 				<?php endif; ?>
+				
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
@@ -259,6 +265,12 @@ if (isset($success))
 <script type="text/javascript">
 $(document).ready(function()
 {
+	$("#lens_receiving_button").click(function()
+    {
+		var url = '<?php echo site_url("/receivings/lens"); ?>';
+		window.location.replace(url);
+    });
+	
     $('.price').number(true,0,',','.');
 	//$('#amount_tendered').number(true,0,',','.');
 	$("#item").autocomplete(

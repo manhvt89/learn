@@ -20,6 +20,7 @@ class Barcodes extends Secure_Controller
 	{		
 		
 		$data['cart'] = $this->printbarcode_lib->get_cart();
+		$data['quantity'] = $this->printbarcode_lib->get_quantity();
 			
 		$data = $this->xss_clean($data);
 

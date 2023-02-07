@@ -661,18 +661,32 @@ class Sale_lib
 
 	public function return_entire_sale($receipt_sale_id)
 	{
+		/* remove by manhvt to support code
 		//POS #
 		$pieces = explode(' ', $receipt_sale_id);
 		$sale_id = $pieces[1];
+		*/
+		$sale_id = 0;
+		$mode = $this->get_mode();
+		$_oSale = $this->CI->Sale->get_sale_by_code($receipt_sale_id);
+		//var_dump($_oSale);
+		if(!empty($_oSale))
+		{
+			$sale_id = $_oSale->sale_id;
+		}
 
 		$this->empty_cart();
 		$this->remove_customer();
 
 		foreach($this->CI->Sale->get_sale_items($sale_id)->result() as $row)
 		{
-			$this->add_item($row->item_id, -$row->quantity_purchased, $row->item_location, $row->discount_percent, $row->item_unit_price, $row->description, $row->serialnumber, TRUE);
+			if ($mode == 'return') {
+				$this->add_item($row->item_id, -$row->quantity_purchased, $row->item_location, $row->discount_percent, $row->item_unit_price, $row->description, $row->serialnumber, TRUE);
+			} else {
+				$this->add_item($row->item_id, $row->quantity_purchased, $row->item_location, $row->discount_percent, $row->item_unit_price, $row->description, $row->serialnumber, TRUE);
+			}
 		}
-
+		
 		$this->set_customer($this->CI->Sale->get_customer($sale_id)->person_id);
 	}
 	
@@ -943,6 +957,10 @@ class Sale_lib
 	}
 	public function get_sale_id()
 	{
+		if(!$this->CI->session->userdata('sale_id'))
+		{
+			$this->set_sale_id(0); // ID = 0; không có bản ghi nào;
+		}
 		return $this->CI->session->userdata('sale_id');
 	}
 
@@ -1096,11 +1114,10 @@ class Sale_lib
 
 	public function get_edit()
 	{
-		if (!empty($this->CI->session->userdata('edit'))) {
-			return $this->CI->session->userdata('edit');
-		} else{
-			return 0;
-		}
+		if (empty($this->CI->session->userdata('edit'))) {
+			$this->set_edit(0);
+		} 
+		return $this->CI->session->userdata('edit');
 	}
 	public function clear_edit()
 	{

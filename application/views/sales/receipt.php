@@ -98,11 +98,21 @@ $(document).ready(function()
 <div class="print_hide" id="control_buttons" style="text-align:right">
 	<a href="javascript:printdoc();"><div class="btn btn-info btn-sm", id="show_print_button"><?php echo '<span class="glyphicon glyphicon-print">&nbsp</span>' . $this->lang->line('common_print'); ?></div></a>
 	<?php /* this line will allow to print and go back to sales automatically.... echo anchor("sales", '<span class="glyphicon glyphicon-print">&nbsp</span>' . $this->lang->line('common_print'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_print_button', 'onclick'=>'window.print();')); */ ?>
-	<?php if(isset($customer_email) && !empty($customer_email)): ?>
+	<?php if($status == 1){
+        echo anchor($controller_name."/payment/$sale_uuid", '<span class="glyphicon glyphicon-briefcase">&nbsp</span>' . 'Thanh toán',
+        array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Thanh toán'));
+    } 
+    ?>	
+    <?php if(isset($customer_email) && !empty($customer_email)): ?>
 		<a href="javascript:void(0);"><div class="btn btn-info btn-sm", id="show_email_button"><?php echo '<span class="glyphicon glyphicon-envelope">&nbsp</span>' . $this->lang->line('sales_send_receipt'); ?></div></a>
 	<?php endif; ?>
 	<?php echo anchor("sales", '<span class="glyphicon glyphicon-shopping-cart">&nbsp</span>' . $this->lang->line('sales_register'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_sales_button')); ?>
-	<?php echo anchor("sales/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_takings_button')); ?>
+	
+	<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách chờ thanh toán',
+							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách chờ thanh toán')); ?>
+					
+			
+    <?php //echo anchor("sales/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_takings_button')); ?>
 </div>
 <?php if($sale_uuid != '' ): ?>
 <?php $this->load->view("sales/" . $this->config->item('receipt_template')); ?>

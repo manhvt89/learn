@@ -103,7 +103,7 @@ function get_sales_manage_table_headers()
 		$headers[] = array('invoice' => '&nbsp', 'sortable' => FALSE);
 	}
 
-	return transform_headers(array_merge($headers, array(array('receipt' => '&nbsp', 'sortable' => FALSE))));
+	return transform_headers(array_merge($headers, array(array('receipt' => '&nbsp', 'sortable' => FALSE),array('payment' => '&nbsp', 'sortable' => FALSE))),TRUE);
 }
 
 /*
@@ -308,7 +308,7 @@ function get_order_data_row($sale, $controller)
 }
 
 
-function get_sale_data_row($sale, $controller)
+function get_sale_data_row($sale)
 {
 	$CI =& get_instance();
 	$controller_name = $CI->uri->segment(1);
@@ -335,16 +335,20 @@ function get_sale_data_row($sale, $controller)
 		);
 	}
 
-	$row['receipt'] = anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-usd"></span>',
+	$row['receipt'] = anchor($controller_name."/receipt/$sale->sale_uuid", '<span class="glyphicon glyphicon-usd"></span>',
 		array('title' => $CI->lang->line('sales_show_receipt'))
 	);
 	if($sale->status == 1) {
-		$row['edit'] = anchor($controller_name . "/editsale/$sale->sale_id", '<span class="glyphicon glyphicon-edit"></span>',
+		$row['edit'] = anchor($controller_name . "/editsale/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
 			array('title' => $CI->lang->line($controller_name . '_update'))
 		);
+		$row['payment'] = anchor($controller_name . "/payment/$sale->sale_uuid", '<span class="glyphicon glyphicon-briefcase"></span>',
+			array('title' => 'Thanh toán')
+		);
 	}else{
-		$row['edit'] = anchor($controller_name."/receipt/$sale->sale_id", '<span class="glyphicon glyphicon-ok"></span>',
-			array('title' => $CI->lang->line('sales_show_receipt'))
+		//Cần fix chỉ hiển thị ngày hiện tại;
+		$row['edit'] = anchor($controller_name."/edit/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
+		array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
 		);
 	}
 	return $row;
@@ -560,10 +564,43 @@ function get_supplier_data_row($supplier, $controller)
 }
 
 //added by ManhVT
-function get_accounting_manage_summary($payments, $controller)
+function get_accounting_manage_summary($payments, $revenue, $controller)
 {
+	//var_dump($payments);
+	//var_dump($revenue);
+	
 	$CI =& get_instance();
-	$table = '<div id="report_summary"><table>';
+	$table = '<div id="report_summary" class="steps"><div class="step"><p class="step__title">Doanh thu</p>';
+	
+	if(!empty($revenue)){
+		$table .= '<table>';
+		$total = 0;
+		foreach($revenue as $item)
+		{
+			//var_dump($item);
+			if($item['payment_type']=='Tiền mặt' && $payments['pc'] != 0)
+			{
+				$table .= '<tr><td>' . $item['payment_type'] . ': </td><td>' . to_currency($item['payment_amount'] - $payments['pc']) . '</td></tr>';
+				$total = $total + $item['payment_amount'] - $payments['pc'];
+			} else {
+				$table .= '<tr><td>' . $item['payment_type'] . ': </td><td>' . to_currency($item['payment_amount']) . '</td></tr>';
+				$total = $total + $item['payment_amount'];
+			}
+		}
+		$table .= '<tr><td>Tổng doanh thu: </td><td>'.to_currency($total).'</td></tr>';
+		$table .= '</table>';	
+	} else {
+		$table .= '<table>';
+		$total = 0;
+		
+		$table .= '<tr><td>Tiền chuyển khoản: </td><td>0</td></tr>';
+		$table .= '<tr><td>Tiền thanh toán thẻ: </td><td>0</td></tr>';
+		$table .= '<tr><td>Tiền mặt: </td><td>0</td></tr>';
+		
+		$table .= '<tr><td>Tổng doanh thu: </td><td>'.$total.'</td></tr>';
+		$table .= '</table>';
+	}
+	$table .= '</div><div class="step"><p class="step__title">Quỹ tiền mặt</p><table>';
 	$table .= '<tr><td><p class="label-dauky">Số dư đầu kỳ (1): </p></td><td><b>'. to_currency($payments['starting']).'</b></td></tr>';
 	$table .= '<tr><td><p class="label-thutrongky">Thu trong kỳ (2): </p></td><td><b>'. to_currency($payments['in']).'</b></td></tr>';
 	$table .= '<tr><td><p class="label-chitrongky">Chi trong kỳ (3)=(4)+(5): </p></td><td><b>'. to_currency($payments['po']-0).'</b></td></tr>';
@@ -571,7 +608,7 @@ function get_accounting_manage_summary($payments, $controller)
 	$table .= '<tr><td><p class="label-chinoibo">Chi nội bộ (5): </p></td><td><b>'. to_currency($payments['nb']-0).'</b></td></tr>';
 	$table .= '<tr><td><p class="label-cuoiky">Cuối trong kỳ (6)=(1)+(2)-(3): </p></td><td><b>'. to_currency($payments['ending']).'</b></td></tr>';
 	
-	$table .= '</table></div>';
+	$table .= '</table></div></div>';
 
 	return $table;
 }
@@ -617,9 +654,9 @@ function get_account_data_row($accounting, $controller)
 		if($accounting->kind == 1){
 			$row['type'] = "Chi - Nội bộ";
 		}	elseif($accounting->kind == 3){
-			$row['type'] = "Chi - Khác";
-		} else{
 			$row['type'] = "Chi - Trả lại khách";
+		} else{
+			$row['type'] = "Chi - Khác";
 		}
 		
 	}

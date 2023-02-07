@@ -132,7 +132,7 @@ class Customer_info extends Secure_Controller
 		$data_rows = array();
 		foreach($sales->result() as $sale)
 		{
-			$data_rows[] = $this->xss_clean(get_sale_data_row($sale, $this));
+			$data_rows[] = $this->xss_clean(get_sale_data_row($sale));
 		}
 
 		if($total_rows > 0)

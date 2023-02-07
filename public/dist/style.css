@@ -383,7 +383,9 @@ td .input-test {
     /*font-size: 14px;*/
     text-align: center;
     line-height: normal;
+    margin: 25px 0 10px 0;
 }
+
 
 .heder_table_contact_len {
     font-weight: bold;
@@ -668,4 +670,129 @@ td .input-test {
     .fixed-table-container thead th .sortable {
         padding-right: 10px;
     }
+    #footer_precription tr th {
+      text-align: center;
+    }
+}
+
+
+/*End print*/
+
+.steps {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+@media (min-width:992px) {
+    .steps {
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+}
+
+.step {
+    -ms-flex: 1 1 0px;
+    flex: 1 1 0;
+    position: relative;
+    border: 2px solid #e2e9f0;
+    padding: 1.75rem 1.75rem 1.9rem;
+    transition: all .1s ease-out
+}
+
+.step:not(:last-of-type) {
+    border-bottom: 0
+}
+
+@media (min-width:992px) {
+    .step:not(:last-of-type) {
+        border-right: 0;
+        border-bottom: 2px solid #e2e9f0
+    }
+}
+
+.step:hover {
+    background-color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .2);
+    margin-bottom: -.1rem;
+    padding-bottom: 2rem;
+    z-index: 3
+}
+
+@media (min-width:992px) {
+    .step:hover {
+        margin-bottom: 0;
+        margin-right: -.1rem;
+        padding-right: 1.85rem;
+        padding-bottom: 1.9rem
+    }
+}
+
+.step:hover:not(:last-of-type) {
+    border-bottom: 0
+}
+
+@media (min-width:992px) {
+    .step:hover:not(:last-of-type) {
+        border-right: 0;
+        border-bottom: 2px solid transparent
+    }
+}
+
+.step__icon {
+    margin-bottom: 2.4rem
+}
+
+.step .step__icon {
+    font-size: 3rem
+}
+
+.step__title {
+    margin-bottom: .45rem
+}
+
+.step tr td {}
+
+.step tr {
+    /*border-bottom: 1px solid #ddd;*/
+    vertical-align: middle;
+}
+
+.step tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.step tr:hover {
+    background-color: coral;
+}
+@media (min-width:992px) {
+  #show_po_list, #show_sales_button {
+    margin: 0 5px 0 1px;
+  }
+
+  #view_report_lens_category table tr td:first-child {
+    font-weight: bold;
+    background-color: lavender;
+  }
+
+  #view_report_lens_category table tr th {
+    text-align: center;
+    border: 1px solid black;
+  }
+  #report_item_count{
+    margin: 0 0 20px 0;
+  }
+  #generate_report{
+    margin: 10px 0 20px 0;
+  }
+  #target{
+    text-align: right;
+  }
+
+  #target label {
+    font-size: 14px;
+    font-family: arial;
+  }
 }

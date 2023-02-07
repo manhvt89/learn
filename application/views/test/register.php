@@ -140,7 +140,7 @@ if (isset($success))
 		<?php
 		// Only show this part if there are Items already in the sale.
 		//if(count($cart) > 0)
-		if($cart != '')
+		if(!empty($cart))
 		{
 		?>
 

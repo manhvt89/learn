@@ -6,7 +6,7 @@
 	<fieldset id="sale_basic_info">
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('sales_receipt_number'), 'receipt_number', array('class'=>'control-label col-xs-3')); ?>
-			<?php echo anchor('sales/receipt/'.$sale_info['sale_id'], 'POS ' . $sale_info['sale_id'], array('target'=>'_blank', 'class'=>'control-label col-xs-8', "style"=>"text-align:left"));?>
+			<?php echo anchor('sales/receipt/'.$sale_info['sale_uuid'], 'POS ' . $sale_info['sale_id'], array('target'=>'_blank', 'class'=>'control-label col-xs-8', "style"=>"text-align:left"));?>
 		</div>
 		
 		<div class="form-group form-group-sm">

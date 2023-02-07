@@ -521,15 +521,16 @@
 	<table class="sales_table_100" id="register">
 		<thead>
 		<tr>
-			<th colspan="3"><?php echo $this->lang->line('test_note'); ?></th>
+			<th colspan="3">Đơn thuốc/Ghi chú</th>
 		</tr>
 		</thead>
 		<tbody id="cart_contents">
 		<tr>
 			<td colspan="3">
 				<?php echo form_textarea(array(
+					'wrap'=>'hard',
 					'name' => 'note',
-					'rows' => '3',
+					'rows' => '5',
 					'cols' => '25',
 					'value'=> '',
 					'class'=>'textarea_test'));?>

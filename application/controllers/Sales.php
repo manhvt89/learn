@@ -66,7 +66,7 @@ class Sales extends Secure_Controller
 			echo 'Not Found a Record';
 			exit();
 		}
-		$data_row = $this->xss_clean(get_sale_data_row($sale_info, $this));
+		$data_row = $this->xss_clean(get_sale_data_row($sale_info));
 		echo json_encode($data_row);
 	}
 
@@ -101,18 +101,18 @@ class Sales extends Secure_Controller
 
 		$sales = $this->Sale->search($search, $filters, $limit, $offset, $sort, $order, $this->logedUser_type, $this->logedUser_id);
 		$total_rows = $this->Sale->get_found_rows($search, $filters, $this->logedUser_type, $this->logedUser_id);
-		$payments = $this->Sale->get_payments_summary($search, $filters, $this->logedUser_type, $this->logedUser_id);
-		$payment_summary = $this->xss_clean(get_sales_manage_payments_summary($payments, $sales, $this));
-
+		//$payments = $this->Sale->get_payments_summary($search, $filters, $this->logedUser_type, $this->logedUser_id);
+		//$payment_summary = $this->xss_clean(get_sales_manage_payments_summary($payments, $sales, $this));
+		$payment_summary = '';
 		$data_rows = array();
 		foreach($sales->result() as $sale)
 		{
-			$data_rows[] = $this->xss_clean(get_sale_data_row($sale, $this));
+			$data_rows[] = $this->xss_clean(get_sale_data_row($sale));
 		}
 
 		if($total_rows > 0)
 		{
-			$data_rows[] = $this->xss_clean(get_sale_data_last_row($sales, $this));
+			//$data_rows[] = $this->xss_clean(get_sale_data_last_row($sales, $this));
 		}
 
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows, 'payment_summary' => $payment_summary));
@@ -124,6 +124,11 @@ class Sales extends Secure_Controller
 		$receipt = $search = $this->input->get('term') != '' ? $this->input->get('term') : NULL;
 
 		if($this->sale_lib->get_mode() == 'return' && $this->Sale->is_valid_receipt($receipt))
+		{
+			// if a valid receipt or invoice was found the search term will be replaced with a receipt number (POS #)
+			$suggestions[] = $receipt;
+		}
+		if($this->sale_lib->get_mode() == 'payment' && $this->Sale->is_valid_receipt($receipt))
 		{
 			// if a valid receipt or invoice was found the search term will be replaced with a receipt number (POS #)
 			$suggestions[] = $receipt;
@@ -314,10 +319,13 @@ class Sales extends Secure_Controller
 		$ctvs = $this->Ctv->get_list();
 		$this->sale_lib->set_ctv($ctvs);
 		$quantity = ($mode == 'return') ? -1 : 1;
+		if($mode == 'payment'){
+			$this->sale_lib->set_edit(1);
+		}
 		$item_location = $this->sale_lib->get_sale_location();
 		$item_id_or_number_or_item_kit_or_receipt = $this->input->post('item');
 
-		if($mode == 'return' && $this->Sale->is_valid_receipt($item_id_or_number_or_item_kit_or_receipt))
+		if(($mode == 'return' || $mode == 'payment')&& $this->Sale->is_valid_receipt($item_id_or_number_or_item_kit_or_receipt))
 		{
 			$this->sale_lib->return_entire_sale($item_id_or_number_or_item_kit_or_receipt);
 		}
@@ -424,7 +432,10 @@ class Sales extends Secure_Controller
 			$this->sale_lib->add_payment($payment_type, $amount_tendered,$payment_kind); // Thêm vào trả trước với loại thanh toán $type
 		
 			$data['cart'] = $this->sale_lib->get_cart();
+			//var_dump($this->sale_lib->get_sale_id());
+			$_iSaleID = $this->sale_lib->get_sale_id();
 			$status = 1;
+			$data['status'] = $status; 
 			$data['subtotal'] = $this->sale_lib->get_subtotal();
 			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(true);
 			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(true, true);
@@ -456,6 +467,7 @@ class Sales extends Secure_Controller
 			$payment['payment_kind'] = $this->lang->line('sales_reserve_money');
 			//var_dump($data['payments']);
 			//die();
+
 			if (count($data['payments']) == 0) {
 				$data['error'] = 'Chưa thêm thanh toán, kiểm tra lại thông tin';
 				$this->_reload($data);
@@ -503,24 +515,45 @@ class Sales extends Secure_Controller
 					$data['error'] = $this->lang->line('sales_invoice_number_duplicate');
 					$this->_reload($data);
 				} else {
+					// Lưu thông tin vào bản ghi Sale
 					$ctv_id = $this->input->post('ctvs');
 					$invoice_number = $this->sale_lib->is_invoice_number_enabled() ? $invoice_number : null;
 					$data['invoice_number'] = $invoice_number;
-					$data['sale_id_num'] = $this->Sale->save(
-						$data['cart'],
-						$customer_id,
-						$employee_id,
-						$data['comments'],
-						$invoice_number,
-						$payments,
-						$amount_change,
-						$suspended_sale_id,
-						$ctv_id,
-						$status,
-						$test_id,
-						$kxv_id,
-						$doctor_id
-					);
+					if ($_iSaleID == 0) { // Tạo mới
+						$data['sale_id_num'] = $this->Sale->save(
+							$data['cart'],
+							$customer_id,
+							$employee_id,
+							$data['comments'],
+							$invoice_number,
+							$payments,
+							$amount_change,
+							$suspended_sale_id,
+							$ctv_id,
+							$status,
+							$test_id,
+							$kxv_id,
+							$doctor_id
+						);
+					} else { // Chỉnh sửa tại đây
+						$result = $this->Sale->edit(
+							$_iSaleID,
+							$data['cart'],
+							$customer_id,
+							$employee_id,
+							$data['comments'],
+							$invoice_number,
+							$payments,
+							$amount_change,
+							$suspended_sale_id,
+							$ctv_id,
+							$status,
+							$test_id,
+							$kxv_id,
+							$doctor_id
+						);
+						$data['sale_id_num'] = $_iSaleID;
+					}
 					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 					$data['code'] = $sale_info['code'];
@@ -634,7 +667,7 @@ class Sales extends Secure_Controller
 		{
 			$data['payments'][$this->lang->line('sales_paid_money')] = array();
 		}
-
+		$data['status'] = 0;
 		if($this->input->post('hidden_form')) {
 			$ctv_id = $this->input->post('hidden_ctv');
 			if ($this->sale_lib->is_invoice_number_enabled() && $this->Sale->check_invoice_number_exists($invoice_number)) {
@@ -654,7 +687,8 @@ class Sales extends Secure_Controller
 						'customer_id' => $sale_info['customer_id'],
 						'employee_id' => $sale_info['employee_id'],
 						'status' => 0,
-						'ctv_id' =>$ctv_id
+						'ctv_id' =>$ctv_id,
+						'sale_time'	=> date('Y-m-d H:i:s'),
 					);
 					if($data['payments'][$this->lang->line('sales_paid_money')]) {
 						$success = $this->Sale->update($sale_id, $sale_data, $data['payments'][$this->lang->line('sales_paid_money')], $employee_id, $customer_id, $amount_change);
@@ -985,6 +1019,7 @@ class Sales extends Secure_Controller
 		$data['code'] = $sale_info['code'];
 		$data['sale_id'] = 'POS ' . $sale_id;
 		$data['comments'] = $sale_info['comment'];
+		$data['status'] = $sale_info['status'];
 		$data['invoice_number'] = $sale_info['invoice_number'];
 		$data['sale_uuid'] = $sale_info['sale_uuid'];
 		$data['company_info'] = implode("\n", array(
@@ -992,7 +1027,7 @@ class Sales extends Secure_Controller
 			$this->config->item('phone'),
 			$this->config->item('account_number')
 		));
-		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['code']);
 		$data['print_after_sale'] = false;
 	} else {
 		//$this->sale_lib->copy_entire_sale($sale_id);
@@ -1006,7 +1041,7 @@ class Sales extends Secure_Controller
 		$data['total'] = '';
 		$data['discount'] = '';
 		$data['receipt_title'] = '';
-
+		$data['status'] = 1;
 		$data['transaction_time'] = '';
 		$data['transaction_date'] = '';
 		$data['show_stock_locations'] = $this->Stock_location->show_locations('sales');
@@ -1027,7 +1062,7 @@ class Sales extends Secure_Controller
 			$this->config->item('phone'),
 			$this->config->item('account_number')
 		));
-		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['code']);
 		$data['print_after_sale'] = false;
 
 	}
@@ -1041,7 +1076,7 @@ class Sales extends Secure_Controller
 		$data['cart'] = $this->sale_lib->get_cart();
 		$data['quantity'] = $this->sale_lib->get_quantity();
 		$data['points'] = $this->sale_lib->get_points();
-		$data['modes'] = array('sale' => $this->lang->line('sales_sale'), 'return' => $this->lang->line('sales_return'));
+		$data['modes'] = array('sale' => $this->lang->line('sales_sale'), 'return' => $this->lang->line('sales_return'),'payment'=>'Thanh toán');
 		$data['mode'] = $this->sale_lib->get_mode();
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('sales');
 		$data['stock_location'] = $this->sale_lib->get_sale_location();
@@ -1066,8 +1101,9 @@ class Sales extends Secure_Controller
 		$data['print_after_sale'] = $this->sale_lib->is_print_after_sale();
 		$data['payments_cover_total'] = $this->sale_lib->get_amount_due() <= 0;
 		$data['ctvs'] = $this->sale_lib->get_ctv();
-		$data['tests'] = null;
-		$data['detail_tests'] = null;
+		$data['tests'] = array(); //edit by manhvt04.02.2023
+		$data['detail_tests'] = array(); //edit by manhvt04.02.2023
+		$data['edit'] = $this->sale_lib->get_edit();
 		//var_dump($this->sale_lib->get_customer());
 		if($this->sale_lib->get_customer() > 0)
 		{
@@ -1082,8 +1118,9 @@ class Sales extends Secure_Controller
 				'location_id' => 'all',
 				'start_date' => date('Y-m-d'),
 				'end_date' => date('Y-m-d'));
-			$tests = $this->Testex->search($search, $filters, $limit, $offset, $sort, $order)->result_array();
-			$data['tests'] = $tests;
+			// Disable display exams list by manhvt04.02.2023
+			//$tests = $this->Testex->search($search, $filters, $limit, $offset, $sort, $order)->result_array();
+			//$data['tests'] = $tests;
 		}
 		//svar_dump($data['tests']); //die();
 		//var_dump($data['detail_tests']);
@@ -1093,8 +1130,15 @@ class Sales extends Secure_Controller
 		$this->load->view("sales/register", $data);
 	}
 
-	public function receipt($sale_id)
+	public function receipt($uuid)
 	{
+		$sale_info = $this->Sale->get_info_by_uuid($uuid)->row();
+		//var_dump($sale_info);
+		$sale_id = 0;
+		if(!empty($sale_info))
+		{
+			$sale_id = $sale_info->sale_id;
+		}
 		$data = $this->_load_sale_data($sale_id);
 	
 		$qr_url_data = base_url('/verify/confirm/').$data['sale_uuid'];
@@ -1144,8 +1188,15 @@ class Sales extends Secure_Controller
 		$this->sale_lib->clear_all();
 	}
 
-	public function edit($sale_id)
+	public function edit($uuid)
 	{
+		$sale_info = $this->Sale->get_info_by_uuid($uuid)->row();
+		//var_dump($sale_info);
+		$sale_id = 0;
+		if(!empty($sale_info))
+		{
+			$sale_id = $sale_info->sale_id;
+		}
 		$data = array();
 
 		$data['employees'] = array();
@@ -1314,12 +1365,19 @@ class Sales extends Secure_Controller
 		$this->_reload();
 	}
 
-	public function editsale($sale_id)
+	public function editsale($uuid='')
 	{
-		$this->sale_lib->clear_all();
-		$this->sale_lib->copy_entire_sale($sale_id);
-		$this->sale_lib->set_edit(1);
-		$data['edit'] = 1;
+		$sale_info = $this->Sale->get_info_by_uuid($uuid)->row();
+		//var_dump($sale_info);
+		$data = array();
+		if (!empty($sale_info)) {
+			$sale_id = $sale_info->sale_id;
+			$this->sale_lib->clear_all();
+			$this->sale_lib->copy_entire_sale($sale_id);
+			//var_dump($this->sale_lib->get_payments());
+			$this->sale_lib->set_edit(2);
+			$data['edit'] = 2; // Thực hiện thanh toán; form này cho phep sửa.
+		}
 		$this->_reload($data);
 	}
 	
@@ -1430,6 +1488,26 @@ class Sales extends Secure_Controller
 		
 		$this->load->view('sales/pending', $data);
 		
+	}
+	/**
+	 * Summary of payment
+	 * Hiển thị form thanh toán để thực hiện thanh toán cho đơn hàng
+	 * @param mixed $uuid
+	 * @return void
+	 */
+	public function payment($uuid='')
+	{
+		$sale_info = $this->Sale->get_info_by_uuid($uuid)->row();
+		//var_dump($sale_info);
+		$data = array();
+		if (!empty($sale_info)) {
+			$sale_id = $sale_info->sale_id;
+			$this->sale_lib->clear_all();
+			$this->sale_lib->copy_entire_sale($sale_id);
+			$this->sale_lib->set_edit(1);
+			$data['edit'] = 1; // Thực hiện thanh toán; form này không cho sửa.
+		}
+		$this->_reload($data);
 	}
 }
 ?>

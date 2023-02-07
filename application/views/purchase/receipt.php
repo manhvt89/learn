@@ -11,7 +11,7 @@ if (isset($error_message))
 <?php $this->load->view('partial/print_receipt', array('print_after_sale', $print_after_sale, 'selected_printer'=>'receipt_printer')); ?>
 <?php echo form_open($controller_name."/act", array('id'=>'action_form', 'class'=>'form-horizontal panel panel-default')); ?>
 <div class="print_hide" id="control_buttons" style="text-align:right">
-	<a href="javascript:printdoc();"><div class="btn btn-info btn-sm", id="show_print_button"><?php echo '<span class="glyphicon glyphicon-print">&nbsp</span>' . $this->lang->line('common_print'); ?></div></a>
+	<a href="javascript:printdoc();"><div class="btn btn-info btn-sm" id="show_print_button"><?php echo '<span class="glyphicon glyphicon-print">&nbsp</span>' . $this->lang->line('common_print'); ?></div></a>
 	<?php if($valid_cart == false): ?>
 		<div class='btn btn-sm btn-info pull-right' id='edit_button'><span class="glyphicon glyphicon-edit">&nbsp</span>Chỉnh sửa</div>
 	<?php else: ?>	
@@ -28,11 +28,15 @@ if (isset($error_message))
 				<div class='btn btn-sm btn-pedding pull-right' id='pedding_button'><span class="glyphicon glyphicon-hourglass">&nbsp</span>Đang chờ duyệt</div>
 			<?php endif;?>
 		<?php elseif($completed == 3): ?>
+			<div class='btn btn-sm btn-info pull-right' id='barcode_button'><span class="glyphicon glyphicon-import">&nbsp</span>In Barcode</div>
 			<div class='btn btn-sm btn-info pull-right' id='import_button'><span class="glyphicon glyphicon-import">&nbsp</span>Nhập kho</div>		
 		<?php elseif($completed == 4): ?>
-			<?php echo anchor("purchases", '<span class="glyphicon glyphicon-save">&nbsp</span>' .'Đơn đặt hàng', array('class'=>'btn btn-info btn-sm', 'id'=>'show_sales_button')); ?>
+			<div class='btn btn-sm btn-info pull-right' id='barcode_button'><span class="glyphicon glyphicon-import">&nbsp</span>In Barcode</div>
+			<?php echo anchor("purchases", '<span class="glyphicon glyphicon-file">&nbsp</span>' .'Đơn đặt hàng mới', array('class'=>'btn btn-info btn-sm', 'id'=>'show_sales_button')); ?>
 		<?php endif; ?>
 	<?php endif; ?>	
+	<?php echo anchor("purchases/manage", '<span class="glyphicon glyphicon-file">&nbsp</span>' .'Danh sách PO', array('class'=>'btn btn-info btn-sm', 'id'=>'show_po_list')); ?>
+	
 </div>
 <?php echo form_hidden('purchase_uuid', $purchase_uuid);?>
 <?php echo form_close(); ?>
@@ -152,6 +156,14 @@ $(document).ready(function()
     {	
 		$('#action_form').attr('action', '<?php echo site_url($controller_name . "/editpurchase"); ?>');
 		$('#action_form').attr('method', 'get');
+		$('#action_form').submit();
+		
+    });
+
+	$('#barcode_button').click(function()
+    {	
+		$('#action_form').attr('action', '<?php echo site_url($controller_name . "/printbarcode"); ?>');
+		$('#action_form').attr('method', 'post');
 		$('#action_form').submit();
 		
     });

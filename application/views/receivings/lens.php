@@ -13,42 +13,26 @@
 
 <div id="view_report_lens_category">
 	<table id="rp_inventory" class="table2excel" width="100%">
-		<tr id="_row_m_1"><td></td><td>SPH</td><td colspan="17">CYL(-)</td></tr>
-		<tr id="_row_m_2_">
-			<td></td>
-			<?php
-				foreach($cyls  as $key=>$cyl):
-					if($key == 0){
-						?>
-						<td></td>
-				<?php
-				} else {
-					?>
-						<td><?php echo $key ?></td>
-					<?php
-				}
-				endforeach;
-			?>
-			
+		<tr id="_row_m_1">
+			<td style="padding: 0 9px 0 9px;"><b>SPH</b></td>
+			<td colspan="17"><b>CYL(-)</b></td>
 		</tr>
 		<tr id="_row_m_2">
-			<td></td>
 			<?php 
 				foreach($cyls  as $cyl):
 					?>
-				<td><?php echo $cyl ?></td>
+				<td><b><?php echo $cyl ?></b></td>
 					<?php
 				endforeach;
 			?>
 			
 		</tr>
-
 		<?php 
 			foreach($mysphs as $key=>$sph):
 				if($key > 0)
 				{
 					$tr = '<tr id="_row_myo_'.$key.'">';
-					$tr = $tr . '<td>'.$key.'</td><td>'.$sph.'</td>';
+					$tr = $tr . '<td><b>'.$sph.'</b></td>';
 					foreach($cyls as $k=>$cyl):
 						if($k > 0)
 						{
@@ -66,31 +50,18 @@
 		?>
 	</table>
 	<table id="rp_inventory_hyo" class="table2excel" width="100%">
-		<tr id="_row_h_1"><td></td><td>SPH</td><td colspan="17">CYL(-)</td></tr>
-		<tr id="_row_m_2_">
-			<td></td>
-			<?php
-				foreach($cyls  as $key=>$cyl):
-					if($key == 0){
-						?>
-						<td></td>
-				<?php
-				} else {
-					?>
-						<td><?php echo $key ?></td>
-					<?php
-				}
-				endforeach;
-			?>
-			
-		</tr>
+		
+			<tr id="_row_m_1"><td style="padding: 0 9px 0 9px;"><b>SPH</b></td><td colspan="17"><b>CYL(-)</b></td></tr>
+		
+		
+		
 		<tr id="_row_h_2">
-			<td></td><td>+</td>
+			<td>+</td>
 			<?php 
 				foreach($cyls  as $k=>$cyl):
 					if($k > 0):
 					?>
-				<td><?php echo $cyl ?></td>
+				<td><b><?php echo $cyl ?></b></td>
 					<?php
 					endif;
 				endforeach;
@@ -103,7 +74,7 @@
 				if($key > 0)
 				{
 					$tr = '<tr id="_row_hyo_'.$key.'">';
-					$tr = $tr . '<td>'.$key.'</td><td>'.$sph.'</td>';
+					$tr = $tr . '<td><b>'.$sph.'</b></td>';
 					foreach($cyls as $k=>$cyl):
 						if($k > 0)
 						{

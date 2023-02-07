@@ -28,7 +28,7 @@ $(document).ready(function()
 		onLoadSuccess: function(response) {
 			if($("#table tbody tr").length > 1) {
 				$("#payment_summary").html(response.payment_summary);
-				$("#table tbody tr:last td:first").html("");
+				//$("#table tbody tr:last td:first").html("");
 			}
 		},
 		queryParams: function() {

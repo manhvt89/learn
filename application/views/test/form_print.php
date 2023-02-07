@@ -7,25 +7,27 @@
 <table class="precription_header_print">
 	<tbody>
 		<tr>
-			<td colspan="2" class="print_title"> ĐƠN KÍNH</td>
+			<td colspan="2" class="print_title">ĐƠN KÍNH</td>
 		</tr>
-	<tr>
-		<td>
-			Tên khách hàng: <?php echo 	$customer;
-			?>
-		</td>
-		<td class="precription_number"><?php echo $code; ?></td>
-	</tr>
-	<tr>
-		<td>
-			Địa chỉ: <?php echo 	$customer_address;
-		?>
-		</td>
-		<td class="precription_number">
-			<?php $barcode = $this->barcode_lib->generate_receipt_barcode($customer_account_number); ?>
-			<img src='data:image/png;base64,<?php echo $barcode; ?>' />
-		</td>
-	</tr>
+		<tr>
+			<td width="60%">
+				<table>
+					<tr>
+						<td>Tên khách hàng: <?php echo 	$customer;?></td>
+					</tr>
+					<tr>
+						<td>Địa chỉ: <?php echo $customer_address; ?></td>
+					</tr>
+				</table>
+				
+			</td>
+			<td width="40%" style="text-align: center; vertical-align: middle;">
+				
+				<?php $barcode = $this->barcode_lib->generate_receipt_barcode($customer_account_number); ?>
+				<img src='data:image/png;base64,<?php echo $barcode; ?>' /><br/>
+				<span class="label_barcode"><?=$customer_account_number?></span>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <table class="sales_table_100" id="print_data">
@@ -188,14 +190,14 @@
 <table class="sales_table_100" id="footer_precription">
 	<thead>
 	<tr>
-		<th ><?php echo $this->lang->line('test_note'); ?></th>
+		<th colspan="3">Đơn thuốc/Ghi chú</th>
 	</tr>
 	</thead>
 	<tbody id="footer_precription_contents">
 		<tr>
 			<td colspan="3" >
 				<?php
-				if($note != ''){ echo $note;}
+				if($note != ''){ echo nl2br($note);}
 				else{
 					echo "<br/>";
 				}

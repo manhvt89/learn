@@ -21,8 +21,11 @@ if (isset($success))
 <div id="register_wrapper">
 
 <!-- Top register controls -->
-	<?php if($sale_id > 0): ?>
-		<?php //do nothing for payment update ?>
+	<?php if($sale_id > 0): ?> 
+		<?php 
+			// Sản phẩm đã tồn tại, edit đơn hàng này, hoặc thanh toán. //do nothing for payment update 
+		//echo $edit;
+		?>
 		<?php echo form_open($controller_name."/change_mode", array('id'=>'mode_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
@@ -115,9 +118,9 @@ if (isset($success))
 		<?php echo form_close(); ?>
 	<?php endif; ?>
 	<?php $tabindex = 0; ?>
-	<?php if($sale_id > 0): ?>
-		<?php //do nothing for payment update ?>
-	<?php else: ?>
+	<?php if($edit == 1): //remove by manhvt04.02.2023 ?>
+		
+	<?php else: //remove by manhvt04.02.2023?>
 	<?php echo form_open($controller_name."/add", array('id'=>'add_item_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
@@ -134,10 +137,10 @@ if (isset($success))
 			</ul>
 		</div>
 	<?php echo form_close(); ?>
-	<?php endif; ?>
+	<?php endif; //remove by manhvt04.02.2023?>
 
 <!-- Sale Items List -->
-	<?php if($sale_id > 0): ?>
+	<?php if($edit == 1): //remove by manhvt04.02.2023?>
 		<?php //do nothing for payment update ?>
 		<table class="sales_table_100 edit" id="register">
 			<thead>
@@ -303,7 +306,7 @@ if (isset($success))
 							if ($items_module_allowed)
 							{ 
 							?>
-								<td><?php echo form_input(array('name'=>'price', 'class'=>'form-control input-sm', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex));?></td>
+								<td><?php echo form_input(array('name'=>'price', 'class'=>'form-control input-sm decimal', 'value'=>to_currency_no_money($item['price']), 'tabindex'=>++$tabindex));?></td>
 							<?php
 							}
 							else
@@ -326,12 +329,12 @@ if (isset($success))
 								}
 								else
 								{								
-									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));
+									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm quantity', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));
 								}
 								?>
 							</td>
 
-							<td><?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>to_decimals($item['discount'], 2), 'tabindex'=>++$tabindex));?></td>
+							<td><?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm bonus', 'value'=>to_decimals($item['discount'], 2), 'tabindex'=>++$tabindex));?></td>
 							<td><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
 							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
 						</tr>
@@ -397,9 +400,7 @@ if (isset($success))
 	</table>
 	<?php endif; ?>
 </div>
-
 <!-- Overall Sale -->
-
 <div id="overall_sale" class="panel panel-default">
 	<div class="panel-body">
 		<?php
@@ -536,7 +537,7 @@ if (isset($success))
 		?>
 			<?php echo form_open($controller_name."/select_customer", array('id'=>'select_customer_form', 'class'=>'form-horizontal')); ?>
 
-		<?php if(count($tests)): ?>
+		<?php if(count($tests)): //Hiển thị danh sách khách hàng khám trong ngày; hiện tại không cho hiển thị?>
 			<table id="list_tested_today" class="table table-hover table-striped" style="background-color: #fff;">
 
 				<tr style="text-align: left; background-color: #e4e4d7">
@@ -684,13 +685,17 @@ if (isset($success))
 								</tr>
 							</table>
 						<?php echo form_close(); ?>
-						<?php if($this->sale_lib->get_edit() == 1):?>
-						<?php else : ?>
+						<?php if($this->sale_lib->get_edit() == 2):?>
 							<?php if(empty($payments['Thanh toán'])): ?>
 							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Xuất hàng</div>
-							<?php endif; ?>		
-						<?php endif; ?>
+							<?php endif; ?>
+						<?php else : ?>
+							<?php if($this->sale_lib->get_edit() == 0) : ?>
+								<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Xuất hàng</div>
+							<?php endif; ?>
 							<div class='btn btn-sm btn-success pull-right' id='add_payment_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span><?php echo $this->lang->line('sales_add_payment'); ?></div>
+						<?php endif; ?>
+							
 					<?php
 					}
 					?>
@@ -825,6 +830,9 @@ if (isset($success))
 $(document).ready(function()
 {
 	$('#amount_tendered').number(true,0,',','.');
+	$('.decimal').number(true,0,',','.');
+	$('.bonus').number(true,2,',','.');
+	$('.quantity').number(true,0,',','.');
 
 	$("#item").autocomplete(
 	{

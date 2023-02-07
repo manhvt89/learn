@@ -156,7 +156,7 @@
 				$splitpayment = explode(':', $payment['payment_type']);
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
 
-				$_sTitleDislayReceipt = 'Đặt trước - Phương thức thanh toán (' . $payment['payment_type']. ')';
+				$_sTitleDislayReceipt = 'Đặt trước: ';
 				if ($payment['payment_amount'] > 0) {
 					$_has_prepaid = TRUE;
 					?>
@@ -175,7 +175,7 @@
 				$only_sale_check |= $payment['payment_type'] == $this->lang->line('sales_check');
 				$splitpayment = explode(':', $payment['payment_type']);
 				$show_giftcard_remainder |= $splitpayment[0] == $this->lang->line('sales_giftcard');
-				$_sTitleDislayReceipt = 'Phương thức thanh toán (' . $payment['payment_type']. ')';
+				$_sTitleDislayReceipt = '' . $payment['payment_type']. ': ';
 				?>
 				<tr class="total_paid 890809">
 					<td colspan="4" style="text-align:right;"><?php echo $_sTitleDislayReceipt; //echo $this->lang->line('sales_paid_rev'); ?> </td>

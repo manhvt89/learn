@@ -16,6 +16,7 @@ class Purchases extends Secure_Controller
 		parent::__construct('purchases');
 
 		$this->load->library('purchase_lib');
+		$this->load->library('printbarcode_lib');
 		$this->load->library('receiving_lib');
 		$this->load->library('barcode_lib');
 	}
@@ -591,26 +592,91 @@ class Purchases extends Secure_Controller
 			//var_dump($worksheet);
             $array_data  = [];
 			$highestColumn = 6;
-            for($i = 1; $i < count($sheet_data); $i++) {
-				//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
-    			if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
-    
-				
-                $data = array(
-                    'item_number'       => $sheet_data[$i]['0'],
-                    'item_name'      => $sheet_data[$i]['1'],
-                    'category'        => $sheet_data[$i]['2'],
-                    'unit_price' => extract_price_excel_to_vnd($sheet_data[$i]['3']),//Giá bán
-					'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
-					'quanlity' => $sheet_data[$i]['5']
-                );
-				
-				$this->purchase_lib->add_item($data);
-                $array_data[] = $data;
-            }
-			//var_dump($array_data);
-			$this->purchase_lib->set_check(0); //reset lại biến kiểm tra; cần phải kiểm tra. nhấn nút kiểm tra;
-			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('items_excel_import_success')));
+			$_blFlag = true;
+			$_iMaxColumn = 0;
+
+			foreach($sheet_data[0] as $item)
+			{
+				if($item != null)
+				{
+					$_iMaxColumn++;
+
+				} else {
+					break;
+				}
+			}
+
+			if ($_iMaxColumn == 5) // Chỉ xử  lý định dạng 5 cột; không có barcode tự sinh bacode
+			{
+				$_iLogedUserID = $this->Employee->get_logged_in_employee_info()->person_id;
+				$_oLogedUser = $this->Employee->get_info($_iLogedUserID);
+				$_sLastBarcode = $_oLogedUser->log;
+
+				$_sLastDate = substr($_sLastBarcode, 0, 6);
+				$_sDate = date('dmy'); //070223 - 07.02.23
+				$_iBegin = 0; // Số bắt đầu chạy
+				$_iWork = 0; 
+				if($_sLastDate == $_sDate)
+				{
+					$_iBegin = intval(substr($_sLastBarcode, 6, 9));
+				}
+				//$_iWork = $_iBegin;
+				$_sBarcode = '';
+				for($i = 1; $i < count($sheet_data); $i++) {
+					//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
+					
+					if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
+					$_iWork++;
+					$_sBarcode = $_sDate.sprintf('%04d',$_iBegin + $i);
+					$data = array(
+						'item_number'       => $_sBarcode,
+						'item_name'      => $sheet_data[$i]['0'],
+						'category'        => $sheet_data[$i]['1'],
+						'unit_price' => extract_price_excel_to_vnd($sheet_data[$i]['2']),//Giá bán
+						'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['3']), //Giá nhập
+						'quanlity' => $sheet_data[$i]['4']
+					);
+					
+					$this->purchase_lib->add_item($data);
+					$array_data[] = $data;
+				}
+				$_iEnd = $_iBegin + $_iWork;
+
+				$this->Employee->update_employee($_sBarcode, $_iLogedUserID);
+				//var_dump($array_data);
+				$this->purchase_lib->set_check(0); //reset lại biến kiểm tra; cần phải kiểm tra. nhấn nút kiểm tra;
+				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('items_excel_import_success')));
+			}
+			elseif($_iMaxColumn == 6) // Xử lý định dạng 6 cột
+			{
+				for($i = 1; $i < count($sheet_data); $i++) {
+					//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
+					if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
+		
+					
+					$data = array(
+						'item_number'       => $sheet_data[$i]['0'],
+						'item_name'      => $sheet_data[$i]['1'],
+						'category'        => $sheet_data[$i]['2'],
+						'unit_price' => extract_price_excel_to_vnd($sheet_data[$i]['3']),//Giá bán
+						'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
+						'quanlity' => $sheet_data[$i]['5']
+					);
+					
+					$this->purchase_lib->add_item($data);
+					$array_data[] = $data;
+				}
+				//var_dump($array_data);
+				$this->purchase_lib->set_check(0); //reset lại biến kiểm tra; cần phải kiểm tra. nhấn nút kiểm tra;
+				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('items_excel_import_success')));
+
+			} else {
+				$_blFlag = false;
+				$this->purchase_lib->set_check(0); //reset lại biến kiểm tra; cần phải kiểm tra. nhấn nút kiểm tra;
+				echo json_encode(array('success' => FALSE, 'message' => 'Kiểm tra lại, file không đúng định dạng yêu cầu'));
+			}
+			
+            
 
 		}
 	}
@@ -785,7 +851,7 @@ class Purchases extends Secure_Controller
 			redirect(base_url("purchases/receipt/$purchase_uuid"));
 		}
 	}
-	public function import()
+	public function import() // Nhập hàng vào kho, chuyển đến chức năng nhập kho
 	{
 		$purchase_uuid = $this->input->post('purchase_uuid');
 		$purchase_info = $this->Purchase->get_info_uuid($purchase_uuid)->row_array();
@@ -856,6 +922,32 @@ class Purchases extends Secure_Controller
 		$data = $this->xss_clean($data);
 		
 		$this->load->view("purchase/purchase", $data);
+	}
+
+	public function printbarcode()
+	{
+		$purchase_uuid = $this->input->post('purchase_uuid');
+		$purchase_info = $this->Purchase->get_info_uuid($purchase_uuid)->row_array();
+		if (!empty($purchase_info)) {
+			
+			//var_dump($purchase_info);
+			// to load data to the cart;
+			$this->printbarcode_lib->clear_all();
+			$this->purchase_lib->set_purchase_id($purchase_info['id']);
+			$this->purchase_lib->copy_entire_purchase($purchase_info['id']);
+
+			$data['cart'] = $this->purchase_lib->get_cart();
+			//var_dump($data['cart']);
+			foreach($data['cart'] as $item)
+			{
+				$this->printbarcode_lib->add_item($item['item_id'], $item['item_quantity']);
+			}
+			$this->purchase_lib->clear_all();
+			redirect(base_url('barcodes'));
+
+		} else{
+			echo 'Bạn đang truy cập không hợp lệ';
+		}
 	}
 
 }

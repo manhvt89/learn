@@ -53,6 +53,7 @@ class Sale extends CI_Model
 		$this->db->select('
 				sales.sale_id AS sale_id,
 				sales.code as code,
+				sales.status as status,
 				sales.sale_uuid as sale_uuid,
 				customer.account_number as account_number,
 				DATE(sales.sale_time) AS sale_date,
@@ -159,6 +160,7 @@ class Sale extends CI_Model
 				sales.sale_id AS sale_id,
 				sales.ctv_id AS bacsi_id,
 				sales.status AS status,
+				sales.sale_uuid AS sale_uuid,
 				DATE(sales.sale_time) AS sale_date,
 				sales.sale_time AS sale_time,
 				sales.invoice_number AS invoice_number,
@@ -184,8 +186,7 @@ class Sale extends CI_Model
 		$this->db->join('customers AS customer', 'sales.customer_id = customer.person_id', 'left');
 		$this->db->join('sales_payments_temp AS payments', 'sales.sale_id = payments.sale_id', 'left outer');
 		$this->db->join('sales_items_taxes_temp AS sales_items_taxes', 'sales_items.sale_id = sales_items_taxes.sale_id AND sales_items.item_id = sales_items_taxes.item_id', 'left outer');
-
-		
+		$this->db->where('current', 1); //added by ManhVT hỗ trợ việc chỉ xét các bản ghi có hiệu lực;
 		if($bUser_type == 2)
 		{
 			$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
@@ -199,6 +200,7 @@ class Sale extends CI_Model
 				$this->db->where('status', 1);
 			}
 		}
+		
 		if(!empty($search))
 		{
 			if($filters['is_valid_receipt'] != FALSE)
@@ -421,6 +423,10 @@ class Sale extends CI_Model
 	{
 		if(!empty($receipt_sale_id))
 		{
+			//Added by ManhVT 05.02.2023
+			return $this->exists_by_code($receipt_sale_id);
+
+			// end added
 			//POS #
 			$pieces = explode(' ', $receipt_sale_id);
 
@@ -447,6 +453,14 @@ class Sale extends CI_Model
 	{
 		$this->db->from('sales');
 		$this->db->where('sale_id', $sale_id);
+
+		return ($this->db->get()->num_rows()==1);
+	}
+
+	public function exists_by_code($code)
+	{
+		$this->db->from('sales');
+		$this->db->where('code', $code);
 
 		return ($this->db->get()->num_rows()==1);
 	}
@@ -501,7 +515,7 @@ class Sale extends CI_Model
 							'amount' => $amount_change
 						);
 						$out_data['payment_type'] = $payment['payment_type'];
-						$out_data['kind'] = 2;
+						$out_data['kind'] = 3;
 						$out_data['payment_id'] = $payment_id;
 						$out_data['sale_id'] = $sale_id;
 	
@@ -538,7 +552,6 @@ class Sale extends CI_Model
 				
 			}
 
-			
 			$this->db->trans_complete();
 			
 			$success &= $this->db->trans_status();
@@ -621,12 +634,17 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$sale_id = FALSE)
+	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$code = '')
 	{
 		//var_dump($items);die();
 		if(count($items) == 0)
 		{
 			return -1;
+		}
+
+		if($code == '')
+		{
+			$code = 'STD' . time();
 		}
 
 		$sales_data = array(
@@ -641,7 +659,7 @@ class Sale extends CI_Model
 			'kxv_id' => $kxv_id,
 			'doctor_id'=>$doctor_id,
 			'paid_points'=>$points,
-			'code'=>'STD' . time()
+			'code'=>$code
 		);
 		//var_dump($sales_data);die();
 		// Run these queries as a transaction, we want to make sure we do all or nothing
@@ -668,46 +686,46 @@ class Sale extends CI_Model
 				$cur_giftcard_value = $this->Giftcard->get_giftcard_value( $splitpayment[1] );
 				$this->Giftcard->update_giftcard_value( $splitpayment[1], $cur_giftcard_value - $payment['payment_amount'] );
 			}
-
-			$sales_payments_data = array(
-				'sale_id'		 => $sale_id,
-				'payment_type'	 => $payment['payment_type'],
-				'payment_amount' => $payment['payment_amount'],
-				'payment_kind'=>$payment['payment_kind']
-			);
-			//var_dump($sales_payments_data); die();
-			$this->db->insert('sales_payments', $sales_payments_data);
-			$payment_id = $this->db->insert_id();
-
-			//if($payment['payment_type'] == 'Tiền mặt') { // If tiền mặt then insert accounting
-			if($payment['payment_type'] == $this->lang->line("sales_cash")) { // If tiền mặt then insert accounting
-				 
-				$data_total = array(
-					'creator_personal_id' => $employee_id,
-					'personal_id' => $customer_id, // this is a customer
-					'amount' => $payment['payment_amount']
+			if($payment['payment_amount'] != 0)
+			{
+				$sales_payments_data = array(
+					'sale_id'		 => $sale_id,
+					'payment_type'	 => $payment['payment_type'],
+					'payment_amount' => $payment['payment_amount'],
+					'payment_kind'=>$payment['payment_kind']
 				);
-				$data_total['payment_type'] = $payment['payment_type'];
-				$data_total['kind'] = $payment['payment_kind'];
-				$data_total['payment_id'] = $payment_id;
-				$data_total['sale_id'] = $sale_id;
-				$this->Accounting->save_income($data_total);
+				//var_dump($sales_payments_data); die();
+				$this->db->insert('sales_payments', $sales_payments_data);
+				$payment_id = $this->db->insert_id();
 
-				if ($amount_change > 0) {
-					$out_data = array(
+				//if($payment['payment_type'] == 'Tiền mặt') { // If tiền mặt then insert accounting
+				if($payment['payment_type'] == $this->lang->line("sales_cash")) { // If tiền mặt then insert accounting
+					
+					$data_total = array(
 						'creator_personal_id' => $employee_id,
 						'personal_id' => $customer_id, // this is a customer
-						'amount' => $amount_change
+						'amount' => $payment['payment_amount']
 					);
-					$out_data['payment_type'] = $payment['payment_type'];
-					$out_data['kind'] = 2;
-					$out_data['payment_id'] = $payment_id;
-					$out_data['sale_id'] = $sale_id;
+					$data_total['payment_type'] = $payment['payment_type'];
+					$data_total['kind'] = $payment['payment_kind'];
+					$data_total['payment_id'] = $payment_id;
+					$data_total['sale_id'] = $sale_id;
+					$this->Accounting->save_income($data_total);
 
-
-					$this->Accounting->save_payout($out_data);
-				}
-			} 
+					if ($amount_change > 0) {
+						$out_data = array(
+							'creator_personal_id' => $employee_id,
+							'personal_id' => $customer_id, // this is a customer
+							'amount' => $amount_change
+						);
+						$out_data['payment_type'] = $payment['payment_type'];
+						$out_data['kind'] = 3;
+						$out_data['payment_id'] = $payment_id;
+						$out_data['sale_id'] = $sale_id;
+						$this->Accounting->save_payout($out_data);
+					}
+				} 
+			}
 			
 		}
 
@@ -815,7 +833,6 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-
 	public function delete_list($sale_ids, $employee_id, $update_inventory = TRUE)
 	{
 		$result = TRUE;
@@ -872,12 +889,10 @@ class Sale extends CI_Model
 	
 		return $this->db->trans_status();
 	}
-
 	public function get_sale_items($sale_id)
 	{
 		$this->db->from('sales_items');
 		$this->db->where('sale_id', $sale_id);
-
 		return $this->db->get();
 	}
 
@@ -915,6 +930,7 @@ class Sale extends CI_Model
 
 		//$payments[$this->lang->line('sales_check')] = $this->lang->line('sales_check');
 		*/
+		$payments[$this->lang->line('sales_check')] = $this->lang->line('sales_check');
 		$payments[$this->lang->line('sales_debit')] = $this->lang->line('sales_debit');
 		//$payments[$this->lang->line('sales_credit')] = $this->lang->line('sales_credit');
 		$payments[$this->lang->line('sales_cash')] = $this->lang->line('sales_cash');
@@ -935,7 +951,6 @@ class Sale extends CI_Model
 	{
 		$this->db->from('sales');
 		$this->db->where('sale_id', $sale_id);
-
 		return $this->Customer->get_info($this->db->get()->row()->customer_id);
 	}
 
@@ -1242,6 +1257,187 @@ class Sale extends CI_Model
 		$this->db->trans_complete(); // execute transaction
 	
 		return $this->db->trans_status(); // end Transaction
+	}
+
+	public function get_sale_by_code($code)
+	{
+		$this->db->from('sales');
+		$this->db->where('code', $code);
+		return $this->db->get()->row();
+	}
+	//public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$sale_id = FALSE)
+	public function edit(&$sale_id, $items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$update_inventory=TRUE,$points=0)
+	{
+		// Chỉnh sửa đơn hàng gồm: Các sản phẩm; và đã tạm ứng tiền;
+		// Chú ý hoạt động chỉnh sửa chỉ có thể chỉnh sửa trong thời gian là ngày hiện tại;
+	
+		$sale_info = $this->get_info($sale_id)->row();
+
+		if(empty($sale_info))
+		{
+			return 0;
+		} 
+		if($sale_info->status == 0)
+		{
+			return 0;
+		}
+		// Kiểm tra xem đơn hàng này có phải ngày hiện tại không. Nếu không phải thì không làm gì return 0
+		$sale_time = $sale_info->sale_time;
+
+		$_dSaleDate = date('Y-m-d',strtotime($sale_time));
+		$_dToday = date('Y-m-d');
+		if($_dSaleDate != $_dToday)
+		{
+			return 0; // Không làm gì cả nếu không phải đơn hàng hôm nay
+		}
+
+		$code = $sale_info->code;
+		$success = 0;
+		$_iNewSaleID = 0;
+		if(!empty($payments) && !empty($items))
+		{
+			//Run these queries as a transaction, we want to make sure we do all or nothing
+			$this->db->trans_start();
+			//1.Xóa sale với sale_id () && status = 0; đơn hàng hoàn thành không cho phép xóa;
+			
+			$this->db->delete('sales_payments', array('sale_id' => $sale_id));
+			// then delete all taxes on items
+			$this->db->delete('sales_items_taxes', array('sale_id' => $sale_id));
+
+			if($update_inventory)
+			{
+				// defect, not all item deletions will be undone??
+				// get array with all the items involved in the sale to update the inventory tracking
+				$_aItems = $this->get_sale_items($sale_id)->result_array();
+				foreach($_aItems as $item)
+				{
+					// create query to update inventory tracking
+					$inv_data = array(
+						'trans_date'      => date('Y-m-d H:i:s'),
+						'trans_items'     => $item['item_id'],
+						'trans_user'      => $employee_id,
+						'trans_comment'   => 'Hoàn kho (cập nhật đơn hàng) ' . $sale_info->code,
+						'trans_location'  => $item['item_location'],
+						'trans_inventory' => $item['quantity_purchased']
+					);
+					// update inventory
+					$this->Inventory->insert($inv_data);
+
+					// update quantities
+					$this->Item_quantity->change_quantity($item['item_id'], $item['item_location'], $item['quantity_purchased']);
+				}
+			}
+
+			// delete all items
+			$this->db->delete('sales_items', array('sale_id' => $sale_id));
+			// delete sale itself
+			$this->db->delete('sales', array('sale_id' => $sale_id));
+
+			//1.4 delete acctoing with sale_id
+			$this->db->delete('total', array('sale_id' => $sale_id));
+			
+			//2. Tạo mới sale
+
+			$_iNewSaleID = $this->save(
+				$items,
+				$customer_id,
+				$employee_id,
+				$comment,
+				$invoice_number,
+				$payments,
+				$amount_change,
+				$suspended_sale_id,
+				$ctv_id,
+				$status,
+				$test_id,
+				$kxv_id,
+				$doctor_id,
+				$points,
+				$code
+			);
+			
+            // first delete all payments
+			// $this->db->delete('sales_payments', array('sale_id' => $sale_id));
+			$cus_obj = $this->Customer->get_info($customer_id);
+			// Thêm thanh toán
+			/*
+			** Tạm không dùng (được update ngày 05.02.2023)
+			foreach($payments as $payment)
+			{
+				$sales_payments_data = array(
+					'sale_id' => $sale_id,
+					'payment_type' => $payment['payment_type'],
+					'payment_amount' => $payment['payment_amount']
+				);
+
+				$success = $this->db->insert('sales_payments', $sales_payments_data);
+				$payment_id = $this->db->insert_id();
+
+				if($payment['payment_type'] == $this->lang->line("sales_cash")) { // If tiền mặt then insert accounting
+				 
+					$data_total = array(
+						'creator_personal_id' => $employee_id,
+						'personal_id' => $customer_id, // this is a customer
+						'amount' => $payment['payment_amount']
+					);
+					$data_total['payment_type'] = $payment['payment_type'];
+					$data_total['kind'] = $payment['payment_kind'];
+					$data_total['payment_id'] = $payment_id;
+					$data_total['sale_id'] = $sale_id;
+					$this->Accounting->save_income($data_total);
+	
+					if($amount_change > 0) {
+						$out_data = array(
+							'creator_personal_id' => $employee_id,
+							'personal_id' => $customer_id, // this is a customer
+							'amount' => $amount_change
+						);
+						$out_data['payment_type'] = $payment['payment_type'];
+						$out_data['kind'] = 2;
+						$out_data['payment_id'] = $payment_id;
+						$out_data['sale_id'] = $sale_id;
+	
+	
+						$this->Accounting->save_payout($out_data);
+					}
+				}
+			}
+			End
+			*/
+			//Add by ManhVT: sử dụng điểm thanh toán
+			if($points > 0) // Nếu sử dụng điểm thanh toán
+			{
+				//1. Update ppoint cua kh
+				// Lấy thông tin của khách hàng này
+				//$customer_info = $cus_obj;
+				//var_dump($customer_info);die();
+				$customer_info['points'] = $cus_obj->points - $points;
+				$this->db->where('person_id',$customer_id);
+				$this->db->update('customers',$customer_info);
+
+				//2. insert ospos_history_points
+				//$sale_info = $this->Sale->get_info($sale_id)->row_array();
+				//var_dump($sale_id ); die();
+				$_aHistoryPoint = array(
+					'customer_id' =>$customer_id,
+					'sale_id' => $sale_id,
+					'sale_uuid' => '',
+					'created_date' =>time(),
+					'point' =>$points,
+					'type' => 1,
+					'note' =>'- '.$points . ' TT đơn hàng ID '. $sale_id
+				);
+				// Insert ospos_history_points
+				$this->db->insert('history_points', $_aHistoryPoint);
+				
+			}
+
+			$this->db->trans_complete();
+			
+			$success &= $this->db->trans_status();
+		}
+		$sale_id = $_iNewSaleID;
+		return $success;
 	}
 }
 ?>

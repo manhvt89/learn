@@ -87,11 +87,11 @@ class Customers extends Persons
         {
             $cities[$value] = $value;
         }
-        $data['city'] = 'Bình Thuận';
-        if($data['city'] == '' || $data['city'] == 'HN')
+		$data['city'] = $this->config->item('default_city');//'Bình Thuận';
+        /* if($data['city'] == '' || $data['city'] == 'HN')
         {
             $data['city'] = 'Bình Thuận';
-        }
+        } */
 		if($info->age = '')
 		{
 			$info->age = 30;

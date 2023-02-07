@@ -56,11 +56,7 @@ if (isset($success))
 					}
 				}
 				?>
-				<?php if($this->Employee->has_grant('receivings_lens')): ?>
-				<li class="pull-right">
-					<div class='btn btn-sm btn-success pull-right' id='lens_receiving_button'><span class="glyphicon">&nbsp</span><?php echo 'Nhập mắt từ bảng'; ?></div>
-				</li>
-				<?php endif; ?>
+				
 			</ul>
 		</div>
 	<?php echo form_close(); ?>

@@ -9,6 +9,7 @@ class Receivings extends Secure_Controller
 		parent::__construct('receivings');
 
 		$this->load->library('receiving_lib');
+		$this->load->library('purchase_lib');
 		$this->load->library('barcode_lib');
 	}
 
@@ -472,17 +473,19 @@ class Receivings extends Secure_Controller
 				{
 					foreach($_aALens as $k=>$v)
 					{
-						if($key == substr($v['name'],-13))
+						
+						if(strpos($v['name'],$key) > 0)
 						{
 							//$this->receiving_lib->add_item($item_id, $quantity, $item_location);
-							$this->receiving_lib->add_item($v['item_id'], trim($value), 1);
+							//$this->receiving_lib->add_item($v['item_id'], trim($value), 1);
+							$this->purchase_lib->add_item_by_itemID($v['item_id'], trim($value));
 						}
 						
 					}
 				}
 
 				//$_aCart = $this->receiving_lib->get_cart();
-				redirect('receivings/');
+				redirect('purchases/');
 			} else{
 				$this->load->view("receivings/lens", $data);
 			}

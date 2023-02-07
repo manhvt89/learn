@@ -561,5 +561,14 @@ class Employee extends Person
 		return $_astrReturn;
 		//return $this->session->userdata('grants');
 	}
+
+	public function update_employee($log,$employee_id)
+	{
+		$employee_data = array('log' => $log);
+		$this->db->where('person_id', $employee_id);
+		$success = $this->db->update('employees', $employee_data);
+		return $success;
+
+	}
 }
 ?>

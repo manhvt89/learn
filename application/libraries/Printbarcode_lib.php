@@ -127,6 +127,18 @@ class Printbarcode_lib
 		
 		return $quanity_already_added;
 	}
+
+	public function get_quantity()
+	{
+		$items = $this->get_cart();
+		$quanity_already_added = 0;
+		foreach($items as $item)
+		{
+			$quanity_already_added+=$item['quantity'];	
+		}
+		
+		return $quanity_already_added;
+	}
 	
 	public function get_item_id($line_to_get)
 	{
