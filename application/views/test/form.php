@@ -235,7 +235,7 @@
 			<td colspan="3">
 				<?php echo form_textarea(array(
 					'name' => 'note',
-					'rows' => '3',
+					'rows' => '7',
 					'cols' => '25',
 					'value'=> $note,
 					'class'=>'textarea_test'));?>
