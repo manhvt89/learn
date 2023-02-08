@@ -347,9 +347,9 @@ function get_sale_data_row($sale)
 		);
 	}else{
 		//Cần fix chỉ hiển thị ngày hiện tại;
-		$row['edit'] = anchor($controller_name."/edit/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
+		$row['edit'] = '';/*anchor($controller_name."/edit/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
 		array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
-		);
+		);*/
 	}
 	return $row;
 }
