@@ -400,6 +400,7 @@ class Receivings extends Secure_Controller
 		$data = array();
 		
         $data['item_count'] = $this->config->item('KindOfLens');
+		//var_dump($data['item_count']);
 		$data['page_title'] = 'NHẬP MẮT KÍNH';
 
 		$cyls = $this->config->item('cyls');

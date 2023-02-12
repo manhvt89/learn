@@ -18,13 +18,13 @@ if(isset($error))
 				$person_id = $this->session->userdata('person_id');
 				show_report_if_allowed('detailed', 'sales', $person_id);
 				show_report_if_allowed('detailed', 'receivings', $person_id);
-				show_report_if_allowed('specific', 'customer', $person_id, 'reports_customers');
-				show_report_if_allowed('specific', 'discount', $person_id, 'reports_discounts');
+				//show_report_if_allowed('specific', 'customer', $person_id, 'reports_customers');
+				//show_report_if_allowed('specific', 'discount', $person_id, 'reports_discounts');
 				show_report_if_allowed('specific', 'employee', $person_id, 'reports_employees');
 				show_report_if_allowed('specific', 'ctvs', $person_id, 'reports_ctvs');
 				$bUser_type = $this->session->userdata('type');
 				?>
-				<?php  if( $bUser_type != 2): ?>
+				<?php  if( $bUser_type == 2): ?>
 				<a class="list-group-item" href="/reports/graphical_summary_sales">Báo cáo hình ảnh</a>
 				<?php endif; ?>
 			 </div>
@@ -41,8 +41,8 @@ if(isset($error))
 				</div>
 				<div class="list-group">
 				<?php 
-					show_report('', 'reports_inventory_low');
-					show_report('', 'reports_inventory_summary');
+					//show_report('', 'reports_inventory_low');
+					//show_report('', 'reports_inventory_summary');
 					show_report('', 'reports_inventory_lens');
 					//show_report('', 'reports_inventory_import_lens');
 				//Contact Lens

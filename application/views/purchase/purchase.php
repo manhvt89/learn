@@ -29,7 +29,7 @@ if (isset($success))
 					<div class='btn btn-sm btn-success pull-right' id='lens_receiving_button'><span class="glyphicon">&nbsp</span><?php echo 'Nhập mắt từ bảng'; ?></div>
 				</li>
 				<?php endif; ?>
-				<?php if($this->Employee->has_grant('receivings_lens')): ?>
+				<?php if($this->Employee->has_grant('purchases_excel')): ?>
 					<li class="pull-right">
 					<button class='btn btn-info btn-sm pull-right modal-dlg' data-btn-submit='<?php echo $this->lang->line('common_submit') ?>' data-href='<?php echo site_url($controller_name."/excel_import"); ?>'
             title='<?php echo $this->lang->line('items_import_items_excel'); ?>'>
