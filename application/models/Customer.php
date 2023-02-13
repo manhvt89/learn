@@ -190,7 +190,7 @@ class Customer extends Person
 	public function get_search_suggestions($search, $unique = TRUE, $limit = 25)
 	{
 		$suggestions = array();
-		$this->db->from('customers');
+		$this->db->from('customers1');
 		$this->db->join('people', 'customers.person_id = people.person_id');
 		$this->db->group_start();		
 			$this->db->like('first_name', $search);
@@ -201,6 +201,7 @@ class Customer extends Person
 		$this->db->group_end();
 		$this->db->where('deleted', 0);
 		$this->db->order_by('last_name', 'asc');
+		$this->db->limit(25);
 		foreach($this->db->get()->result() as $row)
 		{
 			$suggestions[] = array('value' => $row->person_id, 'label' => $row->last_name.' '.$row->first_name . ' - '.$row->phone_number . ' - '.$row->address_1);
