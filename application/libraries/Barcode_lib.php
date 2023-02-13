@@ -144,7 +144,8 @@ class Barcode_lib
 			$barcode->setQuality(100);
 			
 			// width: 250, height: 50
-			$barcode->setDimensions(200, 35);
+			//$barcode->setDimensions(250, 45);
+			$barcode->setDimensions(0, 45);
 
 			// draw the image
 			$barcode->draw();
