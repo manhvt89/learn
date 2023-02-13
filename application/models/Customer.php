@@ -190,7 +190,7 @@ class Customer extends Person
 	public function get_search_suggestions($search, $unique = TRUE, $limit = 25)
 	{
 		$suggestions = array();
-		$this->db->from('customers1');
+		$this->db->from('customers');
 		$this->db->join('people', 'customers.person_id = people.person_id');
 		$this->db->group_start();		
 			$this->db->like('first_name', $search);
