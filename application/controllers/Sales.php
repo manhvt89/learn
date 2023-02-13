@@ -724,7 +724,7 @@ class Sales extends Secure_Controller
 				if ($data['sale_id_num'] == -1) {
 					$data['error_message'] = $this->lang->line('sales_transaction_failed');
 				} else {
-					$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['sale_id']);
+					$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['code']);
 				}
 
 				$data['cur_giftcard_value'] = $this->sale_lib->get_giftcard_remainder();
