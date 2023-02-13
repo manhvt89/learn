@@ -1,3 +1,6 @@
+Version HaNoi 1.0
++ Đây là version tích hợp chức năng PO (13/02/2023)
+
 Version 3.0.2
 -----------
 + 
