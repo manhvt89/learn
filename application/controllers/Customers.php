@@ -59,13 +59,13 @@ class Customers extends Persons
 	*/
 	public function suggest()
 	{
-		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->get('term'), FALSE));
+		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->get('term'), TRUE));
 		echo json_encode($suggestions);
 	}
 
 	public function suggest_search()
 	{
-		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->post('term'), FALSE));
+		$suggestions = $this->xss_clean($this->Customer->get_search_suggestions($this->input->post('term'), TRUE));
 
 		echo json_encode($suggestions);
 	}
