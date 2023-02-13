@@ -153,7 +153,32 @@ class Sales extends Secure_Controller
 	public function select_customer()
 	{
 		$customer_id = $this->input->post('customer');
-		if($this->Customer->exists($customer_id))
+		if($this->Customer->account_number_exists($customer_id))
+		{
+			$_oCustomerInfor = $this->Customer->get_info_by_account_number($customer_id);
+			//var_dump((array)$_oCustomerInfor); die();
+			$this->sale_lib->set_customer($customer_id);
+			$this->sale_lib->set_points($_oCustomerInfor->points);
+			//$this->sale_lib->set_customer_name($_oCustomerInfor->last_name . ' ' . $_oCustomerInfor->first_name);
+			//$this->sale_lib->set_customer_cellphone($_oCustomerInfor->phone_number);
+			$this->sale_lib->set_obj_customer($_oCustomerInfor);
+
+			$discount_percent = $_oCustomerInfor->discount_percent;
+
+			// apply customer default discount to items that have 0 discount
+			if($discount_percent != '')
+			{	
+				$this->sale_lib->apply_customer_discount($discount_percent);
+			}
+			$cust_totals = $this->Customer->get_totals($customer_id);
+			if (!empty($cust_totals)) {		
+
+				$this->sale_lib->set_customer_total($cust_totals->total);
+			} else{
+				$this->sale_lib->set_customer_total(0);
+			}
+		}
+		elseif($this->Customer->exists($customer_id))
 		{
 			$_oCustomerInfor = $this->Customer->get_info($customer_id);
 			//var_dump((array)$_oCustomerInfor); die();
