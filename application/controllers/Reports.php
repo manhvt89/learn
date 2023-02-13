@@ -3744,7 +3744,7 @@ class Reports extends Secure_Controller
         $this->load->model('reports/Inventory_lens');
         $model = $this->Inventory_lens;
         $data = array();
-        $data['item_count'] = $model->getCategoryDropdownArray();
+        //$data['item_count'] = $model->getCategoryDropdownArray();
         $stock_locations = $this->xss_clean($this->Stock_location->get_allowed_locations());
         $stock_locations['all'] = $this->lang->line('reports_all');
         $data['stock_locations'] = array_reverse($stock_locations, TRUE);
@@ -3792,12 +3792,18 @@ class Reports extends Secure_Controller
                     'sale_quantity' => number_format($row['sale_quantity'])==0?'-':number_format($row['sale_quantity']),
                     'receive_quantity' => number_format($row['receive_quantity'])==0?'-':number_format($row['receive_quantity']),
                 ));
+                foreach($report_data['details'][$key] as $drow)
+                {
+                    $details_data[$i][] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
+                }
                 $i++;
             }
 
             $data = array(
                 'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
+                'headers_details' => transform_headers_readonly_raw($headers['details']),
                 'summary_data' => $summary_data,
+                'details_data' => $details_data,
                 'report_data' =>$report_data
             );
 

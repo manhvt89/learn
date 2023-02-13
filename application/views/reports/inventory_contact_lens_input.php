@@ -119,6 +119,7 @@ if(isset($error))
 			$.ajax({
 				method: "POST",
 				url: "<?php echo site_url('reports/ajax_inventory_total_contact_lens')?>",
+				//data: { location_id: location_id, category: category, csrf_ospos_v3: csrf_ospos_v3 },
 				data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3 },
 				dataType: 'json'
 			})
@@ -148,11 +149,27 @@ if(isset($error))
 							data: summary_data,
 							iconSize: 'sm',
 							paginationVAlign: 'bottom',
-							detailView: false,
+							detailView: true,
 							uniqueId: 'id',
-							escape: false
-							
+							escape: false,
+							onPageChange: init_dialog,
+							onPostBody: function() {
+								dialog_support.init("a.modal-dlg");
+							},
+							onExpandRow: function (index, row, $detail) {
+								//alert(JSON.stringify(header_details));
+								$detail.html('<table></table>').find("table").bootstrapTable({
+									columns: header_details,
+									data: detail_data[row.id],
+									sortable: true,
+									showExport: true,
+								});
+							}
 						});
+
+						init_dialog();
+
+
 					}else{
 						$('#view_report_lens_category').html('<strong>Không tìm thấy báo cáo phù hợp, hãy thử lại</strong>');
 					}
