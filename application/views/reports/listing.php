@@ -77,7 +77,7 @@ if(isset($error))
 					<?php
 					show_report('', 'reports_inventory_import_lens');
 					//Contact Lens
-					show_report('', 'reports_inventory_import_contact_lens');
+					//show_report('', 'reports_inventory_import_contact_lens');
 					// FRAME
 					?>
 				</div>
