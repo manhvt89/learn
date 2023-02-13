@@ -166,6 +166,21 @@ class Inventory_contact_lens extends Report
         //$data['summary'] = $this->db->get()->result_array();
 		//$data['summary'] = $tmp;
 		//var_dump($data);
+        $data['details'] = array();
+        foreach($data['summary'] as $key=>$value)
+        {
+            $this->db->select('items.name, items.item_number, item_quantities.quantity, items.reorder_level, stock_locations.location_name, items.cost_price, items.unit_price, (items.cost_price * item_quantities.quantity) AS sub_total_value');
+            $this->db->from('items AS items');
+            $this->db->join('item_quantities AS item_quantities', 'items.item_id = item_quantities.item_id');
+            $this->db->join('stock_locations AS stock_locations', 'item_quantities.location_id = stock_locations.location_id');
+            $this->db->where('items.deleted', 0);
+            $this->db->where('stock_locations.deleted', 0);
+            $this->db->where('items.category', $value['category']);
+            $this->db->where('stock_locations.location_id', $value['location_id']);
+            $this->db->order_by('items.name');
+            $data['details'][$key] = $this->db->get()->result_array();
+        }
+		//var_dump($data);
         return $data;
 
 	}
@@ -214,7 +229,17 @@ class Inventory_contact_lens extends Report
 				array('sale_quantity'=>'Bán'),
 				array('end_quantity' => 'Cuối kỳ'),
 				
-			)
+			),
+			'details' => array(
+                $this->lang->line('reports_item_name'),
+                $this->lang->line('reports_item_number'),
+                $this->lang->line('reports_quantity'),
+                $this->lang->line('reports_reorder_level'),
+                $this->lang->line('reports_stock_location'),
+                $this->lang->line('reports_cost_price'),
+                $this->lang->line('reports_unit_price'),
+                $this->lang->line('reports_sub_total_value'))
+		            
 		);
 	}
 }
