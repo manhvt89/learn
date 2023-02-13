@@ -229,7 +229,7 @@ class Inventory_sun_glasses extends Report
 
 	public function _getSalesToday($inputs)
 	{
-		$filter = $this->config->item('filter'); //define in app.php//
+		$filter = $this->config->item('filter_sun_glasses'); //define in app.php//
 		$this->db->select('s.sale_time, SUM(si.quantity_purchased) AS quantity, i.category as item_category');
         $this->db->from('sales_items AS si');
         $this->db->join('sales AS s', 'si.sale_id = s.sale_id');
@@ -245,7 +245,7 @@ class Inventory_sun_glasses extends Report
 
 	public function _getReceive($inputs)
 	{
-		$filter = $this->config->item('filter'); //define in app.php
+		$filter = $this->config->item('filter_sun_glasses'); //define in app.php
 		$this->db->select('r.receiving_time, SUM(ri.quantity_purchased) AS quantity, i.category as item_category');
         $this->db->from('receivings_items AS ri');
         $this->db->join('receivings AS r', 'ri.receiving_id = r.receiving_id');
