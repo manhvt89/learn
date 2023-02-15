@@ -58,7 +58,7 @@ if(isset($error))
 				<a class="list-group-item" href="<?php echo site_url('reports/inventory_frame');?>"><?php echo 'Báo cáo Gọng Kính'; ?></a>
 				<a class="list-group-item" href="<?php echo site_url('reports/inventory_sun_glasses');?>"><?php echo 'Báo cáo Kính Mát'; ?></a>
 				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_lens');?>"><?php echo 'Báo cáo chi tiết Mắt Kính'; ?></a>
-				<a class="list-group-item" href="<?php echo site_url('reports/inventory_detail_contact_lens');?>"><?php echo 'Báo cáo chi tiết Áp Tròng'; ?></a>
+				
 				</div>
 			</div>
 		<?php 
