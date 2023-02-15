@@ -70,9 +70,11 @@ class Accounting extends CI_Model
 
 				$_LastDate = $yesterday_totol_data['created_time'];
 
-				$filters['start_date'] = date('Y-m-d', strtotime($_LastDate));
-				$filters['end_date'] = date('Y-m-d', strtotime($_LastDate));
+				$filters['start_date'] = date('Y-m-d', $_LastDate);
+				$filters['end_date'] = date('Y-m-d', $_LastDate);
 				$_rsTotal = $this->get_accounting_summary($filters);
+
+				var_dump($_rsTotal);
 
 				$begin = $_rsTotal['starting'] + $_rsTotal['in'] - $_rsTotal['po'];
 				$end = 0;
