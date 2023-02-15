@@ -153,10 +153,11 @@ class Sales extends Secure_Controller
 	public function select_customer()
 	{
 		$customer_id = $this->input->post('customer');
+		$_oCustomerInfor = $this->Customer->get_info_by_account_number($customer_id);
 		//echo $customer_id;
-		if($this->Customer->account_number_exists($customer_id))
+		//if($this->Customer->account_number_exists($customer_id))
+		if(!empty($_oCustomerInfor))
 		{
-			$_oCustomerInfor = $this->Customer->get_info_by_account_number($customer_id);
 			//var_dump((array)$_oCustomerInfor); die();
 			$this->sale_lib->set_customer($_oCustomerInfor->person_id);
 			$this->sale_lib->set_points($_oCustomerInfor->points);
