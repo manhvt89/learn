@@ -158,7 +158,7 @@ class Sales extends Secure_Controller
 		{
 			$_oCustomerInfor = $this->Customer->get_info_by_account_number($customer_id);
 			//var_dump((array)$_oCustomerInfor); die();
-			$this->sale_lib->set_customer($_oCustomerInfor['person_id']);
+			$this->sale_lib->set_customer($_oCustomerInfor->person_id);
 			$this->sale_lib->set_points($_oCustomerInfor->points);
 			//$this->sale_lib->set_customer_name($_oCustomerInfor->last_name . ' ' . $_oCustomerInfor->first_name);
 			//$this->sale_lib->set_customer_cellphone($_oCustomerInfor->phone_number);
