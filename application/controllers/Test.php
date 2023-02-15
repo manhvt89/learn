@@ -178,11 +178,14 @@ class Test extends Secure_Controller
 	{
 		$customer_id = $this->input->post('customer');
 
-		if($this->Customer->exists($customer_id))
+		$_oCustomerInfor = $this->Customer->get_info_by_account_number($customer_id);
+		if(!empty($_oCustomerInfor))
 		{
-
+			$this->test_lib->set_customer($_oCustomerInfor->person_id);
+		}
+		elseif($this->Customer->exists($customer_id))
+		{
 			$this->test_lib->set_customer($customer_id);
-
 		}
 		$this->_reload();
 	}

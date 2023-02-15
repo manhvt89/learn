@@ -204,6 +204,13 @@ $(document).ready(function()
         }
     };
 
+	$('#customer').keypress(function (e) {
+		if (e.which == 13) {
+			$('#select_customer_form').submit();
+			return false;
+		}
+	});
+
     $("#customer").autocomplete(
     {
 		source: '<?php echo site_url("customers/suggest"); ?>',
