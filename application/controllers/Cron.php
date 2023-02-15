@@ -14,7 +14,8 @@ class Cron extends CI_Controller{
     public function daily_total()
     {
         echo 'Started';
-        $this->Accounting->auto_create_daily_total();
+        $model = $this->load->model('accounting');
+        $model->auto_create_daily_total();
         echo 'Completed';
     }
 
