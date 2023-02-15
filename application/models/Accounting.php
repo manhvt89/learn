@@ -7,9 +7,11 @@ class Accounting extends CI_Model
 		$this->db->select('*');
 		$this->db->from('daily_total');
 		if($date != '') {
-			if($date == 'yesterday')
+			if($date == 'yesterday') //LastDate
 			{
-				$this->db->order_by('created_time','desc');
+				//$this->db->order_by('created_time','desc');
+				//$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+				$this->db->where('DATE(FROM_UNIXTIME(created_time))', 'DATE(NOW() - INTERVAL 1 DAY)',false);
 				$this->db->limit(1);
 			}else {
 				$this->db->where('DATE(FROM_UNIXTIME(created_time))', $date, false);
@@ -62,7 +64,7 @@ class Accounting extends CI_Model
 
 	public function auto_create_daily_total(){
 		if(!$this->exists()){
-			$yesterday_totol_data = $this->get_daily_total_info('yesterday');
+			$yesterday_totol_data = $this->get_daily_total_info('yesterday'); // Lấy bản ghi ngày hôm qua
 			if($yesterday_totol_data)
 			{
 
@@ -199,8 +201,8 @@ class Accounting extends CI_Model
 			{
 				$_LastDate = $yesterday_totol_data['created_time'];
 
-				$filters['start_date'] = date('Y-m-d', strtotime($_LastDate));
-				$filters['end_date'] = date('Y-m-d', strtotime($_LastDate));
+				$filters['start_date'] = date('Y-m-d', $_LastDate);
+				$filters['end_date'] = date('Y-m-d', $_LastDate);
 				$_rsTotal = $this->get_accounting_summary($filters);
 
 				$begin = $_rsTotal['starting'] + $_rsTotal['in'] - $_rsTotal['po'];
