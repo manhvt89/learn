@@ -144,7 +144,7 @@ class Cron extends CI_Controller{
 
         //1. Get All sản phẩm từ file csv
         $_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
-        echo $_file;exit();
+        //echo $_file;exit();
         if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
             fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
