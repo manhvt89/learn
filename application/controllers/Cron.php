@@ -14,8 +14,7 @@ class Cron extends CI_Controller{
     public function daily_total()
     {
         echo 'Started';
-        $model = $this->load->model('accounting');
-        $model->auto_create_daily_total();
+        $this->Accounting->auto_create_daily_total();
         echo 'Completed';
     }
 
@@ -160,8 +159,8 @@ class Cron extends CI_Controller{
                         'name'					=> $data[1],
                         'description'			=> '',
                         'category'				=> $data[2],
-                        'cost_price'			=> $data[6],
-                        'unit_price'			=> $data[7],
+                        'cost_price'			=> 0,
+                        'unit_price'			=> $data[5],
                         'reorder_level'			=> 0,
                         'supplier_id'			=> 200278,
                         'allow_alt_description'	=> '0',
@@ -177,7 +176,7 @@ class Cron extends CI_Controller{
                         'custom9'				=> '',
                         'custom10'				=> ''
                     );
-                    $item_number = $data[3];
+                    $item_number = $data[0];
                     $invalidated = FALSE;
                     if($item_number != '')
                     {
