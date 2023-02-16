@@ -6,6 +6,7 @@ class Cron extends CI_Controller{
 		parent::__construct();
 		//$this->load->library('email');
 		//$this->load->model('Model_main');
+        $this->load->model('Item');
         $this->load->library('sms_lib');
 	}
 
@@ -14,6 +15,7 @@ class Cron extends CI_Controller{
     public function daily_total()
     {
         echo 'Started';
+        $this->load->model('Accounting');
         $this->Accounting->auto_create_daily_total();
         echo 'Completed';
     }
