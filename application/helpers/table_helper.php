@@ -322,7 +322,7 @@ function get_sale_data_row($sale)
 		'amount_due' => number_format($sale->amount_due,0,',','.'),
 		'amount_tendered' => number_format($sale->amount_tendered,0,',','.'),
 		'change_due' => number_format($sale->change_due,0,',','.'),
-		'phone_number' => '***',
+		'phone_number' => $sale->phone_number,
 		'payment_type' => $sale->payment_type,
 		'status'=>$sale->status
 	);

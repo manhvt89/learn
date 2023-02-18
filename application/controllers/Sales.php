@@ -479,6 +479,7 @@ class Sales extends Secure_Controller
 			$amount_change = $this->sale_lib->get_amount_due() * -1;
 			$data['amount_due'] = $this->sale_lib->get_amount_due();
 			$suspended_sale_id = $this->sale_lib->get_suspend_id();
+			$data['paid_amount'] = $this->sale_lib->get_payments_total();
 			$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 			$employee_info = $this->Employee->get_info($employee_id);
 			//$data['employee'] = $employee_info->first_name  . ' ' . $employee_info->last_name[0];
@@ -554,13 +555,12 @@ class Sales extends Secure_Controller
 							$data['comments'],
 							$invoice_number,
 							$payments,
+							$data['total'],
+							$data['paid_amount'],
 							$amount_change,
-							$suspended_sale_id,
+							0,						
 							$ctv_id,
-							$status,
-							$test_id,
-							$kxv_id,
-							$doctor_id
+							$status
 						);
 					} else { // Chỉnh sửa tại đây
 						$result = $this->Sale->edit(
@@ -571,13 +571,12 @@ class Sales extends Secure_Controller
 							$data['comments'],
 							$invoice_number,
 							$payments,
+							$data['total'],
+							$data['paid_amount'],
 							$amount_change,
-							$suspended_sale_id,
+							0,
 							$ctv_id,
-							$status,
-							$test_id,
-							$kxv_id,
-							$doctor_id
+							$status
 						);
 						$data['sale_id_num'] = $_iSaleID;
 					}

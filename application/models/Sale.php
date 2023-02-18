@@ -167,6 +167,7 @@ class Sale extends CI_Model
 				SUM(sales_items.quantity_purchased) AS items_purchased,
 				CONCAT(customer_p.last_name, " ", customer_p.first_name) AS customer_name,
 				customer.company_name AS company_name,
+				customer_p.phone_number AS phone_number,
 				' . "
 				ROUND($sale_subtotal, $decimals) AS subtotal,
 				IFNULL(ROUND($sale_tax, $decimals), 0) AS tax,
@@ -634,7 +635,7 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$code = '')
+	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$total_amount,$paid_amount,$amount_change, $overdue_days = 0, $ctv_id = 0 ,$status = 0,$code = '')
 	{
 		//var_dump($items);die();
 		if(count($items) == 0)
@@ -644,22 +645,26 @@ class Sale extends CI_Model
 
 		if($code == '')
 		{
-			$code = 'STD' . time();
+			$code = 'HD' . time();
 		}
-
+		$remain_amount = 0 - $amount_change;
 		$sales_data = array(
 			'sale_time'		 => date('Y-m-d H:i:s'),
-			'customer_id'	 => $this->Customer->exists($customer_id) ? $customer_id : null,
+			'customer_id'	 => $this->Customer->exists($customer_id) ? $customer_id : 0,
 			'employee_id'	 => $employee_id,
 			'comment'		 => $comment,
 			'invoice_number' => $invoice_number,
 			'status'=>$status,
-			'test_id'=>$test_id,
+			'test_id'=>0,
 			'ctv_id' =>$ctv_id,
-			'kxv_id' => $kxv_id,
-			'doctor_id'=>$doctor_id,
-			'paid_points'=>$points,
-			'code'=>$code
+			'kxv_id' => 0,
+			'doctor_id'=>0,
+			'paid_points'=>0,
+			'code'=>$code,
+			'overdue_days'=>$overdue_days,
+			'remain_amount'=>$remain_amount,
+			'paid_amount'=>$paid_amount,
+			'total_amount'=>$total_amount,
 		);
 		//var_dump($sales_data);die();
 		// Run these queries as a transaction, we want to make sure we do all or nothing
@@ -729,33 +734,6 @@ class Sale extends CI_Model
 			
 		}
 
-		if($points > 0) // Nếu sử dụng điểm thanh toán
-		{
-			//1. Update ppoint cua kh
-			// Lấy thông tin của khách hàng này
-			//$customer_info = $cus_obj;
-			//var_dump($customer_info);die();
-			$customer_info['points'] = $cus_obj->points - $points;
-			$this->db->where('person_id',$customer_id);
-			$this->db->update('customers',$customer_info);
-
-			//2. insert ospos_history_points
-			//$sale_info = $this->Sale->get_info($sale_id)->row_array();
-			//var_dump($sale_id ); die();
-			$_aHistoryPoint = array(
-				'customer_id' =>$customer_id,
-				'sale_id' => $sale_id,
-				'sale_uuid' => '',
-				'created_date' =>time(),
-				'point' =>$points,
-				'type' => 1,
-				'note' =>'- '.$points . ' TT đơn hàng ID '. $sale_id
-			);
-			// Insert ospos_history_points
-			$this->db->insert('history_points', $_aHistoryPoint);
-			
-		}
-
 		foreach($items as $line=>$item)
 		{
 			$cur_item_info = $this->Item->get_info($item['item_id']);
@@ -818,10 +796,6 @@ class Sale extends CI_Model
 					));
 				}
 			}
-		}
-		//echo $suspended_sale_id;
-		if($suspended_sale_id) {
-			$this->Sale_suspended->locksuspend($suspended_sale_id);
 		}
 		$this->db->trans_complete();
 
@@ -1266,7 +1240,7 @@ class Sale extends CI_Model
 		return $this->db->get()->row();
 	}
 	//public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$sale_id = FALSE)
-	public function edit(&$sale_id, $items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$update_inventory=TRUE,$points=0)
+	public function edit(&$sale_id, $items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$total_amount,$paid_amount,$amount_change, $overdue_days=0, $ctv_id = 0 ,$status = 0,$update_inventory=TRUE)
 	{
 		// Chỉnh sửa đơn hàng gồm: Các sản phẩm; và đã tạm ứng tiền;
 		// Chú ý hoạt động chỉnh sửa chỉ có thể chỉnh sửa trong thời gian là ngày hiện tại;
@@ -1345,20 +1319,18 @@ class Sale extends CI_Model
 				$comment,
 				$invoice_number,
 				$payments,
+				$total_amount,
+				$paid_amount,
 				$amount_change,
-				$suspended_sale_id,
+				0,
 				$ctv_id,
 				$status,
-				$test_id,
-				$kxv_id,
-				$doctor_id,
-				$points,
 				$code
 			);
 			
             // first delete all payments
 			// $this->db->delete('sales_payments', array('sale_id' => $sale_id));
-			$cus_obj = $this->Customer->get_info($customer_id);
+			//$cus_obj = $this->Customer->get_info($customer_id);
 			// Thêm thanh toán
 			/*
 			** Tạm không dùng (được update ngày 05.02.2023)
@@ -1404,33 +1376,7 @@ class Sale extends CI_Model
 			}
 			End
 			*/
-			//Add by ManhVT: sử dụng điểm thanh toán
-			if($points > 0) // Nếu sử dụng điểm thanh toán
-			{
-				//1. Update ppoint cua kh
-				// Lấy thông tin của khách hàng này
-				//$customer_info = $cus_obj;
-				//var_dump($customer_info);die();
-				$customer_info['points'] = $cus_obj->points - $points;
-				$this->db->where('person_id',$customer_id);
-				$this->db->update('customers',$customer_info);
-
-				//2. insert ospos_history_points
-				//$sale_info = $this->Sale->get_info($sale_id)->row_array();
-				//var_dump($sale_id ); die();
-				$_aHistoryPoint = array(
-					'customer_id' =>$customer_id,
-					'sale_id' => $sale_id,
-					'sale_uuid' => '',
-					'created_date' =>time(),
-					'point' =>$points,
-					'type' => 1,
-					'note' =>'- '.$points . ' TT đơn hàng ID '. $sale_id
-				);
-				// Insert ospos_history_points
-				$this->db->insert('history_points', $_aHistoryPoint);
-				
-			}
+			
 
 			$this->db->trans_complete();
 			
