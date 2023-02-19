@@ -933,6 +933,72 @@ function get_purchase_data_last_row($sales)
 		'change_due' => '<b>'.to_currency($sum_change_due).'</b>'
 	);
 }
-//[[!-- Added by ManhVT - 26/01/2023 - 
+//[[!-- Added by ManhVT - 26/01/2023 -
+
+	/*
+	Added by ManhVT 18/02/2023 support Báo cáo công nợ
+	*/
+	function get_debit_sales_manage_table_headers()
+	{
+		$CI =& get_instance();
+
+		$headers = array(
+			array('sale_id' => 'ID','halign'=>'center', 'align'=>'right'),		
+			array('customer_name' => 'Tên khách hàng','halign'=>'center', 'align'=>'left'),
+			array('remain_amount' => 'Số tiền nợ','halign'=>'center', 'align'=>'right'),		
+			array('phone_number' => 'Số điện thoại','halign'=>'center', 'align'=>'left'),
+			array('payment_type'=>'Hình thức thanh toán','halign'=>'center', 'align'=>'left')
+		);
+		
+		if($CI->config->item('invoice_enable') == TRUE)
+		{
+			$headers[] = array('invoice_number' => $CI->lang->line('sales_invoice_number'));
+			$headers[] = array('invoice' => '&nbsp', 'sortable' => FALSE);
+		}
+
+		return transform_headers($headers,TRUE,FALSE);
+	}
+
+	function get_debit_sale_data_row($sale)
+	{
+		$CI =& get_instance();
+		$controller_name = $CI->uri->segment(1);
+		//var_dump($sale);
+
+		$row = array (
+			'sale_id' => $sale->sale_id,		
+			'customer_name' => '<a href="'.base_url('sales/detail_debits/'.$sale->uuid).'">'.$sale->customer_name.'</a>',
+			'remain_amount' => number_format($sale->remain_amount,0,',','.'),
+			'paid_amount' => number_format($sale->paid_amount,0,',','.'),
+			'total_amount' => number_format($sale->total_amount,0,',','.'),
+			'phone_number' => $sale->phone_number
+		);
+
+		/* if($CI->config->item('invoice_enable'))
+		{
+			$row['invoice_number'] = $sale->invoice_number;
+			$row['invoice'] = empty($sale->invoice_number) ? '' : anchor($controller_name."/invoice/$sale->sale_id", '<span class="glyphicon glyphicon-list-alt"></span>',
+				array('title'=>$CI->lang->line('sales_show_invoice'))
+			);
+		} */
+
+		/* $row['receipt'] = anchor($controller_name."/receipt/$sale->sale_uuid", '<span class="glyphicon glyphicon-usd"></span>',
+			array('title' => $CI->lang->line('sales_show_receipt'))
+		);
+		if($sale->status == 1) {
+			$row['edit'] = anchor($controller_name . "/editsale/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
+				array('title' => $CI->lang->line($controller_name . '_update'))
+			);
+			$row['payment'] = anchor($controller_name . "/payment/$sale->sale_uuid", '<span class="glyphicon glyphicon-briefcase"></span>',
+				array('title' => 'Thanh toán')
+			);
+		}else{
+			//Cần fix chỉ hiển thị ngày hiện tại;
+			$row['edit'] = '';/*anchor($controller_name."/edit/$sale->sale_uuid", '<span class="glyphicon glyphicon-edit"></span>',
+			array('class' => 'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title' => $CI->lang->line($controller_name.'_update'))
+			);
+		} */
+		return $row;
+	}
 
 ?>

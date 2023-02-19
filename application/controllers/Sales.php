@@ -1535,5 +1535,36 @@ class Sales extends Secure_Controller
 		}
 		$this->_reload($data);
 	}
+
+	public function debits()
+	{
+		$data['resource'] = 'debits';
+		$data['table_headers'] = get_debit_sales_manage_table_headers();
+
+		// filters that will be loaded in the multiselect dropdown
+		if($this->config->item('invoice_enable') == TRUE)
+		{
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),
+									'only_invoices' => $this->lang->line('sales_invoice_filter'));
+		}
+		else
+		{
+			$data['filters'] = array('only_cash' => $this->lang->line('sales_cash_filter'),'tt'=>'tt');
+		}
+
+		if ($this->Employee->has_grant('sales_index')) {
+			$data['is_created'] = 1;
+		} else {
+			$data['is_created'] = 0;
+		}
+		
+		$this->load->view('sales/debit', $data);
+	}
+
+	public function detail_debits($uuid ='')
+	{
+		echo $uuid;
+		
+	}
 }
 ?>

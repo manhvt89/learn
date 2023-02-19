@@ -53,8 +53,8 @@ if (isset($success))
 				?>
 
 				<li class="pull-right">
-				<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách công nợ',
-							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách công nợ')); ?>
+				<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Công nợ',
+							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Công nợ')); ?>
 					
 				</li>
 
@@ -63,8 +63,8 @@ if (isset($success))
 				{
 					?>
 					<li class="pull-right">
-						<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách đã thanh toán',
-							array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Danh sách đã thanh toán')); ?>
+						<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Đã thanh toán',
+							array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Đã thanh toán')); ?>
 					</li>
 					<?php
 				}
@@ -98,8 +98,8 @@ if (isset($success))
 					?>
 
 					<li class="pull-right">
-					<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách công nợ',
-							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách công nợ')); ?>
+					<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Công nợ',
+							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Công nợ')); ?>
 					</li>
 
 					<?php
@@ -107,8 +107,8 @@ if (isset($success))
 					{
 					?>
 						<li class="pull-right">
-							<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách đã thanh toán',
-										array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Danh sách đã thanh toán')); ?>
+							<?php echo anchor($controller_name."/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Đã thanh toán',
+										array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_takings_button', 'title'=>'Đã thanh toán')); ?>
 						</li>
 					<?php
 					}

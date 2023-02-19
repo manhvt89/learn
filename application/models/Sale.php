@@ -1385,5 +1385,98 @@ class Sale extends CI_Model
 		$sale_id = $_iNewSaleID;
 		return $success;
 	}
+
+	/**
+	 * Added by ManhVT 18/02/2023 support báo cáo công nợ theo khách hàng
+	 */
+
+	 public function search_debits($search, $filters, $rows = 0, $limit_from = 0, $sort = 'sale_id', $order = 'desc')
+	{
+		// NOTE: temporary tables are created to speed up searches due to the fact that are ortogonal to the main query
+		// create a temporary table to contain all the payments per sale item
+
+		$this->db->select('
+				SUM(sales.total_amount) AS total_amount,
+				SUM(sales.remain_amount) AS remain_amount,
+				SUM(sales.paid_amount) AS paid_amount,
+				CONCAT(customer_p.last_name, " ", customer_p.first_name) AS customer_name,
+				customer.company_name AS company_name,
+				customer_p.phone_number AS phone_number,
+				MAX(sales.sale_id) AS sale_id,
+				customer.customer_uuid AS uuid'
+				);
+
+		$this->db->from('sales AS sales');	
+		$this->db->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'left');
+		$this->db->join('customers AS customer', 'sales.customer_id = customer.person_id', 'left');
+		$this->db->where('status', 1); //Chỉ các bản ghi với trạng thái chưa thanh toán; = 0 là đã thanh toán;
+		$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+				
+		if(!empty($search))
+		{
+			if($filters['is_valid_receipt'] != FALSE)
+			{
+				$pieces = explode(' ', $search);
+				$this->db->where('sales.sale_id', $pieces[1]);
+			}
+			else
+			{			
+				$this->db->group_start();
+					// customer last name
+					$this->db->like('customer_p.last_name', $search);
+					// customer first name
+					$this->db->or_like('customer_p.first_name', $search);
+					// customer first and last name
+					$this->db->or_like('CONCAT(customer_p.first_name, " ", customer_p.last_name)', $search);
+					// customer company name
+					$this->db->or_like('customer.company_name', $search);
+				$this->db->group_end();
+			}
+		}
+
+		if($filters['location_id'] != 'all')
+		{
+			$this->db->where('sales_items.item_location', $filters['location_id']);
+		}
+
+		if($filters['sale_type'] == 'sales')
+        {
+            $this->db->where('sales_items.quantity_purchased > 0');
+        }
+        elseif($filters['sale_type'] == 'returns')
+        {
+            $this->db->where('sales_items.quantity_purchased < 0');
+        }
+
+		if($filters['only_invoices'] != FALSE)
+		{
+			$this->db->where('sales.invoice_number IS NOT NULL');
+		}
+	
+		
+		//var_dump($this->db);
+		if($filters['only_cash'] != FALSE)
+		{
+			$this->db->group_start();
+				$this->db->like('payments.payment_type', $this->lang->line('sales_cash'), 'after');
+				$this->db->or_where('payments.payment_type IS NULL');
+			$this->db->group_end();
+		}
+
+		$this->db->group_by('sales.customer_id');
+		$this->db->order_by($sort, $order);
+
+		if($rows > 0)
+		{
+			$this->db->limit($rows, $limit_from);
+		}
+
+		return $this->db->get();
+	}
+
+	public function get_found_debit_rows($search, $filters)
+	{
+		return $this->search_debits($search, $filters,0,0)->num_rows();
+	}
 }
 ?>
