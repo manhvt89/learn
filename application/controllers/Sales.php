@@ -1564,7 +1564,16 @@ class Sales extends Secure_Controller
 	public function detail_debits($uuid ='')
 	{
 		echo $uuid;
-		
+		$this->load->model('reports/Inventory_sun_glasses');
+        $model = $this->Inventory_sun_glasses;
+        $data = array();
+        $data['item_count'] = $model->getItemCountDropdownArray();
+
+        $stock_locations = $this->xss_clean($this->Stock_location->get_allowed_locations());
+        $stock_locations['all'] = $this->lang->line('reports_all');
+        $data['stock_locations'] = array_reverse($stock_locations, TRUE);
+
+        $this->load->view('sales/rpdebit', $data);
 	}
 }
 ?>

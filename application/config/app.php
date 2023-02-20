@@ -143,7 +143,7 @@ $config['exclude_module'] = array(
 ** config qrcode; = 0 don't active qrcode; 
 ** = 1: Active module qrcode;
 */
-$config['qrcode'] = 1;
+$config['qrcode'] = 0; // Không hiển thị QRcode
 $config['barcode'] = 1;
 
 /*

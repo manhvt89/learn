@@ -111,7 +111,7 @@ $(document).ready(function()
 	<?php echo anchor($controller_name."/pending", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Danh sách công nợ',
 							array('class'=>'btn btn-info btn-sm', 'id'=>'sales_pending_button', 'title'=>'Danh sách công nợ')); ?>
 					
-			
+    <?php echo anchor("sales/debits", '<span class="glyphicon glyphicon-list">&nbsp</span>' . 'Báo cáo công nợ', array('class'=>'btn btn-warning btn-sm', 'id'=>'show_debits_button')); ?>		
     <?php //echo anchor("sales/manage", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_takings'), array('class'=>'btn btn-info btn-sm', 'id'=>'show_takings_button')); ?>
 </div>
 <?php if($sale_uuid != '' ): ?>
