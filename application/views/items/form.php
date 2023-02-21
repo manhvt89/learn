@@ -64,7 +64,7 @@
 							'name'=>'cost_price',
 							'id'=>'cost_price',
 							'class'=>'form-control input-sm',
-							'value'=>number_format($item_info->cost_price))
+							'value'=>number_format($item_info->cost_price,0,',','.'))
 							);?>
 					<?php if (currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
@@ -84,7 +84,7 @@
 							'name'=>'unit_price',
 							'id'=>'unit_price',
 							'class'=>'form-control input-sm',
-							'value'=>number_format($item_info->unit_price))
+							'value'=>number_format($item_info->unit_price,0,',','.'))
 							);?>
 					<?php if (currency_side()): ?>
 						<span class="input-group-addon input-sm"><b><?php echo $this->config->item('currency_symbol'); ?></b></span>
