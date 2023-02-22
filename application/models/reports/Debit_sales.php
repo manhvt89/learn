@@ -45,7 +45,7 @@ class Debit_sales extends Report
                     $this->lang->line('reports_cost'),
                     $this->lang->line('reports_profit'),
                     $this->lang->line('reports_discount'))
-            );
+            ));
         }else{
             return array(
                 'summary' => array(
@@ -155,5 +155,90 @@ class Debit_sales extends Report
 
 		return $this->db->get()->row_array();
 	}
+
+    public function _getDataColumns()
+	{
+        $CI =& get_instance();
+        //$person_id = $this->iLoggedIn_Id;
+        if($CI->Employee->has_grant('reports_debit_accounting')) //Phân quyền cho kế toán
+        {
+            return array(
+                'summary' => array(
+                    array('id' => $this->lang->line('reports_sale_id')),   
+                    array('sale_time' => 'Ngày tháng'),                  
+                    array('customer_name' => 'Tên khách hàng'),
+                    array('code' => 'Mã đơn hàng'),
+                    array('remain_amount' => 'Tổng công nợ', 'sorter' => 'number_sorter','align'=>'right')
+                    ),
+                'details' => array(
+                    $this->lang->line('reports_item_number'),
+                    $this->lang->line('reports_name'),                   
+                    $this->lang->line('reports_quantity'),
+                    $this->lang->line('reports_subtotal'),                   
+                    $this->lang->line('reports_total'),
+                    $this->lang->line('reports_cost'))
+            );
+        }else{
+            return array(
+                'summary' => array(
+                    array('id' => $this->lang->line('reports_sale_id')),   
+                    array('sale_time' => 'Ngày tháng'),                   
+                    array('customer_name' => 'Tên khách hàng'),
+                    array('code' => 'Mã đơn hàng'),
+                    array('remain_amount' => 'Tổng công nợ', 'sorter' => 'number_sorter','align'=>'right')
+                    ),
+                'details' => array(
+                    array('item_number'=>$this->lang->line('reports_item_number')),
+                    array('item_name'=>$this->lang->line('reports_name')),                   
+                    array('quantity_purchased'=>$this->lang->line('reports_quantity'),'align'=>'right'),
+                    array('item_unit_price'=>'Giá','align'=>'right'),             
+                    array('total'=>$this->lang->line('reports_total'),'align'=>'right')
+                    
+                    )
+            );
+        }
+	}
+
+    public function _getData(string $inputs)
+	{
+		$this->db->select('
+				sales.total_amount,
+				sales.remain_amount,
+				sales.paid_amount,
+                sales.code,
+                sales.sale_time,
+				CONCAT(customer_p.last_name, " ", customer_p.first_name) AS customer_name,
+				customer.company_name AS company_name,
+				customer_p.phone_number AS phone_number,
+				sales.sale_id AS sale_id,
+				customer.customer_uuid AS uuid'
+				);
+
+		$this->db->from('sales AS sales');	
+		$this->db->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'left');
+		$this->db->join('customers AS customer', 'sales.customer_id = customer.person_id', 'left');
+		$this->db->where('status', 1); //Chỉ các bản ghi với trạng thái chưa thanh toán; = 0 là đã thanh toán;
+		//$this->db->where('DATE(sales.sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('customer.customer_uuid',$inputs);
+		
+		$this->db->order_by('sale_id', 'desc');
+
+
+		$data = array();
+		$data['summary'] = $this->db->get()->result_array();
+		$data['details'] = array();
+
+		foreach($data['summary'] as $key=>$value)
+		{
+			$this->db->select('*');
+			$this->db->from('sales_items');
+			$this->db->where('sale_id', $value['sale_id']);
+			$data['details'][$key] = $this->db->get()->result_array();
+            //$data['details'][$key]=array();
+		}
+
+		return $data;
+	}
+
 }
 ?>

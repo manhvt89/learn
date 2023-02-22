@@ -6,8 +6,8 @@ require_once("Secure_Controller.php");
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-
+//use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Purchases extends Secure_Controller
 {
@@ -583,7 +583,8 @@ class Purchases extends Secure_Controller
             if('csv' == $extension) {
                 $reader = new Csv();
             } else {
-                $reader = new Xlsx();
+                //$reader = new Xlsx();
+				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
             }
 
             $spreadsheet = $reader->load($_FILES['file_path']['tmp_name']);
@@ -947,6 +948,81 @@ class Purchases extends Secure_Controller
 
 		} else{
 			echo 'Bạn đang truy cập không hợp lệ';
+		}
+	}
+
+	public function export_po($csrf_ospos_v3='',$purchase_uuid='')
+	{
+		$pu_uuid = $this->input->get('purchase_uuid');
+		$sale_info = $this->Purchase->get_info_uuid($pu_uuid)->row();
+		//var_dump($sale_info);
+		if(!empty($sale_info))
+		{
+			$spreadsheet = new Spreadsheet();
+			$sheet = $spreadsheet->getActiveSheet();
+			$sheet->getColumnDimension('A')->setWidth(15);
+			$sheet->getColumnDimension('B')->setWidth(30);
+			$sheet->getColumnDimension('C')->setWidth(30);
+			$sheet->getColumnDimension('D')->setWidth(15);
+			$sheet->getColumnDimension('E')->setWidth(15);
+			$sheet->getColumnDimension('F')->setWidth(10);
+			$sheet->mergeCells('A1:F1');
+			$styleArray = [
+				'font' => [
+					'bold' => true,
+					'size' => 14
+				],
+				'alignment' => [
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+				],
+				'borders' => [
+					'top' => [
+						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+					],
+				],
+				'fill' => [
+					'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+					'rotation' => 90,
+					'startColor' => [
+						'argb' => 'FFA0A0A0',
+					],
+					'endColor' => [
+						'argb' => 'FFFFFFFF',
+					],
+				],
+			];
+			$sheet->getRowDimension(1)->setRowHeight(30);
+			$sheet->getCell('A1')->getStyle()->applyFromArray($styleArray);
+			
+			$sheet->setCellValue('A1', 'Đơn nhập hàng (PO): '.$sale_info->code);
+			$i = 2;
+			$sheet->setCellValue("A$i", 'Barcode');
+			$sheet->setCellValue("B$i", 'Tên sản phẩm');
+			$sheet->setCellValue("C$i", 'Danh mục');
+			$sheet->setCellValue("D$i", 'Giá bán');
+			$sheet->setCellValue("E$i", 'Giá nhập');
+			$sheet->setCellValue("F$i", 'Số lượng');
+
+			foreach($this->Purchase->get_purchase_items($sale_info->id)->result() as $item)
+			{
+				$i++;
+				$sheet->setCellValue("A$i", $item->item_number);
+				$sheet->setCellValue("B$i", $item->item_name);
+				$sheet->setCellValue("C$i", $item->item_category);
+				$sheet->setCellValue("D$i", $item->item_u_price);
+				$sheet->setCellValue("E$i", $item->item_price);
+				$sheet->setCellValue("F$i", $item->item_quantity);
+
+			}
+			$writer = new Xlsx($spreadsheet);
+			$filename = $sale_info->code.'-'.time();
+			header('Content-Type: application/vnd.ms-excel');
+			header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
+			header('Cache-Control: max-age=0');
+			$writer->save('php://output'); // download file */
+		} else {
+			echo 'Bạn truy cập đơn hàng không tồn tại';
 		}
 	}
 

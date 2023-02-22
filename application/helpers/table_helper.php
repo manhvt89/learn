@@ -460,7 +460,9 @@ function transform_headers_raw($array, $readonly = FALSE, $editable = TRUE)
 			'class' => isset($element['checkbox']) || preg_match('(^$|&nbsp)', current($element)) ?
 				'print_hide' : '',
 			'sorter' => isset($element['sorter']) ?
-				$element ['sorter'] : '');
+				$element ['sorter'] : '',
+			'halign'=>isset($element['halign']) ? $element ['halign'] : '',
+			'align'=>isset($element['align']) ? $element ['align'] : '',);
 	}
 	return $result;
 }

@@ -1563,17 +1563,76 @@ class Sales extends Secure_Controller
 
 	public function detail_debits($uuid ='')
 	{
-		echo $uuid;
-		$this->load->model('reports/Inventory_sun_glasses');
-        $model = $this->Inventory_sun_glasses;
-        $data = array();
-        $data['item_count'] = $model->getItemCountDropdownArray();
+		//echo $uuid;
+		$data = array();
+		$customer_info = $this->Customer->get_info_by_uuic($uuid);
+		//var_dump($customer_info);
+		$data['customer_name'] = $customer_info->last_name . ' ' .$customer_info->first_name;
+		$data['customer_phone'] = $customer_info->phone_number;
+		$data['customer_address'] =  $customer_info->address_1 . ' '. $customer_info->address_2;	
+		$data['customer_uuid'] = $uuid;	
+       	$this->load->view('sales/rpdebit', $data);
+	}
 
-        $stock_locations = $this->xss_clean($this->Stock_location->get_allowed_locations());
-        $stock_locations['all'] = $this->lang->line('reports_all');
-        $data['stock_locations'] = array_reverse($stock_locations, TRUE);
+	public function ajax_rp_debits()
+	{
+		$this->load->model('reports/Debit_sales');
+        $model = $this->Debit_sales;
+        $customer_uuid = $this->input->post('customer_uuid');
 
-        $this->load->view('sales/rpdebit', $data);
+        $result = 1;
+
+        $headers = $this->xss_clean($model->_getDataColumns());
+        //var_dump($headers);
+        $report_data = $model->_getData($customer_uuid);
+		//var_dump($report_data); die();
+        $data = null;
+        if(!$report_data)
+        {
+            $result = 0;
+        }else{
+            $summary_data = array();
+            $details_data = array();
+            $i = 1;
+            foreach($report_data['summary'] as $key => $row)
+            {
+
+                $begin_quantity = 0;
+                $summary_data[] = $this->xss_clean(array(
+                    'id' => $row['sale_id'],
+                    'customer_name' => $row['customer_name'],
+                    'code' => $row['code'],
+					'sale_time'=>$row['sale_time'],
+                    'remain_amount' => number_format($row['remain_amount'])
+                ));
+
+                foreach($report_data['details'][$key] as $drow)
+                {
+					$_aTmp = array(
+						'item_name'=>$drow['item_name'], 
+						'item_number'=>$drow['item_number'], 
+						'quantity_purchased'=>number_format($drow['quantity_purchased']), 
+						'item_unit_price'=>to_currency($drow['item_unit_price']),
+						'total'=>to_currency($drow['item_unit_price'] * $drow['quantity_purchased']));
+                    $details_data[$row['sale_id']][] = $this->xss_clean($_aTmp);
+                }
+                $i++;
+            }
+
+            $data = array(
+                'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
+                'headers_details' => transform_headers_raw($headers['details'],TRUE),
+                'summary_data' => $summary_data,
+                'details_data' => $details_data,
+                'report_data' =>$report_data
+            );
+
+        }
+
+
+        $json = array('result'=>$result,'data'=>$data);
+        echo json_encode($json);
+
 	}
 }
 ?>
