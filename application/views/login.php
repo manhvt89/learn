@@ -28,14 +28,13 @@
 					<div class="input-group">
 						<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-lock"></span></span>
 						<input class="form-control" placeholder="<?php echo $this->lang->line('login_password')?>" name="password" type="password" size=20></input>
-					</div>
-					
+					</div>					
 					<input class="btn btn-primary btn-block" type="submit" name="loginButton" value="Go"/>
 				</div>
 			</div>
 		<?php echo form_close(); ?>
 		
-		<h1>Hệ thống quản lý bán hàng</h1>
+		<h1>Phần mềm quản lý phòng khám mắt</h1>
 	</div>
 </body>
 </html>
