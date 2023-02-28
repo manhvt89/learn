@@ -750,4 +750,31 @@ class Cron extends CI_Controller{
 
 
     }
+
+    private function a()
+    {
+        //insert data
+        $url = 'http://tongkho.thiluc2020.com/api/item/last_products';
+        //user information
+        $userData = array(
+            'id' => 15294
+        );
+        
+        //create a new cURL resource
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, 'admin:123456789');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_HTTPGET, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $result = curl_exec($ch);
+        
+        var_dump($result);
+        curl_close($ch);
+    }
 }
