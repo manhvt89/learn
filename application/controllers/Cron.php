@@ -47,11 +47,11 @@ class Cron extends CI_Controller{
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
-                        'name'					=> $data[1],
+                        'name'					=> $data[0],
                         'description'			=> '',
-                        'category'				=> $data[2],
-                        'cost_price'			=> $data[6],
-                        'unit_price'			=> $data[7],
+                        'category'				=> $data[1],
+                        'cost_price'			=> $data[5],
+                        'unit_price'			=> $data[6],
                         'reorder_level'			=> 0,
                         'supplier_id'			=> 200278,
                         'allow_alt_description'	=> '0',
@@ -66,12 +66,15 @@ class Cron extends CI_Controller{
                         'custom8'				=> '',
                         'custom9'				=> '',
                         'custom10'				=> ''
+                        
                     );
                     $item_number = $data[3];
                     $invalidated = FALSE;
                     if($item_number != '')
                     {
                         $item_data['item_number'] = $item_number;
+                        $item_data['item_number_new']  = $item_number;
+                        $item_data['code']  = $item_number;
                         $invalidated = $this->Item->item_number_exists($item_number);
                     }
 				} else {
