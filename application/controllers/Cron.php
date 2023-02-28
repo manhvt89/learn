@@ -791,7 +791,7 @@ class Cron extends CI_Controller{
         curl_close($ch);
         if($result->status == TRUE)
         {
-            return json_decode($result->data);
+            return $result->data;
         } else {
             return array();
         }
