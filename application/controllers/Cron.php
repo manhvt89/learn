@@ -754,7 +754,9 @@ class Cron extends CI_Controller{
     public function b()
     {
         $id = 15294;
-        var_dump($this->a($id));
+        $str = $this->a($id);
+        echo 'manhvt';
+        var_dump(json_decode($str));
     }
 
     private function a($id)
