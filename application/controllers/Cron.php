@@ -778,8 +778,13 @@ class Cron extends CI_Controller{
         //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
-        $result = curl_exec($ch);
-        
+        $response = curl_exec($ch);
+
+        // Then, after your curl_exec call:
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $result = $body;
         
         curl_close($ch);
         return $result;
