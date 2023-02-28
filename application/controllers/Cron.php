@@ -760,7 +760,7 @@ class Cron extends CI_Controller{
     private function a($id)
     {
         //insert data
-        $url = 'http://tongkho.thiluc2020.com/api/item/last_products';
+        $url = "https://tongkho.thiluc2020.com/api/item/last_products/$id";
         //user information
         $userData = array(
             'id' => $id
@@ -774,7 +774,7 @@ class Cron extends CI_Controller{
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         curl_setopt($ch, CURLOPT_HTTPGET, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
         //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
