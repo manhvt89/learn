@@ -753,7 +753,7 @@ class Cron extends CI_Controller{
 
     public function b()
     {
-        $id = 152940;
+        $id = 15294;
         $_aProducts = $this->get_last_products($id);
         echo 'manhvt';
         var_dump($_aProducts);
