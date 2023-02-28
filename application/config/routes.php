@@ -79,3 +79,8 @@ $route['reports/detail_import_lens'] = 'reports/date_input_import_lens';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['api/item/ /(:any)'] = 'api/products/products/$1';
+$route['api/item/products_category/(:any)'] = 'api/products/productscategory/$1';
+$route['api/item/product/(:any)'] = 'api/products/the_product/$1';
+$route['api/item/item'] = 'api/products/item';

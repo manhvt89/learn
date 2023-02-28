@@ -488,7 +488,22 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = TRUE;
+if (isset($_SERVER["REQUEST_URI"])) 
+{
+    if(stripos($_SERVER["REQUEST_URI"],'/api') === FALSE)
+    {
+        $config['csrf_protection'] = TRUE;
+    }
+    else
+    {
+        $config['csrf_protection'] = FALSE;
+    } 
+} 
+else 
+{
+    $config['csrf_protection'] = TRUE;
+} 
+//$config['csrf_protection'] = TRUE;
 $config['csrf_token_name'] = 'csrf_ospos_v3';
 $config['csrf_cookie_name'] = 'csrf_cookie_ospos_v3';
 $config['csrf_expire'] = 72000;

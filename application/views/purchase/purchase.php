@@ -141,9 +141,16 @@ if (isset($success))
 							<?php }?>
 							</td>
 							<td><?php echo form_input(array('name'=>'item_quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['item_quantity']))); ?></td>
+							<?php if ($item['status'] == 9) { ?>
+								<td><?php echo form_input(array('name'=>'item_price', 'readonly' => 'readonly', 'class'=>'form-control input-sm price', 'value'=>to_currency_no_money($item['item_price'])));?></td>
+							
+								<td><?php echo form_input(array('name'=>'item_u_price', 'readonly' => 'readonly', 'class'=>'form-control input-sm price', 'value'=>to_currency_no_money($item['item_u_price'])));?></td>
+							
+							<?php }else {?>
 							<td><?php echo form_input(array('name'=>'item_price', 'class'=>'form-control input-sm price', 'value'=>to_currency_no_money($item['item_price'])));?></td>
 							
 							<td><?php echo form_input(array('name'=>'item_u_price', 'class'=>'form-control input-sm price', 'value'=>to_currency_no_money($item['item_u_price'])));?></td>
+							<?php } ?>
 							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('receivings_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
 						</tr>
 						

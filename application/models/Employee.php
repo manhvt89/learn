@@ -174,9 +174,10 @@ class Employee extends Person
 		//Run these queries as a transaction, we want to make sure we do all or nothing
 		$this->db->trans_start();
 
-		$this->db->where_in('person_id', $employee_ids);
+		$this->db->where_in('user_id', $employee_ids);
 		//Delete permissions
-		if($this->db->delete('grants'))
+		//if($this->db->delete('grants'))
+		if($this->db->delete('user_roles'))
 		{
 			//delete from employee table
 			$this->db->where_in('person_id', $employee_ids);
