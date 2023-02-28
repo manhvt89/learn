@@ -27,7 +27,7 @@ class Products extends RESTController {
         if(!empty($items)){
             //set the response and exit
             $this->response([
-                'status' => FALSE,
+                'status' => TRUE,
                 'data'=>$items,
                 'message' => ''
             ], RestController::HTTP_OK);
