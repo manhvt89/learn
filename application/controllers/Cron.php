@@ -43,7 +43,7 @@ class Cron extends CI_Controller{
             {
                 
 					//$item_data = array();
-                var_dump($data);die();
+                //var_dump($data);die();
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
