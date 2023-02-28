@@ -53,7 +53,7 @@ class Cron extends CI_Controller{
                         'cost_price'			=> $data[5],
                         'unit_price'			=> $data[6],
                         'reorder_level'			=> 0,
-                        'supplier_id'			=> 10826,
+                        'supplier_id'			=> 10825,
                         'allow_alt_description'	=> '0',
                         'is_serialized'			=> '0',
                         'custom1'				=> '',
