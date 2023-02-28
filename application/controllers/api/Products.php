@@ -26,12 +26,17 @@ class Products extends RESTController {
         $items = $this->product->get_list_items_from_id($id);
         if(!empty($items)){
             //set the response and exit
-            $this->response($items, RestController::HTTP_OK);
+            $this->response([
+                'status' => FALSE,
+                'data'=>$items,
+                'message' => ''
+            ], RestController::HTTP_OK);
         }else{
             //set the response and exit
             $this->response([
                 'status' => FALSE,
-                'message' => 'No Item were found.'
+                'data'=>'',
+                'message' => 'Không có sản phẩm nào phù hợp'
             ], RestController::HTTP_NOT_FOUND);
         } 
     }

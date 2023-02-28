@@ -754,12 +754,12 @@ class Cron extends CI_Controller{
     public function b()
     {
         $id = 152940;
-        $str = $this->a($id);
+        $_aProducts = $this->get_last_products($id);
         echo 'manhvt';
-        var_dump(json_decode($str));
+        var_dump($_aProducts);
     }
 
-    private function a($id)
+    private function get_last_products($id)
     {
         //insert data
         $url = "https://tongkho.thiluc2020.com/api/item/last_products/$id";
@@ -786,9 +786,15 @@ class Cron extends CI_Controller{
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
-        $result = $body;
+        //$result = $body;
         
         curl_close($ch);
-        return $result;
+        if($body->status == TRUE)
+        {
+            return json_decode($body->data);
+        } else {
+            return array();
+        }
+        
     }
 }
