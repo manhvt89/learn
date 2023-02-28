@@ -751,13 +751,19 @@ class Cron extends CI_Controller{
 
     }
 
-    private function a()
+    public function b()
+    {
+        $id = 15294;
+        var_dump($this->a($id));
+    }
+
+    private function a($id)
     {
         //insert data
         $url = 'http://tongkho.thiluc2020.com/api/item/last_products';
         //user information
         $userData = array(
-            'id' => 15294
+            'id' => $id
         );
         
         //create a new cURL resource
@@ -774,7 +780,8 @@ class Cron extends CI_Controller{
         
         $result = curl_exec($ch);
         
-        var_dump($result);
+        
         curl_close($ch);
+        return $result;
     }
 }
