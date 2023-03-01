@@ -5,8 +5,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libicu-dev \
     libgd-dev \
     openssl \
-    nano \
-    apt-get install -y libzip-dev zip && docker-php-ext-install zip
+    nano
+RUN apt-get install -y libzip-dev zip && docker-php-ext-install zip
 
 RUN a2enmod rewrite headers
 RUN docker-php-ext-install mysqli bcmath intl gd

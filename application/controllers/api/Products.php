@@ -17,6 +17,11 @@ class Products extends RESTController {
         $this->load->model('api/product','product');
     }
 
+    /**
+     * Lấy danh sách sản phẩm bắt đầu từ $id
+     * Ngày 01.03.2023
+     *
+     */
     public function products_get($id=null)
     {
         if($id== null)
@@ -40,7 +45,10 @@ class Products extends RESTController {
             ], RestController::HTTP_NOT_FOUND);
         } 
     }
-
+    /*
+    ** Lấy danh sách sản phẩm theo mã danh mục: category_code (mỗi danh mục sẽ có một mã)
+    ** Ngày 01.03.2023
+    */
     public function productscategory_get($cate=null)
     {
         if($cate== null)
@@ -51,16 +59,24 @@ class Products extends RESTController {
         $items = $this->product->get_list_items_by_category_code($cate);
         if(!empty($items)){
             //set the response and exit
-            $this->response($items, RestController::HTTP_OK);
+            $this->response([ 
+                'status'=>TRUE,
+                'data'=>$items,
+                'message'=>''
+            ], RestController::HTTP_OK);
         }else{
             //set the response and exit
             $this->response([
                 'status' => FALSE,
-                'message' => 'No Item were found.'
+                'data'=>'',
+                'message' => 'Không có sản phẩm nào trong danh mục này.'
             ], RestController::HTTP_NOT_FOUND);
         } 
     }
-
+    /**
+     * Lấy thông tin một sản phẩm với uid
+     * Ngày 01.03.2023
+     */
     public function the_product_get($uid=null)
     {
         if($uid== null)
@@ -70,12 +86,17 @@ class Products extends RESTController {
         $items = $this->product->get_the_product_by_uuid($uid);
         if(!empty($items)){
             //set the response and exit
-            $this->response($items, RestController::HTTP_OK);
+            $this->response([ 
+                'status'=>TRUE,
+                'data'=>$items,
+                'message'=>''
+            ], RestController::HTTP_OK);
         }else{
             //set the response and exit
             $this->response([
                 'status' => FALSE,
-                'message' => 'No Item were found.'
+                'data'=>'',
+                'message' => 'Không tìm thấy sản phẩm này.'
             ], RestController::HTTP_NOT_FOUND);
         } 
     }
