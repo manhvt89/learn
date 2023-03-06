@@ -1061,7 +1061,7 @@ class Accounting extends CI_Model
 
 	public function get_the_last_total_daily()
 	{
-		$query = $this->db->query("SELECT * FROM daily_total ORDER BY daily_total_id DESC LIMIT 1");
+		$query = $this->db->query("SELECT * FROM ospos_daily_total ORDER BY daily_total_id DESC LIMIT 1");
 		$result = $query->result_array();
 		if(!empty($result))
 		{
