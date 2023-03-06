@@ -635,7 +635,7 @@ class Sale extends CI_Model
 		return $sale_id;
 	}
 
-	public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$total_amount,$paid_amount,$amount_change, $overdue_days = 0, $ctv_id = 0 ,$status = 0,$code = '')
+	public function save($items, $customer_id, $employee_id, $comment='', $invoice_number=0, $payments=0,$total_amount=0,$paid_amount=0,$amount_change=0, $overdue_days = 0, $ctv_id = 0 ,$status = 0,$code = '')
 	{
 		//var_dump($items);die();
 		if(count($items) == 0)
