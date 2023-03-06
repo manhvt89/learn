@@ -1082,7 +1082,6 @@ class Accounting extends CI_Model
 		$this->db->where('type',0); // Thu
 
 		$income_amount = $this->db->get()->result_array();
-
 		//$starting_amount = $this->get_daily_total_info($this->db->escape($filters['start_date']));
 		if($income_amount)
 		{
