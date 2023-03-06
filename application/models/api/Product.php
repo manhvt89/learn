@@ -134,18 +134,18 @@ class Product extends CI_Model
 
 		// avoid duplicated entries with same name because of inventory reporting multiple changes on the same item in the same date range
 		$this->db->group_by('items.item_id');
-		
+
 		// order by name of item
 		$this->db->order_by($sort, $order);
 
-		if($rows > 0) 
-		{	
+		if($rows > 0)
+		{
 			$this->db->limit($rows, $limit_from);
 		}
 
 		return $this->db->get();
 	}
-	
+
 	/*
 	Returns all the items
 	*/
@@ -206,7 +206,7 @@ class Product extends CI_Model
 			return $item_obj;
 		}
 	}
-	
+
 	/*
 	Gets information about a particular item by item id or number
 	*/
@@ -255,7 +255,7 @@ class Product extends CI_Model
 		{
 			$this->db->where('items.deleted', $deleted);
 		}
-        
+
 		$query = $this->db->get();
 
 		if($query->num_rows() == 1)
@@ -296,7 +296,7 @@ class Product extends CI_Model
 
 			return FALSE;
 		}
-		
+
 		$this->db->where('item_id', $item_id);
 
 		return $this->db->update('items', $item_data);
@@ -324,14 +324,14 @@ class Product extends CI_Model
 		$this->Item_quantity->reset_quantity($item_id);
 		$this->db->where('item_id', $item_id);
 		$success = $this->db->update('items', array('deleted'=>1));
-		
+
 		$this->db->trans_complete();
-		
+
 		$success &= $this->db->trans_status();
 
 		return $success;
 	}
-	
+
 	/*
 	Undeletes one item
 	*/
@@ -354,9 +354,9 @@ class Product extends CI_Model
 		$this->Item_quantity->reset_quantity_list($item_ids);
 		$this->db->where_in('item_id', $item_ids);
 		$success = $this->db->update('items', array('deleted'=>1));
-		
+
 		$this->db->trans_complete();
-		
+
 		$success &= $this->db->trans_status();
 
 		return $success;
@@ -479,7 +479,7 @@ class Product extends CI_Model
 
 		return $suggestions;
 	}
-	
+
 	public function get_location_suggestions($search)
 	{
 		$suggestions = array();
@@ -493,7 +493,7 @@ class Product extends CI_Model
 		{
 			$suggestions[] = array('label' => $row->location);
 		}
-	
+
 		return $suggestions;
 	}
 
@@ -511,7 +511,7 @@ class Product extends CI_Model
 			$row_array = (array) $row;
 			$suggestions[] = array('label' => $row_array['custom'.$field_no]);
 		}
-	
+
 		return $suggestions;
 	}
 
@@ -595,6 +595,6 @@ class Product extends CI_Model
 		// order by name of item
 		$this->db->order_by('items.item_id', 'asc');
 		return $this->db->get()->row();
-	} 
+	}
 }
 ?>
