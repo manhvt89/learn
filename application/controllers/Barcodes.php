@@ -3,7 +3,7 @@
 require_once("Secure_Controller.php");
 
 class Barcodes extends Secure_Controller
-{1
+{
 	public function __construct()
 	{
 		parent::__construct('barcodes');
