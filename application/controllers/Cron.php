@@ -2,12 +2,15 @@
 
 class Cron extends CI_Controller{
 
+    private $url;
 	public function __construct(){
 		parent::__construct();
 		//$this->load->library('email');
 		//$this->load->model('Model_main');
         $this->load->model('Item');
+        $this->load->model('cron/Product');
         $this->load->library('sms_lib');
+        $this->url = 'https://tongkho.thiluc2020.com';
 	}
 
     // Auto tong hop vao bang 1 AM daily daily_total
@@ -47,11 +50,11 @@ class Cron extends CI_Controller{
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
-                        'name'					=> $data[1],
+                        'name'					=> $data[0],
                         'description'			=> '',
-                        'category'				=> $data[2],
-                        'cost_price'			=> $data[6],
-                        'unit_price'			=> $data[7],
+                        'category'				=> $data[1],
+                        'cost_price'			=> $data[5],
+                        'unit_price'			=> $data[6],
                         'reorder_level'			=> 0,
                         'supplier_id'			=> 200278,
                         'allow_alt_description'	=> '0',
@@ -158,11 +161,11 @@ class Cron extends CI_Controller{
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
-                        'name'					=> $data[1],
+                        'name'					=> $data[0],
                         'description'			=> '',
-                        'category'				=> $data[2],
-                        'cost_price'			=> 0,
-                        'unit_price'			=> $data[5],
+                        'category'				=> $data[1],
+                        'cost_price'			=> $data[5],
+                        'unit_price'			=> $data[6],
                         'reorder_level'			=> 0,
                         'supplier_id'			=> 200278,
                         'allow_alt_description'	=> '0',
@@ -178,7 +181,7 @@ class Cron extends CI_Controller{
                         'custom9'				=> '',
                         'custom10'				=> ''
                     );
-                    $item_number = $data[0];
+                    $item_number = $data[3];
                     $invalidated = FALSE;
                     if($item_number != '')
                     {
@@ -746,5 +749,269 @@ class Cron extends CI_Controller{
 
 
 
+    }
+    /**
+     * Thêm bới ManhVT
+     * 02.03.2023
+     * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho
+     */
+    public function b($id=0,$bCanUpdate=false)
+    {
+        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
+        //echo $lfile;exit();
+        $_flog=fopen($lfile, 'a');
+        fwrite($_flog, 'Bat dau dong bo theo SP'.PHP_EOL);
+        //$id = 15294;
+        $_aProducts = $this->get_last_products($id);
+        //echo 'manhvt';
+        //var_dump($_aProducts);
+        $i = 0;
+        foreach($_aProducts as $_oProduct)
+        {
+            $i++;
+            $item_number = $_oProduct->item_number;
+            $invalidated = $this->Item->item_number_exists($item_number);
+            if($invalidated == true) // update
+            {
+                if($bCanUpdate)
+                {
+                    fwrite($_flog, 'SP.Update'.PHP_EOL);
+                    $_oItem = array();
+                    //$_oItem['unit_price'] = $_oProduct->unit_price;
+                    //$_oItem['name'] = $_oProduct->name;
+                    //$_oItem['cost_price'] = $_oProduct->cost_price;
+                    $_oItem['ref_item_id'] = $_oProduct->item_id;
+                    //var_dump($_oItem);
+                    $this->Product->update_product($_oItem,$item_number);
+                }
+
+            } else{ // create mới
+                $item_data = array(
+                    'name'					=> $_oProduct->name,
+                    'description'			=> $_oProduct->description,
+                    'category'				=> $_oProduct->category,
+                    'cost_price'			=> $_oProduct->cost_price,
+                    'unit_price'			=> $_oProduct->unit_price,
+                    'reorder_level'			=> $_oProduct->reorder_level,
+                    'supplier_id'			=> $_oProduct->supplier_id,
+                    'allow_alt_description'	=> $_oProduct->allow_alt_description,
+                    'is_serialized'			=> $_oProduct->is_serialized,
+                    'item_number'           => $_oProduct->item_number,
+                    'ref_item_id'   =>$_oProduct->item_id,
+                    'custom1'				=> '',
+                    'custom2'				=> '',
+                    'custom3'				=> '',
+                    'custom4'				=> '',
+                    'custom5'				=> '',
+                    'custom6'				=> '',
+                    'custom7'				=> '',
+                    'custom8'				=> '',
+                    'custom9'				=> '',
+                    'custom10'				=> ''
+                );
+               
+                if( $this->Product->save_item($item_data))
+                {
+                    fwrite($_flog, 'SP.Add Thanh cong'.PHP_EOL);
+                } 
+                else //insert or update item failure
+                {
+                        $failCodes[$i] = $item_data['item_number'];
+                        $message = "". $item_data['item_number'];
+                        fwrite($_flog, $message.PHP_EOL);
+                        echo 	$message .PHP_EOL;
+                }
+
+            }
+        }
+        echo 'Toal:'.$i;
+    }
+    public function c($category='', $bCanUpdate = false)
+    {
+        echo $bCanUpdate;
+        $message = ' Bắt đầu Synch SP '. date('d/m/Y h:m:s',time());
+        echo 	$message .PHP_EOL;
+        
+        $_aCategory = array(
+            "1.56 CHEMI",//0
+            "1.56 CHEMI Crystal U2", //1
+            "1.56 CHEMI Crystal U6", //2
+            "1.56 CHEMI ASP PHOTO GRAY",//3
+            "1.61 CHEMI Crystal U2",//4
+            "1.60 CHEMI Crystal U6",//5
+            "1.67 CHEMI Crystal U2",//6
+            "1.67 CHEMI Crystal U6",//7
+            "1.74 CHEMI Crystal U2",//8
+            "FREEFORM",//9
+            "1.56 KODAK Clean'N'CleAR".//10
+            "1.60 KODAK Clean'N'CleAR",//1
+            "1.67 KODAK Clean'N'CleAR",//12
+            "1.60 KODAK UV400 BLUE",//13
+            "1.60 HOYA NULUX SFT SV",//14
+            "1.67 HOYA NULUX SFT SV", //15       
+            "1.60 ESSILOR CRIZAL ALIZE",//16
+            "1.56 NAHAMI CRYSTAL COATED",//17
+            "1.60 NAHAMI SUPER HMC A+",//18
+            "1.67 NAHAMI SUPER HMC",//19
+            "1.60 U1 ECOVIS",//20
+            "1.56 KOREA TC",
+            "1.56 Đổi màu TC",
+            "1.56 ĐM PQ Korea",
+            "1.56 CR Korea",
+            "1.56 Polaroid CR Korea",//25
+            "1.60 U1 ECOVIS",
+            "1.56 TRÁNG CỨNG",
+            "ĐỔI MÀU KOREA",
+            "1.49 CR Korea",
+            "1.56 POLAROID KHÓI",//30
+            "1.56 POLAROID XANH",
+            "1.56 POLAROID TRÀ",
+            "1.56 KHÓI 1 MÀU CR",
+            "1.56 KHÓI 2 MÀU CR",
+            "1.56 TRÀ 1 MÀU CR",//35
+            "1.56 TRÀ 2 MÀU CR",
+            "1.56 XANH 1 MÀU CR"
+        );
+
+        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
+        //echo $lfile;exit();
+        $_flog=fopen($lfile, 'a');
+        fwrite($_flog, $message.PHP_EOL);
+        $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+        $_str =  str_replace(' ','_',$cate);
+        $_str =  str_replace("'",'',$_str);
+        //echo $_str; die();
+        //$_aLocalProducts = $this->Product->get_list_items_by_category_code($_str);
+        $_aProducts = $this->get_products_by_category($_str);
+        
+        foreach($_aProducts as $_oProduct)
+        {
+            $item_number = $_oProduct->item_number;
+            $invalidated = $this->Item->item_number_exists($item_number);
+            if($invalidated == true) // update
+            {
+                if($bCanUpdate)
+                {
+                    $_oItem = array();
+                    $_oItem['unit_price'] = $_oProduct->unit_price;
+                    $_oItem['name'] = $_oProduct->name;
+                    $_oItem['cost_price'] = $_oProduct->cost_price;
+                    $_oItem['ref_item_id'] = $_oProduct->item_id;
+                    var_dump($_oItem);
+                    $this->Product->update_product($_oItem,$item_number);
+                }
+
+            } else{ // create mới
+                $item_data = array(
+                    'name'					=> $_oProduct->name,
+                    'description'			=> $_oProduct->description,
+                    'category'				=> $_oProduct->category,
+                    'cost_price'			=> $_oProduct->cost_price,
+                    'unit_price'			=> $_oProduct->unit_price,
+                    'reorder_level'			=> $_oProduct->reorder_level,
+                    'supplier_id'			=> $_oProduct->supplier_id,
+                    'allow_alt_description'	=> $_oProduct->allow_alt_description,
+                    'is_serialized'			=> $_oProduct->is_serialized,
+                    'item_number'           => $_oProduct->item_number,
+                    'ref_item_id'   =>$_oProduct->item_id,
+                    'custom1'				=> '',
+                    'custom2'				=> '',
+                    'custom3'				=> '',
+                    'custom4'				=> '',
+                    'custom5'				=> '',
+                    'custom6'				=> '',
+                    'custom7'				=> '',
+                    'custom8'				=> '',
+                    'custom9'				=> '',
+                    'custom10'				=> ''
+                );
+               
+                if( $this->Product->save_item($item_data))
+                {
+                    
+                } 
+                else //insert or update item failure
+                {
+                        $failCodes[$i] = $item_data['item_number'];
+                        $message = "". $item_data['item_number'];
+                        fwrite($_flog, $message.PHP_EOL);
+                        echo 	$message .PHP_EOL;
+                }
+
+            }
+        }
+        
+    }
+
+    private function get_last_products($id)
+    {
+        //insert data
+        $url = $this->url."/api/item/last_products/$id";
+        
+        //create a new cURL resource
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, 'admin:123456789');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_HTTPGET, 1);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+
+        // Then, after your curl_exec call:
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $result = json_decode($body);
+        //var_dump($result);
+        curl_close($ch);
+        if($result->status == TRUE)
+        {
+            return $result->data;
+        } else {
+            return array();
+        }
+        
+    }
+
+    private function get_products_by_category($category_code)
+    {
+        //insert data
+        $url = $this->url."/api/item/products_category/$category_code";
+        //user information
+        
+        
+        //create a new cURL resource
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, 'admin:123456789');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_HTTPGET, 1);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+
+        // Then, after your curl_exec call:
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $result = json_decode($body);
+        //var_dump($result);
+        curl_close($ch);
+        if($result->status == TRUE)
+        {
+            return $result->data;
+        } else {
+            return array();
+        }
+        
     }
 }
