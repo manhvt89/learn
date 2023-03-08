@@ -34,7 +34,13 @@ class Cron extends CI_Controller{
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
 
+        // Get list file voi bat dau lens
+        $_aFiles = array();
+        //$_handle = opendir(str_replace('/public_html/public/','/',FCPATH));
+        $_aFiles = glob(str_replace('/public_html/public/','/',FCPATH).'lens.*');
+        var_dump($_aFiles); die();
         //1. Get All sản phẩm từ file csv
+
         $_file = str_replace('/public_html/public/','/',FCPATH)."lens.csv";
         //echo $_file;exit();
         if(($handle = fopen($_file, 'r')) !== FALSE)
