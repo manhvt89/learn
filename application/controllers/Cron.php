@@ -38,106 +38,109 @@ class Cron extends CI_Controller{
         $_aFiles = array();
         //$_handle = opendir(str_replace('/public_html/public/','/',FCPATH));
         $_aFiles = glob(str_replace('/public_html/public/','/',FCPATH).'lens.*');
-        var_dump($_aFiles); die();
+        //var_dump($_aFiles); die();
         //1. Get All sản phẩm từ file csv
-
-        $_file = str_replace('/public_html/public/','/',FCPATH)."lens.csv";
-        //echo $_file;exit();
-        if(($handle = fopen($_file, 'r')) !== FALSE)
-		{
-            fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
-            $i = 1;
-            $failCodes = array();
-
-            while(($data = fgetcsv($handle)) !== FALSE)
+        foreach($_aFiles as $_file)
+        {
+            //$_file = str_replace('/public_html/public/','/',FCPATH)."lens.csv";
+            //echo $_file;exit();
+            if(($handle = fopen($_file, 'r')) !== FALSE)
             {
-                
-					//$item_data = array();
-                if(sizeof($data) >= 0)
+                fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
+                $i = 1;
+                $failCodes = array();
+
+                while(($data = fgetcsv($handle)) !== FALSE)
                 {
-                    $item_data = array(
-                        'name'					=> $data[0],
-                        'description'			=> '',
-                        'category'				=> $data[1],
-                        'cost_price'			=> $data[5],
-                        'unit_price'			=> $data[6],
-                        'reorder_level'			=> 0,
-                        'supplier_id'			=> 200278,
-                        'allow_alt_description'	=> '0',
-                        'is_serialized'			=> '0',
-                        'custom1'				=> '',
-                        'custom2'				=> '',
-                        'custom3'				=> '',
-                        'custom4'				=> '',
-                        'custom5'				=> '',
-                        'custom6'				=> '',
-                        'custom7'				=> '',
-                        'custom8'				=> '',
-                        'custom9'				=> '',
-                        'custom10'				=> ''
-                    );
-                    $item_number = $data[3];
-                    $invalidated = FALSE;
-                    if($item_number != '')
+                    
+                        //$item_data = array();
+                    if(sizeof($data) >= 0)
                     {
-                        $item_data['item_number'] = $item_number;
-                        $invalidated = $this->Item->item_number_exists($item_number);
+                        $item_data = array(
+                            'name'					=> $data[0],
+                            'description'			=> '',
+                            'category'				=> $data[1],
+                            'cost_price'			=> $data[5],
+                            'unit_price'			=> $data[6],
+                            'reorder_level'			=> 0,
+                            'supplier_id'			=> 200278,
+                            'allow_alt_description'	=> '0',
+                            'is_serialized'			=> '0',
+                            'custom1'				=> '',
+                            'custom2'				=> '',
+                            'custom3'				=> '',
+                            'custom4'				=> '',
+                            'custom5'				=> '',
+                            'custom6'				=> '',
+                            'custom7'				=> '',
+                            'custom8'				=> '',
+                            'custom9'				=> '',
+                            'custom10'				=> ''
+                        );
+                        $item_number = $data[3];
+                        $invalidated = FALSE;
+                        if($item_number != '')
+                        {
+                            $item_data['item_number'] = $item_number;
+                            $invalidated = $this->Item->item_number_exists($item_number);
+                        }
+                    } else {
+                        $invalidated = TRUE;
                     }
-				} else {
-					$invalidated = TRUE;
-				}
-				
-                if(!$invalidated && $this->Item->save($item_data))
-				{
-					$items_taxes_data = NULL;
-						//tax 1
+                    
+                    if(!$invalidated && $this->Item->save($item_data))
+                    {
+                        $items_taxes_data = NULL;
+                            //tax 1
 
-					$items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
-						// save tax values
-					if(count($items_taxes_data) > 0)
-					{
-						$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
-					}
+                        $items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
+                            // save tax values
+                        if(count($items_taxes_data) > 0)
+                        {
+                            $this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+                        }
 
-					// quantities & inventory Info
-					$employee_id = 1; // Khởi tạo dữ liệu ban đầu;
-					$emp_info = $this->Employee->get_info($employee_id);
-					$comment =$this->lang->line('items_qty_file_import');
-					// array to store information if location got a quantity
-                    $item_quantity_data = array(
-                        'item_id' => $item_data['item_id'],
-                        'location_id' => 1,
-                        'quantity' => 0,
-                    );
-					$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+                        // quantities & inventory Info
+                        $employee_id = 1; // Khởi tạo dữ liệu ban đầu;
+                        $emp_info = $this->Employee->get_info($employee_id);
+                        $comment =$this->lang->line('items_qty_file_import');
+                        // array to store information if location got a quantity
+                        $item_quantity_data = array(
+                            'item_id' => $item_data['item_id'],
+                            'location_id' => 1,
+                            'quantity' => 0,
+                        );
+                        $this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
 
-                    $excel_data = array(
-                        'trans_items' => $item_data['item_id'],
-                        'trans_user' => $employee_id,
-                        'trans_comment' => $comment,
-                        'trans_location' => 1,
-                        'trans_inventory' => 0
-                    );
+                        $excel_data = array(
+                            'trans_items' => $item_data['item_id'],
+                            'trans_user' => $employee_id,
+                            'trans_comment' => $comment,
+                            'trans_location' => 1,
+                            'trans_inventory' => 0
+                        );
 
-					$this->Inventory->insert($excel_data);
+                        $this->Inventory->insert($excel_data);
 
-				} 
-                else //insert or update item failure
-				{
-						$failCodes[$i] = $item_data['item_number'];
-                        $message = "$i,". $item_data['item_number'];
-                        fwrite($_flog, $message.PHP_EOL);
-                        echo 	$message .PHP_EOL;
-				}
+                    } 
+                    else //insert or update item failure
+                    {
+                            $failCodes[$i] = $item_data['item_number'];
+                            $message = "$i,". $item_data['item_number'];
+                            fwrite($_flog, $message.PHP_EOL);
+                            echo 	$message .PHP_EOL;
+                    }
 
-				++$i;
+                    ++$i;
+                }
+                
+            } else {
+                $message = ' Lỗi đọc file sp.csv';
+                echo 	$message .PHP_EOL;
             }
-            
-        } else {
-            $message = ' Lỗi đọc file sp.csv';
-            echo 	$message .PHP_EOL;
         }
         fclose($_flog);
+
     }
 
     //Import Sản phẩm
@@ -151,105 +154,113 @@ class Cron extends CI_Controller{
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
 
+        $_aFiles = array();
+        //$_handle = opendir(str_replace('/public_html/public/','/',FCPATH));
+        $_aFiles = glob(str_replace('/public_html/public/','/',FCPATH).'sp.*');
+        //var_dump($_aFiles); die();
         //1. Get All sản phẩm từ file csv
-        $_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
+        foreach($_aFiles as $_file)
+        {
+        //1. Get All sản phẩm từ file csv
+        //$_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
         //echo $_file;exit();
-        if(($handle = fopen($_file, 'r')) !== FALSE)
-		{
-            fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
-            $i = 1;
-            $failCodes = array();
-
-            while(($data = fgetcsv($handle)) !== FALSE)
+            if(($handle = fopen($_file, 'r')) !== FALSE)
             {
-                
-					//$item_data = array();
-                if(sizeof($data) >= 0)
+                fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
+                $i = 1;
+                $failCodes = array();
+
+                while(($data = fgetcsv($handle)) !== FALSE)
                 {
-                    $item_data = array(
-                        'name'					=> $data[0],
-                        'description'			=> '',
-                        'category'				=> $data[1],
-                        'cost_price'			=> $data[5],
-                        'unit_price'			=> $data[6],
-                        'reorder_level'			=> 0,
-                        'supplier_id'			=> 200278,
-                        'allow_alt_description'	=> '0',
-                        'is_serialized'			=> '0',
-                        'custom1'				=> '',
-                        'custom2'				=> '',
-                        'custom3'				=> '',
-                        'custom4'				=> '',
-                        'custom5'				=> '',
-                        'custom6'				=> '',
-                        'custom7'				=> '',
-                        'custom8'				=> '',
-                        'custom9'				=> '',
-                        'custom10'				=> ''
-                    );
-                    $item_number = $data[3];
-                    $invalidated = FALSE;
-                    if($item_number != '')
+                    
+                        //$item_data = array();
+                    if(sizeof($data) >= 0)
                     {
-                        $item_data['item_number'] = $item_number;
-                        $invalidated = $this->Item->item_number_exists($item_number);
+                        $item_data = array(
+                            'name'					=> $data[0],
+                            'description'			=> '',
+                            'category'				=> $data[1],
+                            'cost_price'			=> $data[5],
+                            'unit_price'			=> $data[6],
+                            'reorder_level'			=> 0,
+                            'supplier_id'			=> 200278,
+                            'allow_alt_description'	=> '0',
+                            'is_serialized'			=> '0',
+                            'custom1'				=> '',
+                            'custom2'				=> '',
+                            'custom3'				=> '',
+                            'custom4'				=> '',
+                            'custom5'				=> '',
+                            'custom6'				=> '',
+                            'custom7'				=> '',
+                            'custom8'				=> '',
+                            'custom9'				=> '',
+                            'custom10'				=> ''
+                        );
+                        $item_number = $data[3];
+                        $invalidated = FALSE;
+                        if($item_number != '')
+                        {
+                            $item_data['item_number'] = $item_number;
+                            $invalidated = $this->Item->item_number_exists($item_number);
+                        }
+                    } else {
+                        $invalidated = TRUE;
                     }
-				} else {
-					$invalidated = TRUE;
-				}
-				
-                if(!$invalidated && $this->Item->save($item_data))
-				{
-					$items_taxes_data = NULL;
-						//tax 1
+                    
+                    if(!$invalidated && $this->Item->save($item_data))
+                    {
+                        $items_taxes_data = NULL;
+                            //tax 1
 
-					$items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
+                        $items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
 
 
 
-						// save tax values
-					if(count($items_taxes_data) > 0)
-					{
-						$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
-					}
+                            // save tax values
+                        if(count($items_taxes_data) > 0)
+                        {
+                            $this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+                        }
 
-					// quantities & inventory Info
-					$employee_id = 1; // Khởi tạo dữ liệu ban đầu;
-					$emp_info = $this->Employee->get_info($employee_id);
-					$comment =$this->lang->line('items_qty_file_import');
-					// array to store information if location got a quantity
-                    $item_quantity_data = array(
-                        'item_id' => $item_data['item_id'],
-                        'location_id' => 1,
-                        'quantity' => 0,
-                    );
-					$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+                        // quantities & inventory Info
+                        $employee_id = 1; // Khởi tạo dữ liệu ban đầu;
+                        $emp_info = $this->Employee->get_info($employee_id);
+                        $comment =$this->lang->line('items_qty_file_import');
+                        // array to store information if location got a quantity
+                        $item_quantity_data = array(
+                            'item_id' => $item_data['item_id'],
+                            'location_id' => 1,
+                            'quantity' => 0,
+                        );
+                        $this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
 
-                    $excel_data = array(
-                        'trans_items' => $item_data['item_id'],
-                        'trans_user' => $employee_id,
-                        'trans_comment' => $comment,
-                        'trans_location' => 1,
-                        'trans_inventory' => 0
-                    );
+                        $excel_data = array(
+                            'trans_items' => $item_data['item_id'],
+                            'trans_user' => $employee_id,
+                            'trans_comment' => $comment,
+                            'trans_location' => 1,
+                            'trans_inventory' => 0
+                        );
 
-					$this->Inventory->insert($excel_data);
+                        $this->Inventory->insert($excel_data);
 
-				} 
-                else //insert or update item failure
-				{
-						$failCodes[$i] = $item_data['item_number'];
-                        $message = "$i,". $item_data['item_number'];
-                        fwrite($_flog, $message.PHP_EOL);
-                        echo 	$message .PHP_EOL;
-				}
+                    } 
+                    else //insert or update item failure
+                    {
+                            $failCodes[$i] = $item_data['item_number'];
+                            $message = "$i,". $item_data['item_number'];
+                            fwrite($_flog, $message.PHP_EOL);
+                            echo 	$message .PHP_EOL;
+                    }
 
-				++$i;
+                    ++$i;
+                }
+                
+            } else {
+                $message = ' Lỗi đọc file sp.csv';
+                echo 	$message .PHP_EOL;
             }
-            
-        } else {
-            $message = ' Lỗi đọc file sp.csv';
-            echo 	$message .PHP_EOL;
         }
         fclose($_flog);
     }
