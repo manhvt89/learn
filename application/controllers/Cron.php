@@ -25,6 +25,7 @@ class Cron extends CI_Controller{
         $message = ' Bắt đầu import SP '. date('d/m/Y h:m:s',time());
         echo 	$message .PHP_EOL;
         
+        
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
