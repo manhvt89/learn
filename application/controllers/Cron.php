@@ -20,20 +20,17 @@ class Cron extends CI_Controller{
     }
 
     // Import Sản phẩm mắt kính;
-    public function import_lens()
+    public function import_products()
     {
         $message = ' Bắt đầu import SP '. date('d/m/Y h:m:s',time());
         echo 	$message .PHP_EOL;
         
-        
-        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
-        //echo $lfile;exit();
+        $lfile =  str_replace('/public/','/',FCPATH).'log.txt';
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
 
         //1. Get All sản phẩm từ file csv
-        $_file = str_replace('/public_html/public/','/',FCPATH)."lens.csv";
-        //echo $_file;exit();
+        $_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
         if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
             fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
@@ -44,17 +41,16 @@ class Cron extends CI_Controller{
             {
                 
 					//$item_data = array();
-                //var_dump($data);die();
                 if(sizeof($data) >= 0)
                 {
                     $item_data = array(
-                        'name'					=> $data[0],
+                        'name'					=> $data[2],
                         'description'			=> '',
-                        'category'				=> $data[1],
-                        'cost_price'			=> $data[5],
-                        'unit_price'			=> $data[6],
+                        'category'				=> 'Cũ',
+                        'cost_price'			=> $data[6],
+                        'unit_price'			=> $data[7],
                         'reorder_level'			=> 0,
-                        'supplier_id'			=> 10825,
+                        'supplier_id'			=> 3,
                         'allow_alt_description'	=> '0',
                         'is_serialized'			=> '0',
                         'custom1'				=> '',
@@ -67,15 +63,12 @@ class Cron extends CI_Controller{
                         'custom8'				=> '',
                         'custom9'				=> '',
                         'custom10'				=> ''
-                        
                     );
                     $item_number = $data[3];
                     $invalidated = FALSE;
                     if($item_number != '')
                     {
                         $item_data['item_number'] = $item_number;
-                        $item_data['item_number_new']  = $item_number;
-                        $item_data['code']  = $item_number;
                         $invalidated = $this->Item->item_number_exists($item_number);
                     }
 				} else {
@@ -88,6 +81,9 @@ class Cron extends CI_Controller{
 						//tax 1
 
 					$items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
+
+
+
 						// save tax values
 					if(count($items_taxes_data) > 0)
 					{
@@ -134,118 +130,185 @@ class Cron extends CI_Controller{
         }
         fclose($_flog);
     }
-
-    //Import Sản phẩm
-    public function import_products()
+    // Import đơn kính
+    public function import_dk()
     {
-        $message = ' Bắt đầu import SP '. date('d/m/Y h:m:s',time());
+        $message = ' Bắt đầu import đơn kính '. date('d/m/Y h:m:s',time());
         echo 	$message .PHP_EOL;
         
         $lfile =  str_replace('/public/','/',FCPATH).'log.txt';
-        //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
 
-        //1. Get All sản phẩm từ file csv
-        $_file = str_replace('/public_html/public/','/',FCPATH)."sp.csv";
-        //echo $_file;exit();
+        //2. Get All đơn kính từ file csv
+        $_file = str_replace('/public_html/public/','/',FCPATH).'dk.csv';
         if(($handle = fopen($_file, 'r')) !== FALSE)
 		{
-            fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
-            $i = 1;
-            $failCodes = array();
+            // Skip the first row as it's the table description
+				fgetcsv($handle);
+				$i = 1;
 
-            while(($data = fgetcsv($handle)) !== FALSE)
-            {
-                
-					//$item_data = array();
-                if(sizeof($data) >= 0)
-                {
-                    $item_data = array(
-                        'name'					=> $data[1],
-                        'description'			=> '',
-                        'category'				=> $data[2],
-                        'cost_price'			=> $data[6],
-                        'unit_price'			=> $data[7],
-                        'reorder_level'			=> 0,
-                        'supplier_id'			=> 200278,
-                        'allow_alt_description'	=> '0',
-                        'is_serialized'			=> '0',
-                        'custom1'				=> '',
-                        'custom2'				=> '',
-                        'custom3'				=> '',
-                        'custom4'				=> '',
-                        'custom5'				=> '',
-                        'custom6'				=> '',
-                        'custom7'				=> '',
-                        'custom8'				=> '',
-                        'custom9'				=> '',
-                        'custom10'				=> ''
-                    );
-                    $item_number = $data[3];
-                    $invalidated = FALSE;
-                    if($item_number != '')
-                    {
-                        $item_data['item_number'] = $item_number;
-                        $invalidated = $this->Item->item_number_exists($item_number);
-                    }
-				} else {
-					$invalidated = TRUE;
-				}
-				
-                if(!$invalidated && $this->Item->save($item_data))
+				$failCodes = array();
+
+				while(($data = fgetcsv($handle)) !== FALSE)
 				{
-					$items_taxes_data = NULL;
-						//tax 1
-
-					$items_taxes_data[] = array('name' => 'Tax', 'percent' => '10' );
-
-
-
-						// save tax values
-					if(count($items_taxes_data) > 0)
+					//$item_data = array();
+					if(sizeof($data) >= 14)
 					{
-						$this->Item_taxes->save($items_taxes_data, $item_data['item_id']);
+                        if($this->Testex->exists_by_code($data[1]))
+                        {
+                            $invalidated = TRUE; //do Nothing
+                            $failCodes[$i] = $data[4];
+                            $message = "$i,".$data[4].',ERR-EXIST';
+                            fwrite($_flog, $message.PHP_EOL);
+                            echo 	$message .PHP_EOL;
+                        } else {
+
+                            $reArray = array(); // right eye information
+                            $leArray = array(); // left eye information
+
+                            $leArray['ADD'] = $data[9];
+                            $leArray['AX'] = $data[8];
+                            $leArray['CYL'] = $data[7];
+                            $leArray['PD'] = $data[11];
+                            //$leArray['ADD'] = $this->input->post('l_add') ? $this->input->post('l_add');
+                            $leArray['SPH'] = $data[6];
+                            $leArray['VA'] = $data[10];
+
+                            $reArray['ADD'] = $data[16];
+                            $reArray['AX'] = $data[15];
+                            $reArray['CYL'] = $data[14];
+                            $reArray['PD'] = $data[18];
+                            //$reArray['ADD'] = $this->input->post('r_add');
+                            $reArray['SPH'] = $data[13];
+                            $reArray['VA'] = $data[17];
+
+                            $obj['note'] = '';
+                            $obj['right_e'] = json_encode($reArray);
+                            $obj['left_e'] = json_encode($leArray);
+                            if($data[19]==1)
+                            {
+                                $obj['toltal'] = 'Nhìn xa';
+                            }else{
+                                $obj['toltal'] = '';
+                            }
+                            if($data[12]==1){
+                                $obj['toltal'] = $obj['toltal'] . ';' . 'Nhìn gần';
+                            }else{
+                                $obj['toltal'] = $obj['toltal'] . ';' . '';
+                            }
+
+                            if($data[20]==1){
+                                $obj['lens_type']= 'Đơn tròng';
+                            }else{
+                                $obj['lens_type']= '';
+                            }
+                            if($data[22]==1){
+                                $obj['lens_type'] = $obj['lens_type'] . ';Hai tròng';
+                            }else{
+                                $obj['lens_type'] = $obj['lens_type'] . ';';
+                            }
+                            if($data[23]==1){
+                                $obj['lens_type'] = $obj['lens_type'] . ';Đa tròng';
+                            }else{
+                                $obj['lens_type'] = $obj['lens_type'] . ';';
+                            }
+                            if($data[24]==1){
+                                $obj['lens_type'] = $obj['lens_type'] . ';Mắt đặt';
+                            }else{
+                                $obj['lens_type'] = $obj['lens_type'] . ';';
+                            }
+
+                            $obj['type'] =  0;
+                            if(!is_numeric(trim($data[32])))
+                            {
+                                $obj['duration'] = 0;
+                            } else {
+                                $obj['duration'] = trim($data[32]);
+                            }
+                            $obj['employeer_id'] = 1;
+                            $obj['contact_lens_type'] = '';
+
+                            //get customer_id via account_number
+                            $customer = $this->Customer->get_info_by_account_number($data[4]);
+
+                            $invalidated = FALSE;
+                            if(!$customer)
+                            {
+                                $invalidated = TRUE;
+                            }else {
+
+                                $obj['customer_id'] = $customer->person_id;
+                                $obj['code'] = $data[1]; // just only create new
+                                $obj['test_time'] = strtotime($data[2]);
+                            }
+
+                            if(!$invalidated && $this->Testex->save($obj))
+                            //if(!$invalidated)
+                            {
+                                $failCodes[$i] = $data[4];
+                                $message = "$i,".$data[4].',OK';
+                                fwrite($_flog, $message.PHP_EOL);
+                                echo 	$message .PHP_EOL;
+                            }
+                            else //insert or update item failure
+                            {
+                                $failCodes[$i] = $data[4];
+                                $message = "$i,".$data[4].',ERR';
+                                fwrite($_flog, $message.PHP_EOL);
+                                echo 	$message .PHP_EOL;
+                            }
+                        }
+					}
+					else
+					{
+						$invalidated = TRUE;
 					}
 
-					// quantities & inventory Info
-					$employee_id = 1; // Khởi tạo dữ liệu ban đầu;
-					$emp_info = $this->Employee->get_info($employee_id);
-					$comment =$this->lang->line('items_qty_file_import');
-					// array to store information if location got a quantity
-                    $item_quantity_data = array(
-                        'item_id' => $item_data['item_id'],
-                        'location_id' => 1,
-                        'quantity' => 0,
-                    );
-					$this->Item_quantity->save($item_quantity_data, $item_data['item_id'], 1);
+					//var_dump($obj);
+					//Kiểm tra xem đã tồn tại đơn kính chưa?
+					// if($this->Testex->exists_by_code($data[1]))
+					// {
+					// 	$invalidated = TRUE; //do Nothing
+					// }
 
-                    $excel_data = array(
-                        'trans_items' => $item_data['item_id'],
-                        'trans_user' => $employee_id,
-                        'trans_comment' => $comment,
-                        'trans_location' => 1,
-                        'trans_inventory' => 0
-                    );
+					// if(!$invalidated && $this->Testex->save($obj))
+					// //if(!$invalidated)
+					// {
+                    //     $failCodes[$i] = $data[4];
+                    //     $message = "$i,".$data[4].',OK';
+                    //     fwrite($_flog, $message.PHP_EOL);
+                    //     echo 	$message .PHP_EOL;
+					// }
+					// else //insert or update item failure
+					// {
+                    //     $failCodes[$i] = $data[4];
+                    //     $message = "$i,".$data[4].',ERR';
+                    //     fwrite($_flog, $message.PHP_EOL);
+                    //     echo 	$message .PHP_EOL;
+					// }
 
-					$this->Inventory->insert($excel_data);
-
-				} 
-                else //insert or update item failure
-				{
-						$failCodes[$i] = $item_data['item_number'];
-                        $message = "$i,". $item_data['item_number'];
-                        fwrite($_flog, $message.PHP_EOL);
-                        echo 	$message .PHP_EOL;
+					++$i;
 				}
 
-				++$i;
-            }
-            
+				if(count($failCodes) > 0)
+				{
+					$message = $this->lang->line('items_excel_import_partially_failed') . ' (' . count($failCodes) . '): ' . implode(', ', $failCodes);
+
+					fwrite($_flog, $message.PHP_EOL);
+                    echo 	$message .PHP_EOL;
+				}
+				else
+				{
+					$message = $this->lang->line('items_excel_import_success');
+                    fwrite($_flog, $message.PHP_EOL);
+                    echo 	$message .PHP_EOL;
+				}
         } else {
             $message = ' Lỗi đọc file sp.csv';
             echo 	$message .PHP_EOL;
         }
+        // 3. 
         fclose($_flog);
     }
     // Import đơn kính
