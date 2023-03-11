@@ -3852,7 +3852,7 @@ class Reports extends Secure_Controller
             $result = 0;
         }else{
             $summary_data = array();
-            $details_data = array();
+            //$details_data = array();
             $i = 1;
             foreach($report_data['summary'] as $key => $row)
             {
@@ -3878,7 +3878,7 @@ class Reports extends Secure_Controller
                 'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
                 'headers_details' => transform_headers_readonly_raw($headers['details']),
                 'summary_data' => $summary_data,
-                'details_data' => $details_data,
+                //'details_data' => $details_data,
                 'report_data' =>$report_data
             );
 

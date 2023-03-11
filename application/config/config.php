@@ -508,7 +508,7 @@ $config['csrf_token_name'] = 'csrf_ospos_v3';
 $config['csrf_cookie_name'] = 'csrf_cookie_ospos_v3';
 $config['csrf_expire'] = 72000;
 $config['csrf_regenerate'] = TRUE;
-$config['csrf_exclude_uris'] = array('report/ajax_inventory_sun_glasses_by_cat','sales/add','receivings/add','customer_info/index','roles/save_permission_name','roles/switch_permission','roles/switch_action','purchases/do_excel_import');
+$config['csrf_exclude_uris'] = array('reports/ajax_inventory_sun_glasses_by_cat','sales/add','receivings/add','customer_info/index','roles/save_permission_name','roles/switch_permission','roles/switch_action','purchases/do_excel_import');
 
 /*
 |--------------------------------------------------------------------------
