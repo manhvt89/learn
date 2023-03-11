@@ -208,7 +208,7 @@ class Inventory_frame extends Report
 
 		}
 
-
+		/*
         $data['details'] = array();
         foreach($data['summary'] as $key=>$value)
         {
@@ -223,6 +223,7 @@ class Inventory_frame extends Report
             $this->db->order_by('items.name');
             $data['details'][$key] = $this->db->get()->result_array();
         }
+		*/
         return $data;
 
 	}
