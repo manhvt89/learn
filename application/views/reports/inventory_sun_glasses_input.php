@@ -192,7 +192,7 @@ if(isset($error))
 							onExpandRow: function (index, row, $detail) {
 								//alert(JSON.stringify(header_details));
 								console.log(row);
-								$detail.html('Đang cập nhật... <div class="fa-3x"><i class="fas fa-spinner fa-pulse"></i></div>');
+								$detail.html('Đang cập nhật... <span class="glyphicon glyphicon-repeat normal-right-spinner"></span>');
 								$.ajax({
 									type: "POST",
 									url: "<?php echo site_url('reports/ajax_inventory_sun_glasses_by_cat')?>",
