@@ -158,6 +158,7 @@ if(isset($error))
 							},
 							onExpandRow: function (index, row, $detail) {
 								//alert(JSON.stringify(header_details));
+								console.log(row);
 								$detail.html('Chờ...');
 								$.ajax({
 									type: "POST",
