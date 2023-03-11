@@ -179,12 +179,12 @@ if(isset($error))
 											$detail.html('Không có sản phẩm nào ở đây');
 										}
 										/*
-									$detail.html('<table></table>').find("table").bootstrapTable({
-										columns: header_details,
-										data: detail_data[row.id],
-										sortable: true,
-										showExport: true,
-									}); */
+										$detail.html('<table></table>').find("table").bootstrapTable({
+											columns: header_details,
+											data: detail_data[row.id],
+											sortable: true,
+											showExport: true,
+										}); */
 									}
 								});
 							}
