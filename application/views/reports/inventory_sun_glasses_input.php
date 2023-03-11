@@ -71,7 +71,7 @@ if(isset($error))
 					if(msg.result == 1)
 					{
 
-						var detail_data = msg.data.details_data;
+						//var detail_data = msg.data.details_data;
 						var header_summary = msg.data.headers_summary;
 						var summary_data = msg.data.summary_data;
 						var header_details = msg.data.headers_details;
@@ -93,7 +93,7 @@ if(isset($error))
 							data: summary_data,
 							iconSize: 'sm',
 							paginationVAlign: 'bottom',
-							detailView: false,
+							detailView: true,
 							uniqueId: 'id',
 							escape: false
 							
@@ -127,7 +127,7 @@ if(isset($error))
 					if(msg.result == 1)
 					{
 
-						var detail_data = msg.data.details_data;
+						//var detail_data = msg.data.details_data;
 						var header_summary = msg.data.headers_summary;
 						var summary_data = msg.data.summary_data;
 						var header_details = msg.data.headers_details;
