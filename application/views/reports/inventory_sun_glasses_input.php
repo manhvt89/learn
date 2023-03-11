@@ -186,6 +186,7 @@ if(isset($error))
 										showExport: true,
 									}); */
 									}
+								);
 							}
 						});
 
