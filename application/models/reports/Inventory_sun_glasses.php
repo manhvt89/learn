@@ -265,7 +265,7 @@ class Inventory_sun_glasses extends Report
 
 	public function _getDetail(array $inputs)
 	{
-		var_dump($inputs);
+		//var_dump($inputs);
 
 		$this->db->select('items.name, items.item_number, item_quantities.quantity, items.reorder_level, stock_locations.location_name, items.cost_price, items.unit_price, (items.cost_price * item_quantities.quantity) AS sub_total_value');
 		$this->db->from('items AS items');
