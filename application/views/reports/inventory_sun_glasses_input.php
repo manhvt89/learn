@@ -158,12 +158,34 @@ if(isset($error))
 							},
 							onExpandRow: function (index, row, $detail) {
 								//alert(JSON.stringify(header_details));
-								$detail.html('<table></table>').find("table").bootstrapTable({
-									columns: header_details,
-									data: detail_data[row.id],
-									sortable: true,
-									showExport: true,
-								});
+								$detail.html('Chờ...');
+								$.ajax({
+									type: "POST",
+									url: "<?php echo site_url('reports/ajax_inventory_sun_glasses_by_cat')?>",
+									data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3, cat: row.category },
+									dataType: 'json',
+									success: function (result) {
+										
+										if(result.result == 1)
+										{
+											detail_data = result.data;
+											$detail.html('<table></table>').find('table').bootstrapTable({
+											columns:  header_details,
+											data: detail_data,
+											sortable: true,
+											showExport: true,
+											});
+										} else {
+											$detail.html('Không có sản phẩm nào ở đây');
+										}
+										/*
+									$detail.html('<table></table>').find("table").bootstrapTable({
+										columns: header_details,
+										data: detail_data[row.id],
+										sortable: true,
+										showExport: true,
+									}); */
+									}
 							}
 						});
 

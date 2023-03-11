@@ -3889,6 +3889,47 @@ class Reports extends Secure_Controller
         echo json_encode($json);
     }
 
+    public function ajax_inventory_sun_glasses_by_cat()
+    {
+        $this->load->model('reports/Inventory_sun_glasses');
+        $model = $this->Inventory_sun_glasses;
+        $location_id = $this->input->post('location_id');
+
+        $_sFromDate = $this->input->post('fromDate');
+        $_sToDate = $this->input->post('toDate');
+        $category = $this->input->post('cat');
+
+        $_aFromDate = explode('/', $_sFromDate);
+        $_aToDate = explode('/', $_sToDate);
+        $_sFromDate = $_aFromDate[2] . '/' . $_aFromDate[1] . '/' . $_aFromDate[0];
+        $_sToDate = $_aToDate[2] . '/' . $_aToDate[1] . '/' . $_aToDate[0];
+        $location_id = $this->input->post('location_id');
+        $result = 1;
+
+        $inputs = array('location_id'=>$location_id, 'fromDate'=>$_sFromDate,'toDate'=>$_sToDate,'category'=>$category);
+        //$headers = $this->xss_clean($model->_getDataColumns());
+        //var_dump($headers);
+        $report_data = $model->_getDetail($inputs);
+        $data = null;
+        if(!$report_data)
+        {
+            $result = 0;
+        }else{
+            $summary_data = array();
+            $details_data = array();
+            foreach($report_data as $drow)
+            {
+                $details_data[$i][] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
+            }
+        
+            $data = $details_data;
+        }
+
+
+        $json = array('result'=>$result,'data'=>$data);
+        echo json_encode($json);
+    }
+
     
 }
 ?>

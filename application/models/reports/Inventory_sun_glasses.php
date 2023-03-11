@@ -225,7 +225,7 @@ class Inventory_sun_glasses extends Report
             $this->db->order_by('items.name');
             $data['details'][$key] = $this->db->get()->result_array();
         }
-		echo time() - $start;
+
         return $data;
 
 	}
