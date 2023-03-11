@@ -3867,10 +3867,10 @@ class Reports extends Secure_Controller
                     'receive_quantity' => number_format($row['receive_quantity'])==0?'-':number_format($row['receive_quantity']),
                 ));
 
-                foreach($report_data['details'][$key] as $drow)
-                {
+                //foreach($report_data['details'][$key] as $drow)
+                //{
                     //$details_data[$i][] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
-                }
+                //}
                 $i++;
             }
 
