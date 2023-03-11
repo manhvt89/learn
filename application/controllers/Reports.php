@@ -3963,7 +3963,7 @@ class Reports extends Secure_Controller
             
             foreach($report_data as $drow)
             {
-                $details_data = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
+                $details_data[] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
             }
                
             $data = $details_data;
