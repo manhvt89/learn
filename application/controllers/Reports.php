@@ -3898,7 +3898,7 @@ class Reports extends Secure_Controller
         $_sFromDate = $this->input->post('fromDate');
         $_sToDate = $this->input->post('toDate');
         $category = $this->input->post('cat');
-
+        var_dump($category);die();
         $_aFromDate = explode('/', $_sFromDate);
         $_aToDate = explode('/', $_sToDate);
         $_sFromDate = $_aFromDate[2] . '/' . $_aFromDate[1] . '/' . $_aFromDate[0];
