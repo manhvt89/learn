@@ -150,8 +150,7 @@ class Inventory_sun_glasses extends Report
         $data = array();
         $tmp = $this->db->get()->result_array();
 
-		$doing = time();
-		echo $start - $doing . '|';
+
 		$sales = $this->_getSalesToday($inputs);
 		if(empty($sales))
 		{
@@ -182,8 +181,7 @@ class Inventory_sun_glasses extends Report
 
 		if (empty($data['summary']))
 			$data['summary'] = array();
-		$doing1 = time();
-		echo $doing1 - $doing . '|';
+
 		$receives = $this->_getReceive($inputs);
 		if(empty($receives))
 		{
@@ -211,8 +209,7 @@ class Inventory_sun_glasses extends Report
 			}
 
 		}
-		$doing2 = time();
-		echo $doing2 - $doing1 . '|';
+
 
         $data['details'] = array();
         foreach($data['summary'] as $key=>$value)
@@ -228,8 +225,7 @@ class Inventory_sun_glasses extends Report
             $this->db->order_by('items.name');
             $data['details'][$key] = $this->db->get()->result_array();
         }
-		$doing3 = time();
-		echo $doing3 - $doing2 . '|';
+		echo time() - $start;
         return $data;
 
 	}
