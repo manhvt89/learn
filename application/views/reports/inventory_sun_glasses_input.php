@@ -163,7 +163,7 @@ if(isset($error))
 								$.ajax({
 									type: "POST",
 									url: "<?php echo site_url('reports/ajax_inventory_sun_glasses_by_cat')?>",
-									data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3, cat: row.category },
+									data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3, cat: row.id },
 									dataType: 'json',
 									success: function (result) {
 										
