@@ -469,7 +469,7 @@ class Receivings extends Secure_Controller
 			//var_dump($_aTmp);die();
 			if(!empty($_aTmp))
 			{
-				$this->receiving_lib->clear_all();
+				$this->purchase_lib->clear_all();
 				foreach($_aTmp as $key=>$value)
 				{
 					foreach($_aALens as $k=>$v)

@@ -770,7 +770,8 @@ class Cron extends CI_Controller{
     /**
      * Thêm bới ManhVT
      * 02.03.2023
-     * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho
+     * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho bắt đầu từ sản phẩm thứ $id
+     * Thực hiện cả kho id=0; đôngf bộ toàn bộ kho
      */
     public function b($id=0,$bCanUpdate=false)
     {
@@ -843,7 +844,16 @@ class Cron extends CI_Controller{
         }
         echo 'Toal:'.$i;
     }
-    public function c($category='', $bCanUpdate = false)
+    /**
+     * Thêm bới ManhVT
+     * 02.03.2023
+     * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho với danh mục đã chọn
+     * Thực hiện đồng bộ toàn bộ sản phẩm với anh mục đã chọn;
+     * $category =0 -> x
+     * $bCanUpdate: cho phép cập nhật không, true sẽ cho phép được cập nhật;
+     * $bupdateCat: cho phép cập nhật category không, true cho phép cập nhật category giống tổng kho; nếu không chỉ cập nhật giá, tên sản phẩm;
+     */
+    public function c($category=0, $bCanUpdate = false, $bupdateCat = false)
     {
         echo $bCanUpdate;
         $message = ' Bắt đầu Synch SP '. date('d/m/Y h:m:s',time());
@@ -890,11 +900,17 @@ class Cron extends CI_Controller{
             "1.56 XANH 1 MÀU CR"
         );
 
+        var_dump($this->get_categories()); die();
+
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
-        $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+        $cate = $_aCategory[0];
+        if(isset($_aCategory[$category]))
+        {
+            $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+        }
         $_str =  str_replace(' ','_',$cate);
         $_str =  str_replace("'",'',$_str);
         //echo $_str; die();
@@ -907,14 +923,18 @@ class Cron extends CI_Controller{
             $invalidated = $this->Item->item_number_exists($item_number);
             if($invalidated == true) // update
             {
-                if($bCanUpdate)
+                if($bCanUpdate) // Nếu update
                 {
                     $_oItem = array();
                     $_oItem['unit_price'] = $_oProduct->unit_price;
                     $_oItem['name'] = $_oProduct->name;
                     $_oItem['cost_price'] = $_oProduct->cost_price;
                     $_oItem['ref_item_id'] = $_oProduct->item_id;
-                    var_dump($_oItem);
+                    if($bupdateCat)
+                    {
+                        $_oItem['category'] = $_oProduct->category;
+                    }
+                    //var_dump($_oItem);
                     $this->Product->update_product($_oItem,$item_number);
                 }
 
@@ -1031,4 +1051,42 @@ class Cron extends CI_Controller{
         }
         
     }
+
+    private function get_categories()
+    {
+        //insert data
+        $url = $this->url."/api/item/the_lens_categories";
+        //user information
+        
+        
+        //create a new cURL resource
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, 'admin:123456789');
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_setopt($ch, CURLOPT_HTTPGET, 1);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $userData);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS,$query);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $response = curl_exec($ch);
+
+        // Then, after your curl_exec call:
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $header = substr($response, 0, $header_size);
+        $body = substr($response, $header_size);
+        $result = json_decode($body);
+        //var_dump($result);
+        curl_close($ch);
+        if($result->status == TRUE)
+        {
+            return $result->data;
+        } else {
+            return array();
+        }
+        
+    }
+
 }
