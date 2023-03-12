@@ -780,9 +780,9 @@ class Cron extends CI_Controller{
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, 'Bat dau dong bo theo SP'.PHP_EOL);
         $input = $this->Product->get_max_ref_item_id();
-        var_dump($input);die();
+        //var_dump($input);die();
         //$id = 15294;
-        $_aProducts = $this->get_last_products($id);
+        $_aProducts = $this->get_last_products($input);
         //echo 'manhvt';
         //var_dump($_aProducts);
         $i = 0;
