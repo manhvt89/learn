@@ -632,11 +632,11 @@ class Product extends CI_Model
 	public function get_max_ref_item_id()
 	{
 		$this->db->from('items');
-		$this->db->select_max('id');
+		$this->db->select_max('ref_item_id');
 		$ret = $this->db->get()->result();
 		if(!empty($ret))
 		{
-			$ret->id;
+			$ret->ref_item_id;
 		} else {
 			return 0;
 		}
