@@ -634,6 +634,7 @@ class Product extends CI_Model
 		$this->db->from('items');
 		$this->db->select_max('ref_item_id');
 		$ret = $this->db->get()->result();
+		var_dump($ret);
 		if(!empty($ret))
 		{
 			$ret->ref_item_id;
