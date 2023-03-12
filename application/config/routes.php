@@ -84,3 +84,4 @@ $route['api/item/last_products/(:any)'] = 'api/products/products/$1';
 $route['api/item/products_category/(:any)'] = 'api/products/productscategory/$1';
 $route['api/item/product/(:any)'] = 'api/products/the_product/$1';
 $route['api/item/item'] = 'api/products/item';
+$route['api/item/the_lens_categories'] = 'api/products/the_lens_categories';
