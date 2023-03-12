@@ -628,5 +628,18 @@ class Product extends CI_Model
 		}
 		return 0;
 	}
+
+	public function get_max_ref_item_id()
+	{
+		$this->db->from('items');
+		$this->db->select_max('id');
+		$ret = $this->db->get()->result();
+		if(!empty($ret))
+		{
+			$ret->id;
+		} else {
+			return 0;
+		}
+	}
 }
 ?>
