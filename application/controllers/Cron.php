@@ -797,9 +797,9 @@ class Cron extends CI_Controller{
                 {
                     fwrite($_flog, 'SP.Update'.PHP_EOL);
                     $_oItem = array();
-                    //$_oItem['unit_price'] = $_oProduct->unit_price;
-                    //$_oItem['name'] = $_oProduct->name;
-                    //$_oItem['cost_price'] = $_oProduct->cost_price;
+                    $_oItem['unit_price'] = $_oProduct->unit_price;
+                    $_oItem['name'] = $_oProduct->name;
+                    $_oItem['cost_price'] = $_oProduct->cost_price;
                     $_oItem['ref_item_id'] = $_oProduct->item_id;
                     //var_dump($_oItem);
                     $this->Product->update_product($_oItem,$item_number);
