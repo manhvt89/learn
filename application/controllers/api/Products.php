@@ -101,7 +101,7 @@ class Products extends RESTController {
         } 
     }
 
-    public function the_lens_categories()
+    public function the_lens_categories_get()
     {
         $items = $this->config->item('iKindOfLens');
 
