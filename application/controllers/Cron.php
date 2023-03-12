@@ -795,6 +795,7 @@ class Cron extends CI_Controller{
             {
                 if($bCanUpdate)
                 {
+                    echo 'update:'.$item_number.' \n';
                     fwrite($_flog, 'SP.Update'.PHP_EOL);
                     $_oItem = array();
                     $_oItem['unit_price'] = $_oProduct->unit_price;
@@ -806,6 +807,7 @@ class Cron extends CI_Controller{
                 }
 
             } else{ // create mới
+                echo 'Create: ' .$item_number.' \n';
                 $item_data = array(
                     'name'					=> $_oProduct->name,
                     'description'			=> $_oProduct->description,
