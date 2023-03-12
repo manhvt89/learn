@@ -1019,7 +1019,7 @@ class Cron extends CI_Controller{
     {
         //insert data
         $url = $this->url."/api/item/products_category/$category_code";
-        //user information
+        echo $url;
         
         
         //create a new cURL resource
