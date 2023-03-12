@@ -900,13 +900,13 @@ class Cron extends CI_Controller{
             "1.56 XANH 1 MÀU CR"
         );
 
-        var_dump($this->get_categories()); die();
+        $_aCategory = $this->get_categories(); 
 
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, $message.PHP_EOL);
-        $cate = $_aCategory[0];
+        $cate = "1.56 CHEMI";
         if(isset($_aCategory[$category]))
         {
             $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
