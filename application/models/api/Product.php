@@ -570,6 +570,7 @@ class Product extends CI_Model
 		$this->db->from('items');
 		$this->db->where('items.deleted', 0);
 		$this->db->where('items.item_id >', $id);
+		$this->db->where('items.name !=', '');
 
 		// order by name of item
 		$this->db->order_by('items.item_id', 'asc');
