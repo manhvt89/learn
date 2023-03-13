@@ -637,7 +637,7 @@ class Product extends CI_Model
 		var_dump($ret);
 		if(!empty($ret))
 		{
-			return $ret[0]->ref_item_id;
+			return $ret[0]->ref_item_id==null? 0 : $ret[0]->ref_item_id;
 		} else {
 			return 0;
 		}
