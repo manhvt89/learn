@@ -779,7 +779,9 @@ class Cron extends CI_Controller{
         //echo $lfile;exit();
         $_flog=fopen($lfile, 'a');
         fwrite($_flog, 'Bat dau dong bo theo SP'.PHP_EOL);
+        echo 'Bat dau dong bo';
         $input = $this->Product->get_max_ref_item_id();
+        echo "INPUT ".$input;
         //var_dump($input);die();
         //$id = 15294;
         $_aProducts = $this->get_last_products($input);
@@ -787,7 +789,7 @@ class Cron extends CI_Controller{
         //var_dump($_aProducts);
         $i = 0;
         foreach($_aProducts as $_oProduct)
-        {
+        {   echo '.';
             $i++;
             $item_number = $_oProduct->item_number;
             $invalidated = $this->Item->item_number_exists($item_number);
