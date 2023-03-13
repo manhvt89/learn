@@ -44,11 +44,12 @@ class Cron extends CI_Controller{
                 fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
                 $i = 1;
                 $failCodes = array();
-                $invalidated = TRUE;
+                
                 while(($data = fgetcsv($handle)) !== FALSE)
                 {
                     
                         //$item_data = array();
+                    $invalidated = TRUE;
                     if(sizeof($data) >= 0)
                     {
 
