@@ -776,10 +776,10 @@ class Cron extends CI_Controller{
     public function b($bCanUpdate=false)
     {
         echo $bCanUpdate;
-        //$lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
+        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
-        //$_flog=fopen($lfile, 'a');
-        //fwrite($_flog, 'Bat dau dong bo theo SP'.PHP_EOL);
+        $_flog=fopen($lfile, 'a');
+        fwrite($_flog, 'Bat dau dong bo theo SP'.PHP_EOL);
         echo 'Bat dau dong bo';
         $input = $this->Product->get_max_ref_item_id();
         echo "INPUT ".$input;
@@ -799,7 +799,7 @@ class Cron extends CI_Controller{
                 if($bCanUpdate)
                 {
                     echo 'update:'.$item_number.' \n';
-                    //fwrite($_flog, 'SP.Update'.PHP_EOL);
+                    fwrite($_flog, 'SP.Update'.PHP_EOL);
                     $_oItem = array();
                     $_oItem['unit_price'] = $_oProduct->unit_price;
                     $_oItem['name'] = $_oProduct->name;
@@ -837,13 +837,13 @@ class Cron extends CI_Controller{
                
                 if( $this->Product->save_item($item_data))
                 {
-                    //fwrite($_flog, 'SP.Add Thanh cong'.PHP_EOL);
+                    fwrite($_flog, 'SP.Add Thanh cong'.PHP_EOL);
                 } 
                 else //insert or update item failure
                 {
                         $failCodes[$i] = $item_data['item_number'];
                         $message = "". $item_data['item_number'];
-                        //fwrite($_flog, $message.PHP_EOL);
+                        fwrite($_flog, $message.PHP_EOL);
                         echo 	$message .PHP_EOL;
                 }
 
