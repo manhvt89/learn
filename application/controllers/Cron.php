@@ -810,41 +810,48 @@ class Cron extends CI_Controller{
                 }
 
             } else{ // create mới
-                echo 'Create: ' .$item_number.' \n';
-                $item_data = array(
-                    'name'					=> $_oProduct->name,
-                    'description'			=> $_oProduct->description,
-                    'category'				=> $_oProduct->category,
-                    'cost_price'			=> $_oProduct->cost_price,
-                    'unit_price'			=> $_oProduct->unit_price,
-                    'reorder_level'			=> $_oProduct->reorder_level,
-                    'supplier_id'			=> $_oProduct->supplier_id,
-                    'allow_alt_description'	=> $_oProduct->allow_alt_description,
-                    'is_serialized'			=> $_oProduct->is_serialized,
-                    'item_number'           => $_oProduct->item_number,
-                    'ref_item_id'   =>$_oProduct->item_id,
-                    'custom1'				=> '',
-                    'custom2'				=> '',
-                    'custom3'				=> '',
-                    'custom4'				=> '',
-                    'custom5'				=> '',
-                    'custom6'				=> '',
-                    'custom7'				=> '',
-                    'custom8'				=> '',
-                    'custom9'				=> '',
-                    'custom10'				=> ''
-                );
-               
-                if( $this->Product->save_item($item_data))
+                if($_oProduct->name != '')
                 {
-                    fwrite($_flog, 'SP.Add Thanh cong'.PHP_EOL);
-                } 
-                else //insert or update item failure
-                {
-                        $failCodes[$i] = $item_data['item_number'];
-                        $message = "". $item_data['item_number'];
-                        fwrite($_flog, $message.PHP_EOL);
-                        echo 	$message .PHP_EOL;
+                    echo 'Create: ' .$item_number.' \n';
+                    $item_data = array(
+                        'name'					=> $_oProduct->name,
+                        'description'			=> $_oProduct->description,
+                        'category'				=> $_oProduct->category,
+                        'cost_price'			=> $_oProduct->cost_price,
+                        'unit_price'			=> $_oProduct->unit_price,
+                        'reorder_level'			=> $_oProduct->reorder_level,
+                        'supplier_id'			=> $_oProduct->supplier_id,
+                        'allow_alt_description'	=> $_oProduct->allow_alt_description,
+                        'is_serialized'			=> $_oProduct->is_serialized,
+                        'item_number'           => $_oProduct->item_number,
+                        'ref_item_id'   =>$_oProduct->item_id,
+                        'custom1'				=> '',
+                        'custom2'				=> '',
+                        'custom3'				=> '',
+                        'custom4'				=> '',
+                        'custom5'				=> '',
+                        'custom6'				=> '',
+                        'custom7'				=> '',
+                        'custom8'				=> '',
+                        'custom9'				=> '',
+                        'custom10'				=> ''
+                    );
+                
+                    if( $this->Product->save_item($item_data))
+                    {
+                        fwrite($_flog, 'SP.Add Thanh cong'.PHP_EOL);
+                    } 
+                    else //insert or update item failure
+                    {
+                            $failCodes[$i] = $item_data['item_number'];
+                            $message = "". $item_data['item_number'];
+                            fwrite($_flog, $message.PHP_EOL);
+                            echo 	$message .PHP_EOL;
+                    }
+                }else {
+                    $message = "Dữ liệu trống";
+                    fwrite($_flog, $message.PHP_EOL);
+                    echo 	$message .PHP_EOL;
                 }
 
             }
@@ -946,6 +953,7 @@ class Cron extends CI_Controller{
                 }
 
             } else{ // create mới
+
                 if($_oProduct->name != '')
                 {
                     $item_data = array(
