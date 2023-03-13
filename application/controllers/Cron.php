@@ -976,7 +976,7 @@ class Cron extends CI_Controller{
                 } 
                 else //insert or update item failure
                 {
-                        $failCodes[$i] = $item_data['item_number'];
+                        //$failCodes[$i] = $item_data['item_number'];
                         $message = "". $item_data['item_number'];
                         fwrite($_flog, $message.PHP_EOL);
                         echo 	$message .PHP_EOL;
@@ -1011,7 +1011,7 @@ class Cron extends CI_Controller{
         $header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
         $result = json_decode($body);
-        //var_dump($result);
+        var_dump($result);
         curl_close($ch);
         if($result->status == TRUE)
         {
