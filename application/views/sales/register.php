@@ -527,9 +527,10 @@ if (isset($success))
 					</td>
 				</tr>
 			</table>
-
-			<?php echo anchor($controller_name."/remove_customer", '<span class="glyphicon glyphicon-remove">&nbsp</span>'.'Đổi khách hàng',
+			<?php if($sale_id == 0): ?>					
+				<?php echo anchor($controller_name."/remove_customer", '<span class="glyphicon glyphicon-remove">&nbsp</span>'.'Đổi khách hàng',
 								array('class'=>'btn btn-danger btn-sm', 'id'=>'remove_customer_button', 'title'=>'Đổi khách hàng')); ?>
+			<?php endif; ?>
 		<?php
 		}
 		else
