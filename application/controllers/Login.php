@@ -75,8 +75,17 @@ class Login extends CI_Controller
 		//return preg_match('~\b(Copyright|(c)|�|All rights reserved|Developed|Crafted|Implemented|Made|Powered|Code|Design|unblockUI|blockUI|blockOverlay|hide|opacity)\b~i', file_get_contents(APPPATH . 'views/partial/footer.php'));
 	}
 
-	public function token($token='')
+
+	//added By ManhVT to support login by token
+	public function login_token($token='',$url='')
 	{
+		if(!$this->Employee->withtoken($token))
+		{
+			redirect($url);
+		} else {
+			redirect('home');
+		}
+
 		
 	}
 }
