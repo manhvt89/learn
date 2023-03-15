@@ -93,9 +93,49 @@ if(isset($error))
 							data: summary_data,
 							iconSize: 'sm',
 							paginationVAlign: 'bottom',
-							detailView: false,
+							detailView: true,
 							uniqueId: 'id',
-							escape: false
+							escape: false,
+							onExpandRow: function (index, row, $detail) {
+								//alert(JSON.stringify(header_details));
+								$detail.html('Đang cập nhật...');
+								$.ajax({
+									type: "POST",
+									url: "<?php echo site_url('reports/ajax_inventory_frame_by_cat')?>",
+									data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3, cat: row.cat },
+									dataType: 'json',
+									success: function (result) {
+										
+										if(result.result == 1)
+										{
+											detail_data = result.data;
+											$detail.html('<table></table>').find('table').bootstrapTable({
+											columns:  header_details,
+											data: detail_data,
+											sortable: true,
+											showExport: true,
+											});
+										} else {
+											$detail.html('Không có sản phẩm nào ở đây');
+										}
+										/*
+										$detail.html('<table></table>').find("table").bootstrapTable({
+											columns: header_details,
+											data: detail_data[row.id],
+											sortable: true,
+											showExport: true,
+										}); */
+									}
+								});
+								/*
+								$detail.html('<table></table>').find("table").bootstrapTable({
+									columns: header_details,
+									data: detail_data[row.id],
+									sortable: true,
+									showExport: true,
+								});
+								*/
+							}
 							
 						});
 						$('#table').bootstrapTable('load',{data: summary_data});
@@ -127,7 +167,7 @@ if(isset($error))
 					if(msg.result == 1)
 					{
 
-						var detail_data = msg.data.details_data;
+						//var detail_data = msg.data.details_data;
 						var header_summary = msg.data.headers_summary;
 						var summary_data = msg.data.summary_data;
 						var header_details = msg.data.headers_details;
@@ -158,12 +198,43 @@ if(isset($error))
 							},
 							onExpandRow: function (index, row, $detail) {
 								//alert(JSON.stringify(header_details));
+								$detail.html('Đang cập nhật...');
+								$.ajax({
+									type: "POST",
+									url: "<?php echo site_url('reports/ajax_inventory_frame_by_cat')?>",
+									data: { location_id: location_id, fromDate:fromDate,toDate:toDate ,csrf_ospos_v3: csrf_ospos_v3, cat: row.cat },
+									dataType: 'json',
+									success: function (result) {
+										
+										if(result.result == 1)
+										{
+											detail_data = result.data;
+											$detail.html('<table></table>').find('table').bootstrapTable({
+											columns:  header_details,
+											data: detail_data,
+											sortable: true,
+											showExport: true,
+											});
+										} else {
+											$detail.html('Không có sản phẩm nào ở đây');
+										}
+										/*
+										$detail.html('<table></table>').find("table").bootstrapTable({
+											columns: header_details,
+											data: detail_data[row.id],
+											sortable: true,
+											showExport: true,
+										}); */
+									}
+								});
+								/*
 								$detail.html('<table></table>').find("table").bootstrapTable({
 									columns: header_details,
 									data: detail_data[row.id],
 									sortable: true,
 									showExport: true,
 								});
+								*/
 							}
 						});
 

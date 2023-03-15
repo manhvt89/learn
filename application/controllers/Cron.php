@@ -44,40 +44,45 @@ class Cron extends CI_Controller{
                 fgetcsv($handle); // bỏ qua hàng đầu tiên không làm gì, chuyển đến dòng 2
                 $i = 1;
                 $failCodes = array();
-
+                
                 while(($data = fgetcsv($handle)) !== FALSE)
                 {
                     
                         //$item_data = array();
+                    $invalidated = TRUE;
                     if(sizeof($data) >= 0)
                     {
-                        $item_data = array(
-                            'name'					=> $data[0],
-                            'description'			=> '',
-                            'category'				=> $data[1],
-                            'cost_price'			=> $data[5],
-                            'unit_price'			=> $data[6],
-                            'reorder_level'			=> 0,
-                            'supplier_id'			=> 200278,
-                            'allow_alt_description'	=> '0',
-                            'is_serialized'			=> '0',
-                            'custom1'				=> '',
-                            'custom2'				=> '',
-                            'custom3'				=> '',
-                            'custom4'				=> '',
-                            'custom5'				=> '',
-                            'custom6'				=> '',
-                            'custom7'				=> '',
-                            'custom8'				=> '',
-                            'custom9'				=> '',
-                            'custom10'				=> ''
-                        );
-                        $item_number = $data[3];
-                        $invalidated = FALSE;
-                        if($item_number != '')
+
+                        if(trim($data[0]) != '') //
                         {
-                            $item_data['item_number'] = $item_number;
-                            $invalidated = $this->Item->item_number_exists($item_number);
+                            $item_data = array(
+                                'name'					=> trim($data[0]),
+                                'description'			=> '',
+                                'category'				=> trim($data[1]),
+                                'cost_price'			=> trim($data[5]),
+                                'unit_price'			=> trim($data[6]),
+                                'reorder_level'			=> 0,
+                                'supplier_id'			=> 200278,
+                                'allow_alt_description'	=> '0',
+                                'is_serialized'			=> '0',
+                                'custom1'				=> '',
+                                'custom2'				=> '',
+                                'custom3'				=> '',
+                                'custom4'				=> '',
+                                'custom5'				=> '',
+                                'custom6'				=> '',
+                                'custom7'				=> '',
+                                'custom8'				=> '',
+                                'custom9'				=> '',
+                                'custom10'				=> ''
+                            );
+                            $item_number = trim($data[3]);
+                            $invalidated = FALSE;
+                            if($item_number != '')
+                            {
+                                $item_data['item_number'] = $item_number;
+                                $invalidated = $this->Item->item_number_exists($item_number);
+                            }
                         }
                     } else {
                         $invalidated = TRUE;
@@ -169,35 +174,39 @@ class Cron extends CI_Controller{
                 {
                     
                         //$item_data = array();
+                    $invalidated = TRUE;
                     if(sizeof($data) >= 0)
                     {
-                        $item_data = array(
-                            'name'					=> $data[0],
-                            'description'			=> '',
-                            'category'				=> $data[1],
-                            'cost_price'			=> $data[5],
-                            'unit_price'			=> $data[6],
-                            'reorder_level'			=> 0,
-                            'supplier_id'			=> 200278,
-                            'allow_alt_description'	=> '0',
-                            'is_serialized'			=> '0',
-                            'custom1'				=> '',
-                            'custom2'				=> '',
-                            'custom3'				=> '',
-                            'custom4'				=> '',
-                            'custom5'				=> '',
-                            'custom6'				=> '',
-                            'custom7'				=> '',
-                            'custom8'				=> '',
-                            'custom9'				=> '',
-                            'custom10'				=> ''
-                        );
-                        $item_number = $data[3];
-                        $invalidated = FALSE;
-                        if($item_number != '')
+                        if(trim($data[0]) != '') //
                         {
-                            $item_data['item_number'] = $item_number;
-                            $invalidated = $this->Item->item_number_exists($item_number);
+                            $item_data = array(
+                                'name'					=> $data[0],
+                                'description'			=> '',
+                                'category'				=> $data[1],
+                                'cost_price'			=> $data[5],
+                                'unit_price'			=> $data[6],
+                                'reorder_level'			=> 0,
+                                'supplier_id'			=> 200278,
+                                'allow_alt_description'	=> '0',
+                                'is_serialized'			=> '0',
+                                'custom1'				=> '',
+                                'custom2'				=> '',
+                                'custom3'				=> '',
+                                'custom4'				=> '',
+                                'custom5'				=> '',
+                                'custom6'				=> '',
+                                'custom7'				=> '',
+                                'custom8'				=> '',
+                                'custom9'				=> '',
+                                'custom10'				=> ''
+                            );
+                            $item_number = $data[3];
+                            $invalidated = FALSE;
+                            if($item_number != '')
+                            {
+                                $item_data['item_number'] = $item_number;
+                                $invalidated = $this->Item->item_number_exists($item_number);
+                            }
                         }
                     } else {
                         $invalidated = TRUE;

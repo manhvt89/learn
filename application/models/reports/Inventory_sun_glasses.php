@@ -210,7 +210,7 @@ class Inventory_sun_glasses extends Report
 
 		}
 
-
+		/*
         $data['details'] = array();
         foreach($data['summary'] as $key=>$value)
         {
@@ -225,6 +225,7 @@ class Inventory_sun_glasses extends Report
             $this->db->order_by('items.name');
             $data['details'][$key] = $this->db->get()->result_array();
         }
+		*/
 
         return $data;
 
@@ -260,6 +261,26 @@ class Inventory_sun_glasses extends Report
         $data = array();
         $data = $this->db->get()->result_array();
         return $data;
+	}
+
+	public function _getDetail(array $inputs)
+	{
+		//var_dump($inputs);
+
+		$this->db->select('items.name, items.item_number, item_quantities.quantity, items.reorder_level, stock_locations.location_name, items.cost_price, items.unit_price, (items.cost_price * item_quantities.quantity) AS sub_total_value');
+		$this->db->from('items AS items');
+		$this->db->join('item_quantities AS item_quantities', 'items.item_id = item_quantities.item_id');
+		$this->db->join('stock_locations AS stock_locations', 'item_quantities.location_id = stock_locations.location_id');
+		$this->db->where('items.deleted', 0);
+		$this->db->where('stock_locations.deleted', 0);
+		$this->db->where('items.category', $inputs['category']);
+		if($inputs['location_id'] != 'all')
+		{
+			$this->db->where('stock_locations.location_id', $inputs['location_id']);
+		}
+		$this->db->order_by('items.name');
+		$data = $this->db->get()->result_array();
+		return $data;
 	}
 }
 ?>

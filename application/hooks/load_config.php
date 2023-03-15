@@ -8,8 +8,10 @@ function load_config()
     foreach($CI->Appconfig->get_all()->result() as $app_config)
     {	
         if('iKindOfLens' == $app_config->key)
-        {
-            $value = explode("\n",$app_config->value);
+        {   //print_r(array_filter($linksArray, fn($value) => !is_null($value) && $value !== ''));
+
+            $_value = explode("\n",$app_config->value);
+            $value = array_filter($_value, fn($line) => !is_null($line) && $line !== ''); // clear empty blank line
             $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
             $_arrTmp = array();
             foreach($value as $v)
@@ -22,23 +24,27 @@ function load_config()
         } 
         elseif('filter' == $app_config->key)
         {
-            $value = explode("\n",$app_config->value);
+            $_value = explode("\n",$app_config->value);
+            $value = array_filter($_value, fn($line) => !is_null($line) && $line !== ''); // clear empty blank line
             $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
         } 
         elseif('filter_sun_glasses'== $app_config->key)
         {
-            $value = explode("\n",$app_config->value);
+            $_value = explode("\n",$app_config->value);
+            $value = array_filter($_value, fn($line) => !is_null($line) && $line !== ''); // clear empty blank line
             $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
 
         } 
         elseif('filter_contact_lens'== $app_config->key)
         {
-            $value = explode("\n",$app_config->value);
+            $_value = explode("\n",$app_config->value);
+            $value = array_filter($_value, fn($line) => !is_null($line) && $line !== ''); // clear empty blank line
             $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
         }
         elseif('filter_other' == $app_config->key)
         {
-            $value = explode("\n",$app_config->value);
+            $_value = explode("\n",$app_config->value);
+            $value = array_filter($_value, fn($line) => !is_null($line) && $line !== ''); // clear empty blank line
             $CI->config->set_item($CI->security->xss_clean($app_config->key), $CI->security->xss_clean($value));
         }
         else {

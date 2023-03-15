@@ -101,6 +101,27 @@ class Products extends RESTController {
         } 
     }
 
+    public function the_lens_categories_get()
+    {
+        $items = $this->config->item('iKindOfLens');
+
+        if(!empty($items)){
+            //set the response and exit
+            $this->response([ 
+                'status'=>TRUE,
+                'data'=>$items,
+                'message'=>''
+            ], RestController::HTTP_OK);
+        }else{
+            //set the response and exit
+            $this->response([
+                'status' => FALSE,
+                'data'=>'',
+                'message' => 'Không có sản phẩm nào trong danh mục này.'
+            ], RestController::HTTP_NOT_FOUND);
+        } 
+    }
+
     public function item_post()
     {
         echo 'Posst item: '. $this->input->post('uuid');

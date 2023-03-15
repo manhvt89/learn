@@ -3633,7 +3633,7 @@ class Reports extends Secure_Controller
             $result = 0;
         }else{
             $summary_data = array();
-            $details_data = array();
+            //$details_data = array();
             $i = 1;
             foreach($report_data['summary'] as $key => $row)
             {
@@ -3647,11 +3647,12 @@ class Reports extends Secure_Controller
                     'sale_quantity' => number_format($row['sale_quantity'])==0?'-':number_format($row['sale_quantity']),
                     'receive_quantity' => number_format($row['receive_quantity'])==0?'-':number_format($row['receive_quantity']),
                 ));
-
+                /*
                 foreach($report_data['details'][$key] as $drow)
                 {
                     $details_data[$i][] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
                 }
+                */
                 $i++;
             }
 
@@ -3659,7 +3660,7 @@ class Reports extends Secure_Controller
                 'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
                 'headers_details' => transform_headers_readonly_raw($headers['details']),
                 'summary_data' => $summary_data,
-                'details_data' => $details_data,
+                //'details_data' => $details_data,
                 'report_data' =>$report_data
             );
 
@@ -3852,7 +3853,7 @@ class Reports extends Secure_Controller
             $result = 0;
         }else{
             $summary_data = array();
-            $details_data = array();
+            //$details_data = array();
             $i = 1;
             foreach($report_data['summary'] as $key => $row)
             {
@@ -3878,7 +3879,7 @@ class Reports extends Secure_Controller
                 'headers_summary' => transform_headers_raw($headers['summary'],TRUE),
                 'headers_details' => transform_headers_readonly_raw($headers['details']),
                 'summary_data' => $summary_data,
-                'details_data' => $details_data,
+                //'details_data' => $details_data,
                 'report_data' =>$report_data
             );
 
@@ -3898,7 +3899,7 @@ class Reports extends Secure_Controller
         $_sFromDate = $this->input->post('fromDate');
         $_sToDate = $this->input->post('toDate');
         $category = $this->input->post('cat');
-
+       // var_dump($category);die();
         $_aFromDate = explode('/', $_sFromDate);
         $_aToDate = explode('/', $_sToDate);
         $_sFromDate = $_aFromDate[2] . '/' . $_aFromDate[1] . '/' . $_aFromDate[0];
@@ -3915,11 +3916,11 @@ class Reports extends Secure_Controller
         {
             $result = 0;
         }else{
-            $summary_data = array();
+            
             $details_data = array();
             foreach($report_data as $drow)
             {
-                $details_data[$i][] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
+                $details_data[] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
             }
         
             $data = $details_data;
@@ -3930,6 +3931,46 @@ class Reports extends Secure_Controller
         echo json_encode($json);
     }
 
-    
+    public function ajax_inventory_frame_by_cat()
+    {
+        $this->load->model('reports/Inventory_frame');
+        $model = $this->Inventory_frame;
+        $location_id = $this->input->post('location_id');
+
+        $_sFromDate = $this->input->post('fromDate');
+        $_sToDate = $this->input->post('toDate');
+
+        $category = $this->input->post('cat');
+
+        $_aFromDate = explode('/', $_sFromDate);
+        $_aToDate = explode('/', $_sToDate);
+        $_sFromDate = $_aFromDate[2] . '/' . $_aFromDate[1] . '/' . $_aFromDate[0];
+        $_sToDate = $_aToDate[2] . '/' . $_aToDate[1] . '/' . $_aToDate[0];
+        $location_id = $this->input->post('location_id');
+        $result = 1;
+
+        $inputs = array('location_id'=>$location_id, 'fromDate'=>$_sFromDate,'toDate'=>$_sToDate,'category'=>$category);
+        $headers = $this->xss_clean($model->_getDataColumns());
+        //var_dump($headers);
+        $report_data = $model->_getDetail($inputs);
+        $data = null;
+        if(!$report_data)
+        {
+            $result = 0;
+        }else{
+
+            $details_data = array();
+            
+            foreach($report_data as $drow)
+            {
+                $details_data[] = $this->xss_clean(array($drow['name'], $drow['item_number'], number_format($drow['quantity']), number_format($drow['reorder_level']), $drow['location_name'], to_currency($drow['cost_price']), to_currency($drow['unit_price']), to_currency($drow['sub_total_value'])));
+            }
+               
+            $data = $details_data;
+
+        }
+        $json = array('result'=>$result,'data'=>$data);
+        echo json_encode($json);
+    }
 }
 ?>
