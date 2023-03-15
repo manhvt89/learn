@@ -74,5 +74,10 @@ class Login extends CI_Controller
 		return false;
 		//return preg_match('~\b(Copyright|(c)|�|All rights reserved|Developed|Crafted|Implemented|Made|Powered|Code|Design|unblockUI|blockUI|blockOverlay|hide|opacity)\b~i', file_get_contents(APPPATH . 'views/partial/footer.php'));
 	}
+
+	public function token($token='')
+	{
+		
+	}
 }
 ?>
