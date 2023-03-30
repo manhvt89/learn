@@ -917,7 +917,7 @@ class Cron extends CI_Controller{
 
         $_aCategory = $this->get_categories(); 
 
-        var_dump($_aCategory);die();
+        //var_dump($_aCategory);die();
 
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
@@ -933,7 +933,8 @@ class Cron extends CI_Controller{
         //echo $_str; die();
         //$_aLocalProducts = $this->Product->get_list_items_by_category_code($_str);
         $_aProducts = $this->get_products_by_category($_str);
-        
+        var_dump($_aProducts);
+        echo $_str; die();
         foreach($_aProducts as $_oProduct)
         {
             $item_number = $_oProduct->item_number;
