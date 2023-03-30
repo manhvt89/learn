@@ -772,6 +772,7 @@ class Cron extends CI_Controller{
      * 02.03.2023
      * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho bắt đầu từ sản phẩm thứ $id
      * Thực hiện cả kho id=0; đôngf bộ toàn bộ kho
+     * 
      */
     public function b($bCanUpdate=false)
     {
@@ -915,6 +916,8 @@ class Cron extends CI_Controller{
         );
 
         $_aCategory = $this->get_categories(); 
+
+        var_dump($_aCategory);die();
 
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
