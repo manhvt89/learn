@@ -1030,8 +1030,12 @@ class Cron extends CI_Controller{
         $header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
         $result = json_decode($body);
-        var_dump($result);
+        //var_dump($result);
         curl_close($ch);
+        if(empty($result))
+        {
+            return array();
+        }
         if($result->status == TRUE)
         {
             return $result->data;
@@ -1069,7 +1073,7 @@ class Cron extends CI_Controller{
         $result = json_decode($body);
         if(empty($result))
         {
-            echo 'Loi';
+            return array();
         }
         curl_close($ch);
         if($result->status == TRUE)
@@ -1109,6 +1113,10 @@ class Cron extends CI_Controller{
         $result = json_decode($body);
         //var_dump($result);
         curl_close($ch);
+        if(empty($result))
+        {
+            return array();
+        }
         if($result->status == TRUE)
         {
             return $result->data;
