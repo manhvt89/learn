@@ -1067,7 +1067,7 @@ class Cron extends CI_Controller{
         $header = substr($response, 0, $header_size);
         $body = substr($response, $header_size);
         $result = json_decode($body);
-        var_dump($result);
+        var_dump($body);
         curl_close($ch);
         if($result->status == TRUE)
         {
