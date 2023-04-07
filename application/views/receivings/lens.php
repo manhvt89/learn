@@ -125,6 +125,13 @@
 	});
 
 	myo = jspreadsheet(document.getElementById('input_grid_data_myo'),{
+		onbeforeinsertrow: function(){			
+			return false;
+			
+		},
+		onbeforeinsertcolumn: function (){
+			return false;
+		},	
 		updateTable: function(el, cell, x, y, source, value, id) {
 			if (x == 0) {
 				cell.classList.add('readonly');
@@ -143,6 +150,13 @@
 		
 	}); 
 	hyo = jspreadsheet(document.getElementById('input_grid_data_hyo'),{
+		onbeforeinsertrow: function(){			
+			return false;
+			
+		},
+		onbeforeinsertcolumn: function (){
+			return false;
+		},	
 		updateTable: function(el, cell, x, y, source, value, id) {
 			if (x == 0) {
 				cell.classList.add('readonly');
