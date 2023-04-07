@@ -78,6 +78,13 @@
 		<!-- end minjs template tags -->
 	<?php endif; ?>
 	<link rel="stylesheet" type="text/css" href="<?php echo 'dist/bootswatch/' . (empty($this->config->item('theme')) ? 'flatly' : $this->config->item('theme')) . '/bootstrap.min.css' ?>"/>
+	<script src="dist/jspreadsheet/jexcel.js"></script>
+
+	<script src="dist/jspreadsheet/jsuites.js"></script>
+
+	<link rel="stylesheet" href="dist/jspreadsheet/jexcel.css" type="text/css" />
+
+	<link rel="stylesheet" href="dist/jspreadsheet/jsuites.css" type="text/css" />
 	<?php $this->load->view('partial/header_js'); ?>
 	<?php $this->load->view('partial/lang_lines'); ?>
 
