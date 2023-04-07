@@ -617,6 +617,7 @@ class Purchases extends Secure_Controller
 				$_sDate = date('dmy'); //070223 - 07.02.23
 				$_iBegin = 0; // Số bắt đầu chạy
 				$_iWork = 0; 
+				$_iEnd = '';
 				if($_sLastDate == $_sDate)
 				{
 					$_iBegin = intval(substr($_sLastBarcode, 6, 9));
@@ -666,8 +667,10 @@ class Purchases extends Secure_Controller
 					
 				}
 				//$_iEnd = $_iBegin + $_iWork;
-
-				$this->Employee->update_employee($_iEnd, $_iLogedUserID);
+				if($_iEnd != '')
+				{
+					$this->Employee->update_employee($_iEnd, $_iLogedUserID);
+				}
 				//var_dump($array_data);
 				$this->purchase_lib->set_check(0); //reset lại biến kiểm tra; cần phải kiểm tra. nhấn nút kiểm tra;
 				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('items_excel_import_success')));
