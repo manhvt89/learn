@@ -81,6 +81,7 @@ class Login extends CI_Controller
 	{
 		if(!$this->Employee->withtoken($token))
 		{
+			$url = 'https://'.$url;
 			redirect($url);
 		} else {
 			redirect('home');

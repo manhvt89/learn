@@ -578,7 +578,8 @@ class Employee extends Person
 	 */
 	public function insert_token(array $token)
 	{
-		if($this->db->insert('user_private_toke',$token))
+		unset($token['id']);
+		if($this->db->insert('user_private_key',$token))
 		{
 			return $this->db->insert_id();
 		}
@@ -588,7 +589,7 @@ class Employee extends Person
 	public function delete_token($token)
 	{
 		$this->db->where('token',$token);
-		return $this->db->delete();
+		return $this->db->delete('user_private_key');
 	}
 
 	public function token_login(object $token)
@@ -668,7 +669,7 @@ class Employee extends Person
 	}
 	public function withtoken($token)
 	{
-		$this->db->from('user_private_token');
+		$this->db->from('user_private_key');
 		$this->db->where('token',$token);
 		$query = $this->db->get();
 
@@ -678,9 +679,17 @@ class Employee extends Person
 			if($_oUserToken->timeexpried < time()) // token đã hết hạn
 			{
 				$this->delete_token($_oUserToken->token);
+				$_oUserToken->token = generate_token();
 				$this->insert_token((array) $_oUserToken );
-			} 
+				//$this->token_login($_oUserToken);
+				return FALSE;
+			} else {
 			$this->token_login($_oUserToken);
+			$this->delete_token($_oUserToken->token);
+			$_oUserToken->token = generate_token();
+			$this->insert_token((array) $_oUserToken );
+			}
+
 			return TRUE;
 		} else { // Nếu không tồn tại;
 			return FALSE;

@@ -35,7 +35,7 @@ class User extends CI_Model
 				$data['user_id'] = $user->person_id;
 				$data['timecreated'] = time();
 				$data['timeexpried'] = time() + 7200;
-				$data['token'] = md5($user->person_id.'_'.time().$this->random_string(40));
+				$data['token'] = generate_token();
 				if($this->db->insert('user_private_key',$data))
 				{
 					return $data['token'];
@@ -50,7 +50,7 @@ class User extends CI_Model
 			$data['user_id'] = $user->person_id;
 			$data['timecreated'] = time();
 			$data['timeexpried'] = time() + 7200;
-			$data['token'] = md5($user->person_id.'_'.time().$this->random_string(40));
+			$data['token'] = generate_token();
 			if($this->db->insert('user_private_key',$data))
 			{
 				return $data['token'];
@@ -61,16 +61,6 @@ class User extends CI_Model
 		
 	}
 	
-	private function random_string($n)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randstring = '';
-        for ($i = 0; $i < $n; $i++) {
-            $randstring .= $characters[rand(0, strlen($characters))];
-        }
-        return $randstring;
-    }
-
 	//public function get
 
 	

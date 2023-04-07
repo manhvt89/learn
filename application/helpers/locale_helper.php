@@ -727,4 +727,19 @@ function extract_price_excel_to_vnd($value)
     }
 }
 
+function random_string($n)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randstring = '';
+    for ($i = 0; $i < $n; $i++) {
+        $randstring .= $characters[rand(0, (strlen($characters)-1))];
+    }
+    return $randstring;
+}
+
+function generate_token()
+{
+    return md5(random_string(5).'_'.time().random_string(40));
+}
+
 ?>
