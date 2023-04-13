@@ -30,6 +30,7 @@ $(document).ready(function()
 });
 </script>
 <style type="text/css">
+    /*
 	.name {
         font-size: 20px;
     }
@@ -59,9 +60,11 @@ $(document).ready(function()
     td[data-th]:before {
         content: attr(data-th);
     }
+    */
 </style>
 <?php endif; ?>
 <style type="text/css">
+    /* Disable fpr A4, A5 print 
 	.name {
         font-size: 20px;
     }
@@ -90,6 +93,34 @@ $(document).ready(function()
     }
     td[data-th]:before {
         content: attr(data-th);
+    }
+    */
+    #receipt_items_tk {
+        border-collapse: collapse;
+        margin: 0px;
+        font-size: 16px;
+        border-top: 1px solid  black;
+        width: 100%;
+    }
+    #receipt_items_tk th, #receipt_items_tk td { padding: 5px; border: solid 1px #777; }
+    #receipt_items_tk th { 
+        background-color: lightblue; 
+        text-align: center;    
+    }
+    #receipt_items_tk td:nth-child(3),#receipt_items_tk td:nth-child(4){
+        text-align: center;
+    }
+    #receipt_items_tk .so_luong{
+        text-align: center;
+    }
+    .employee_signal {
+        
+        margin-top: 22px;
+    }
+    .name {
+
+        font-size: 140%;
+
     }
 </style>
 

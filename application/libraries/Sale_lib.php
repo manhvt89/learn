@@ -1217,6 +1217,92 @@ class Sale_lib
 		$this->CI->session->unset_userdata('status');
 	}
 
+	public function add_item_by_itemID(&$item_id, $quantity = 1)
+	{
+		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id);
+		var_dump($item_info );
+		
+		//make sure item exists		
+		if(empty($item_info))
+		{
+			$item_id = -1;
+            return FALSE;			
+		}
+		
+		$item_id = $item_info->item_id;
+		$item_number = $item_info->item_number;
+		// Serialization and Description
+
+		//Get all items in the cart so far...
+		$items = $this->get_cart();
+		//var_dump($items);
+        //We need to loop through all items in the cart.
+        //If the item is already there, get it's key($updatekey).
+        //We also need to get the next key that we are going to use in case we need to add the
+        //item to the cart. Since items can be deleted, we can't use a count. we use the highest key + 1.
+
+        $maxkey = 0;                       //Highest key so far
+        $itemalreadyinsale = FALSE;        //We did not find the item yet.
+		$insertkey = 0;                    //Key to use for new entry.
+		$updatekey = 0;                    //Key to use to update(quantity)
+
+		foreach($items as $item)
+		{
+            //We primed the loop so maxkey is 0 the first time.
+            //Also, we have stored the key in the element itself so we can compare.
+
+			if($maxkey <= $item['line'])
+			{
+				$maxkey = $item['line'];
+			}
+
+			if($item['item_number'] == $item_number)
+			{
+				$itemalreadyinsale = TRUE;
+				$updatekey = $item['line'];
+                if(!$item_info->is_serialized)
+                {
+                    $quantity = bcadd($quantity, $items[$updatekey]['item_quantity']);
+                }
+			}
+		}
+
+		$insertkey = $maxkey+1;
+		//array/cart records are identified by $insertkey and item_id is just another field.
+		$price = $item_info->cost_price;
+		$unit_price = $item_info->unit_price;
+		$total = $this->get_item_total($quantity, $price, 0);
+		//Item already exists and is not serialized, add to quantity
+
+		if(!$itemalreadyinsale || $item_info->is_serialized)
+		{
+            $item = array(
+				'item_id'=>$item_id,
+				'item_number' => $item_info->item_number,
+				'item_name' => $item_info->name,
+				'item_quantity' => $quantity,
+				'item_price' => $price,
+				'item_u_price'=>$unit_price,
+				'item_category' => $item_info->category,
+				'line' => $insertkey,
+				'total' => $this->get_item_total($quantity, $price,0),
+				'status' => 9 //Item từ kho (không cho sửa barcode)
+			);
+			//add to existing array
+			$items[$insertkey] = $item;
+		}
+        else
+        {
+            $line = &$items[$updatekey];
+            $line['item_quantity'] = $quantity;
+            $line['total'] = $total;
+        }
+
+		$this->set_cart($items);
+		$this->calculate_quantity();
+		return TRUE;
+	}
+
 	
 }
 

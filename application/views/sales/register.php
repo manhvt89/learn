@@ -137,11 +137,17 @@ if (isset($success))
 					<label for="item" class='control-label'><?php echo $this->lang->line('sales_find_or_scan_item_or_receipt'); ?></label>
 				</li>
 				<li class="pull-left">
-					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'50', 'tabindex'=>++$tabindex)); ?>
+					<?php echo form_input(array('name'=>'item', 'id'=>'item', 'class'=>'form-control input-sm', 'size'=>'30', 'tabindex'=>++$tabindex)); ?>
 					<span class="ui-helper-hidden-accessible" role="status"></span>
 				</li>
 				<li class="pull-left" style="font-size: large; font-weight: bold">
 					<?php echo $this->lang->line('receivings_quantity').':'.$quantity; ?>
+				</li>
+				<li class="pull-left" style="font-size: large; font-weight: bold">
+					<?php echo anchor($controller_name."/lens", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Bảng mắt',
+										array('class'=>'btn btn-success btn-sm', 'id'=>'add_lens', 'title'=>'Bảng mắt')); ?>
+						
+											 
 				</li>
 			</ul>
 		</div>

@@ -46,7 +46,7 @@
 			<th style="width:40%;"><?php echo $this->lang->line('sales_description_abbrv'); ?></th>
 			<th style="width:20%;"><?php echo $this->lang->line('sales_price'); ?></th>
 			<th style="width:10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
-			<th style="width:10%;">[KM]</th>
+			<th style="width:10%;">Chiết khấu</th>
 			<th style="width:20%;" class="total-value"><?php echo $this->lang->line('sales_total_amount'); ?></th>
 		</tr>
 		<?php

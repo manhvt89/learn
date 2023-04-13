@@ -38,25 +38,27 @@
 
 	</div>
 
-	<table id="receipt_items">
+	<table id="receipt_items_tk">
 	    <thead>
 		<tr>
 			<th style="width:40%;"><?php echo $this->lang->line('sales_description_abbrv'); ?></th>
 			<th style="width:20%;"><?php echo $this->lang->line('sales_price'); ?></th>
 			<th style="width:10%;"><?php echo $this->lang->line('sales_quantity'); ?></th>
-			<th style="width:10%;">[KM]</th>
+			<th style="width:10%;">Chiết khấu</th>
 			<th style="width:20%;" class="total-value"><?php echo $this->lang->line('sales_total_amount'); ?></th>
 		</tr>
 		</thead>
 		<?php
 		$i = 0;
+		$_fSUM = 0;
 		foreach(array_reverse($cart, true) as $line=>$item)
 		{ $i++;
 		    $data_th = '';
+			$_fSUM = $_fSUM + $item['quantity'];
 		?>
 			<tr>
-				<th><?php echo $i .'. '. ucfirst($item['name']); ?></th>
-				<td><?php echo number_format($item['price']); $data_th = number_format($item['price']); ?></td>
+				<td><?php echo $i .'. '. ucfirst($item['name']); ?></td>
+				<td class="total-value"><?php echo number_format($item['price']); $data_th = number_format($item['price']); ?></td>
 				<td><?php echo to_quantity_decimals($item['quantity']); $data_th = $data_th . ' x '.to_quantity_decimals($item['quantity']);?></td>
 				<?php
 				if ($item['discount'] > 0)
@@ -100,7 +102,9 @@
 		{
 		?> 
 			<tr>
-				<td colspan="4" style='text-align:right;border-top:1px dashed black;'><?php echo $this->lang->line('sales_sub_total'); ?></td>
+				<td colspan="2" style='text-align:right;border-top:1px dashed black;'><?php echo $this->lang->line('sales_sub_total'); ?></td>
+				<td class="so_luong"><?=$_fSUM?></td>
+				<td></td>
 				<td style='text-align:right;border-top:1px dashed black;' data-th="<?php echo $this->lang->line('sales_sub_total'); ?> "><?php echo number_format($subtotal); ?></td>
 			</tr>
 			<tr>
@@ -116,7 +120,9 @@
 		{
 		?> 
 			<tr>
-				<td colspan="4" style='text-align:right;border-top:2px solid #000000;'><?php echo $this->lang->line('sales_sub_total'); ?></td>
+				<td colspan="2" style='text-align:right;border-top:2px solid #000000;'><?php echo $this->lang->line('sales_sub_total'); ?></td>
+				<td class="so_luong"><?=$_fSUM?></td>
+				<td></td>
 				<td style='text-align:right;border-top:2px solid #000000;'><?php echo number_format($this->config->item('tax_included') ? $tax_exclusive_subtotal : $discounted_subtotal); ?></td>
 			</tr>
 			<?php
@@ -135,7 +141,9 @@
 		?>
 		<?php $border = (!$this->config->item('receipt_show_taxes') && !($this->config->item('receipt_show_total_discount') && $discount > 0)); ?> 
 		<tr class="total">
-			<td colspan="4" style="text-align:right;<?php echo $border? 'border-top: 1px dashed black;' :''; ?>"><?php echo $this->lang->line('sales_total'); ?></td>
+			<td colspan="2" style="text-align:right;<?php echo $border? 'border-top: 1px dashed black;' :''; ?>"><?php echo $this->lang->line('sales_total'); ?></td>
+			<td class="so_luong"><?=$_fSUM?></td>
+				<td></td>
 			<td style="text-align:right;<?php echo $border? 'border-top: 1px dashed black;' :''; ?>" data-th="<?php echo $this->lang->line('sales_total'); ?> "><?php echo number_format($total); ?></td>
 		</tr>
 
@@ -198,7 +206,9 @@
 		?>
 		<?php if($_has_prepaid): //không có trả trước?>
 		<tr class="total_blance">
-			<td colspan="4" style="text-align:right;"> <?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due_1') ; ?> </td>
+			<td colspan="2" style="text-align:right;"> <?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due_1') ; ?> </td>
+			<td><?=$_fSUM?></td>
+				<td></td>
 			<td class="total-value" data-th="<?php echo $this->lang->line($amount_change >= 0 ? ($only_sale_check ? 'sales_check_balance' : 'sales_change_due') : 'sales_amount_due_1') ; ?> "><?php echo number_format($amount_change >= 0 ? $amount_change : $amount_change * -1); ?></td>
 		</tr>
 		<?php endif; ?>
@@ -226,3 +236,34 @@
 		<?php //echo nl2br($this->config->item('return_policy')); ?>
 	</div>
 </div>
+<script type="text/javascript">
+	/*
+	hyo = jspreadsheet(document.getElementById('receipt_items'),{
+		onbeforeinsertrow: function(){			
+			return false;
+			
+		},
+		onbeforeinsertcolumn: function (){
+			return false;
+		},	
+		updateTable: function(el, cell, x, y, source, value, id) {
+			cell.classList.add('readonly');
+			if (x == 0) {
+				cell.classList.add('readonly');
+				$(cell).css('font-weight','bold');
+				$(cell).css('color','black');
+				$(cell).css('background-color', '#dcdcdc');	
+			}
+			if (y % 2) {
+				if(x != 0)
+				{
+            		$(cell).css('background-color', '#edf3ff');	
+				}
+        	}
+
+		},
+		
+	}); 
+	console.log(myo.getJson());
+	*/
+</script>

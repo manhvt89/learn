@@ -1205,8 +1205,15 @@ class Sales extends Secure_Controller
 		$this->sale_lib->clear_all();
 	}
 
-	public function invoice($sale_id)
+	public function invoice($uuid)
 	{
+		$sale_info = $this->Sale->get_info_by_uuid($uuid)->row();
+		//var_dump($sale_info);
+		$sale_id = 0;
+		if(!empty($sale_info))
+		{
+			$sale_id = $sale_info->sale_id;
+		}
 		$data = $this->_load_sale_data($sale_id);
 
 		$this->load->view('sales/invoice', $data);
@@ -1633,6 +1640,143 @@ class Sales extends Secure_Controller
         $json = array('result'=>$result,'data'=>$data);
         echo json_encode($json);
 
+	}
+
+	public function lens()
+	{
+		$data = array();
+		
+        $data['item_count'] = $this->config->item('KindOfLens');
+		//var_dump($data['item_count']);
+		$data['page_title'] = 'NHẬP MẮT KÍNH';
+
+		$cyls = $this->config->item('cyls');
+		$mysphs = $this->config->item('mysphs');
+		$hysphs = $this->config->item('hysphs');
+		
+		$data['cyls'] = $cyls;
+		$data['mysphs'] = $mysphs;
+		$data['hysphs'] = $hysphs;
+		$this->form_validation->set_rules('hhmyo', 'hhmyo', 'callback_number_empty');
+		
+		if($this->form_validation->run() == FALSE)
+		{
+			//echo '123'; die();
+			$this->load->view("sales/lens", $data);
+		} else {
+			//echo '123';
+			// Nhập sản phẩm //Mắt
+			$category = $this->input->post('category');
+			// Lấy tất cả tròng kính trong danh mục này;
+			$_aALens = $this->Receiving->get_items_by_category($category)->result_array();
+			//var_dump($_aALens);
+			//echo $category;
+			// For Myo
+			$_aTmp = array();
+			$_strMyo =  $this->input->post('hhmyo');
+			$_aaMyo = json_decode($_strMyo,true);
+			
+			foreach($_aaMyo  as $key=>$_aSPH)
+			{
+				$key = $key + 1;
+				$sph = $mysphs[$key];
+				foreach($_aSPH as $k=>$value)
+				{
+					if($k > 0)
+					{
+						if($value != "")
+						{
+							$cyl = $cyls[$k];
+							$_aTmp['S-'.$sph.' C-'.$cyl] = $value;
+						}
+					}
+				}
+			}
+
+			//var_dump($_aTmp);
+			// For Hyo
+			$_strHyo =  $this->input->post('hhhyo');
+			$_aaHyo = json_decode($_strHyo,true);
+			foreach($_aaHyo  as $key=>$_aSPH)
+			{
+				$key = $key + 1;
+				$sph = $hysphs[$key];
+				foreach($_aSPH as $k=>$value)
+				{
+					if($k > 0)
+					{
+						if($value != "")
+						{
+							$cyl = $cyls[$k];
+							$_aTmp['S+'.$sph.' C-'.$cyl] = $value;
+						}
+					}
+				}
+			}
+			//var_dump($_aALens);
+			//var_dump($_aTmp);die();
+			if(!empty($_aTmp))
+			{
+				//$this->receiving_lib->clear_all();
+				foreach($_aTmp as $key=>$value)
+				{
+					foreach($_aALens as $k=>$v)
+					{
+						
+						if(strpos($v['name'],$key) > 0)
+						{
+							//$this->receiving_lib->add_item($item_id, $quantity, $item_location);
+							//$this->receiving_lib->add_item($v['item_id'], trim($value), 1);
+							$this->sale_lib->add_item_by_itemID($v['item_id'], trim($value));
+						}
+						
+					}
+				}
+
+				//$_aCart = $this->receiving_lib->get_cart();
+				redirect('sales/');
+			} else{
+				//echo '1234';die();
+				$this->load->view("sales/lens", $data);
+			}
+			
+		}
+	}
+
+	public function number_empty($str)
+	{
+		$return = TRUE;
+		$_aTmp = array();
+		$_strTmp = '';
+		//var_dump($_POST['hyo101']);die();
+		foreach($_POST as $key=>$value)
+		{
+			
+			if(substr($key,0,3) == 'myo' || substr($key,0,3) == 'hyo')
+			{
+				if($value != ''){
+					
+					if(is_numeric($value))
+					{
+						$_aTmp[$key] = TRUE;
+					} else {
+						$return = FALSE;
+						$_aTmp[$key] = FALSE;
+						if($_strTmp == '')
+						{
+							$_strTmp = substr($key,3,strlen($key)-5). ' cột '. substr($key,-2);
+						} else{
+							$_strTmp = $_strTmp . ', ' . substr($key,3,strlen($key)-5). ' cột '. substr($key,-2);
+						}
+					}
+				}
+			}
+		}
+		if($return == FALSE)
+		{
+			//$this->form_validation->set_message('number_empty', 'Vui lòng kiểm tra lại dữ liệu tại dòng '. $_strTmp);
+		}
+		return TRUE;
 	}
 }
 ?>

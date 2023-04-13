@@ -648,6 +648,10 @@ class Sale extends CI_Model
 			$code = 'HD' . time();
 		}
 		$remain_amount = 0 - $amount_change;
+		if($paid_amount == NULL)
+		{
+			$paid_amount = 0;
+		}
 		$sales_data = array(
 			'sale_time'		 => date('Y-m-d H:i:s'),
 			'customer_id'	 => $this->Customer->exists($customer_id) ? $customer_id : 0,
