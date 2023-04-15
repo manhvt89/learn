@@ -455,6 +455,10 @@ class Purchase_lib
 
 	public function get_item_total($quantity, $price, $discount_percentage)
 	{
+		$quantity = number_format($quantity,2);
+		$price = number_format($price,2);
+		$discount_percentage = number_format($discount_percentage,2);
+		
 		$total = bcmul($quantity, $price);
 		$discount_fraction = bcdiv($discount_percentage, 100);
 		$discount_amount = bcmul($total, $discount_fraction);
