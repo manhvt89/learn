@@ -589,7 +589,7 @@ class Item extends CI_Model
 		$this->db->where('items.category', $category);
 		// order by name of item
 		$this->db->order_by('items.item_id', 'asc');
-		return $this->db->get()->result();
+		return $this->db->get()->result_array();
 	}
 }
 ?>
