@@ -853,8 +853,8 @@ class Cron extends CI_Controller{
                     echo '.';
                     $len['item_number_new'] = $len['item_number'];
                     $len['item_number'] = $_sItemNumber;
-                    //$this->Item->update_lens($len,$len['item_id']);
-                    var_dump($len);
+                    $this->Item->update_lens($len,$len['item_id']);
+                    //var_dump($len);
 
                 }
             }
