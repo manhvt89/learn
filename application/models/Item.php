@@ -581,5 +581,15 @@ class Item extends CI_Model
 		}
 		return 0;
 	}
+
+	public function get_list_items_by_category($category)
+	{
+		$this->db->from('items');
+		$this->db->where('items.deleted', 0);
+		$this->db->where('items.category', $category);
+		// order by name of item
+		$this->db->order_by('items.item_id', 'asc');
+		return $this->db->get()->result();
+	}
 }
 ?>

@@ -834,13 +834,28 @@ class Cron extends CI_Controller{
             echo 'Start with '.$item .'\n';
             // Lây danh sách Lens
             $max = $this->Item->get_max_item_number_lens();
-            echo $max;
-            $lens = array();
+            echo 'MAX: '.$max;
+            if($max != 0)
+            {
+                $_iMax = substr($max,1);
+                $i = (int)$_iMax;
+            }
+
+            $lens = $this->Item->get_list_items_by_category($item);
+            var_dump($lens);
             foreach($lens as $len)
             {
-                if($len['item_number_new'] != '')
+                $i = $i+1;
+                $_sItemNumber = 'M'.(sprintf("%'.05d", $i));
+                if($len['item_number_new'] == '')
                 {
                     //$this->Item->update_lens();
+                    echo '.';
+                    $len['item_number_new'] = $len['item_number'];
+                    $len['item_number'] = $_sItemNumber;
+                    //$this->Item->update_lens($len,$len['item_id']);
+                    var_dump($len);
+
                 }
             }
         }
