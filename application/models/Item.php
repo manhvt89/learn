@@ -560,5 +560,26 @@ class Item extends CI_Model
 
 		return $this->save($data, $item_id);
 	}
+
+	public function update_lens($item_data,$item_id)
+	{
+		$this->db->where('item_id', $item_id);
+
+		return $this->db->update('items', $item_data);
+	}
+
+	public function get_max_item_number_lens()
+	{
+		$this->db->select_max('item_number');
+		$this->db->where('item_number_new <>', '');
+		$res1 = $this->db->get('items');
+		if ($res1->num_rows() > 0)
+		{
+			$res2 = $res1->result_array();
+			$result = $res2[0]['item_number'];
+			return $result;
+		}
+		return 0;
+	}
 }
 ?>
