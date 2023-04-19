@@ -818,4 +818,16 @@ class Cron extends CI_Controller{
         }
         
     }
+
+    /**
+     * Cập nhật item_number của lens về 6 ký tự bắt đầu bằng 'M' ví dụ M12345
+     */
+    public function u_lens()
+    {
+        echo 'Start Update Lens move 11 chars to 6 chars';
+        // Bước 1. Lấy danh sách các loại mắt
+        $items = $this->config->item('iKindOfLens');
+        var_dump($items);
+        echo 'Completed Update Lens move 11 chars to 6 chars';
+    }
 }
