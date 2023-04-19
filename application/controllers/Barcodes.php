@@ -132,7 +132,7 @@ class Barcodes extends Secure_Controller
 		$this->load->view('barcodes/barcode_sheet', $data);
 	}
 
-	public function barcode_lens()
+	public function barcode2()
 	{
 		$this->load->library('barcode_lib');
 
@@ -141,8 +141,41 @@ class Barcodes extends Secure_Controller
 		//$item_ids = explode(':', $item_ids);
 		$results = $this->printbarcode_lib->get_cart();
 		$config = $this->barcode_lib->get_barcode_config();
+		$config['store_name'] = $this->config->item('company');
+		$config['store_address'] = $this->config->item('address');
+			
+		$data['barcode_config'] = $config;
 
 		$data['barcode_config'] = $config;
+
+		foreach($results as $item)
+		{
+			$_max = (int)$item['quantity'];
+			if($_max > 0)
+			{
+				for($i = 1;$i < $_max +1;$i++)
+				{
+					$data['items'][] = $item;
+				}
+			}
+		}
+		// display barcodes
+		$this->load->view('barcodes/barcode_sheet2', $data);
+	}
+
+	public function barcode_lens()
+	{
+		$this->load->library('barcode_lib');
+
+		//$data['cart'] = $this->printbarcode_lib->get_cart();
+		//var_dump($data['cart']); die();
+		//$item_ids = explode(':', $item_ids);
+		$results = $this->printbarcode_lib->get_cart();
+		$key = 'lens_';
+		$config = $this->barcode_lib->get_barcode_config($key);
+
+		$data['barcode_config'] = $config;
+		$data['key'] = $key;
 
 		foreach($results as $item)
 		{

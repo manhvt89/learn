@@ -22,23 +22,23 @@ class Barcode_lib
 		return $this->supported_barcodes;
 	}
 	
-	public function get_barcode_config()
+	public function get_barcode_config($key='')
 	{
-		$data['company'] = $this->CI->config->item('company');
-		$data['barcode_content'] = $this->CI->config->item('barcode_content');
-		$data['barcode_type'] = $this->CI->config->item('barcode_type');
-		$data['barcode_font'] = $this->CI->config->item('barcode_font');
-		$data['barcode_font_size'] = $this->CI->config->item('barcode_font_size');
-		$data['barcode_height'] = $this->CI->config->item('barcode_height');
-		$data['barcode_width'] = $this->CI->config->item('barcode_width');
-		$data['barcode_quality'] = $this->CI->config->item('barcode_quality');
-		$data['barcode_first_row'] = $this->CI->config->item('barcode_first_row');
-		$data['barcode_second_row'] = $this->CI->config->item('barcode_second_row');
-		$data['barcode_third_row'] = $this->CI->config->item('barcode_third_row');
-		$data['barcode_num_in_row'] = $this->CI->config->item('barcode_num_in_row');
-		$data['barcode_page_width'] = $this->CI->config->item('barcode_page_width');	  
-		$data['barcode_page_cellspacing'] = $this->CI->config->item('barcode_page_cellspacing');
-		$data['barcode_generate_if_empty'] = $this->CI->config->item('barcode_generate_if_empty');
+		$data['company'] = $this->CI->config->item($key.'company');
+		$data['barcode_content'] = $this->CI->config->item($key.'barcode_content');
+		$data['barcode_type'] = $this->CI->config->item($key.'barcode_type');
+		$data['barcode_font'] = $this->CI->config->item($key.'barcode_font');
+		$data['barcode_font_size'] = $this->CI->config->item($key.'barcode_font_size');
+		$data['barcode_height'] = $this->CI->config->item($key.'barcode_height');
+		$data['barcode_width'] = $this->CI->config->item($key.'barcode_width');
+		$data['barcode_quality'] = $this->CI->config->item($key.'barcode_quality');
+		$data['barcode_first_row'] = $this->CI->config->item($key.'barcode_first_row');
+		$data['barcode_second_row'] = $this->CI->config->item($key.'barcode_second_row');
+		$data['barcode_third_row'] = $this->CI->config->item($key.'barcode_third_row');
+		$data['barcode_num_in_row'] = $this->CI->config->item($key.'barcode_num_in_row');
+		$data['barcode_page_width'] = $this->CI->config->item($key.'barcode_page_width');	  
+		$data['barcode_page_cellspacing'] = $this->CI->config->item($key.'barcode_page_cellspacing');
+		$data['barcode_generate_if_empty'] = $this->CI->config->item($key.'barcode_generate_if_empty');
 		
 		return $data;
 	}
@@ -178,6 +178,30 @@ class Barcode_lib
 		$item['unit_price'] = $item['price'];
 		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='print-barcode_1'>";
+		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$barcode = $this->generate_barcode($item, $barcode_config);
+		
+		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		//$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . " - <b class='category-barcode'>".$item['item_category']."</b></div>";
+		$display_table .= "</div>";
+
+		$display_table .= "<div class='print-barcode_2'>";
+		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
+		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
+		$display_table .= "<div align='center' class='store_address'>".$barcode_config['store_address']."</div>";
+		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div>";
+		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_third_row']."'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "</div>";
+		
+		return $display_table;
+	}
+
+	public function _display_barcode2($item, $barcode_config) // @gong
+	{
+		//var_dump($item);die();
+		$item['unit_price'] = $item['price'];
+		$barcode_config['barcode_width'] = 0;
+		$display_table = "<div class='print-barcode_1'>";
 		$display_table .= "<div align='left' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
 		
@@ -201,13 +225,12 @@ class Barcode_lib
 		//$barcode_config['barcode_width'] = 145;
 		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='' style='width:100%; '>";
-		$display_table .= "<div style='width:100%; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div style='width:100%; padding-bottom: 5px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$barcode = $this->generate_barcode($item, $barcode_config);
 		$display_table .= "<div style='width:100%; font-size:9px;' align='center'><img src='data:image/png;base64,$barcode' /></div>";
-		$display_table .= "<div style='width:100%; font-size:9px;' align='center'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div style='width:100%;' align='center' class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
 		//$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
 		$display_table .= "</div>";
-		
 		return $display_table;
 	}
 	public function _display_barcode_lens_bak($item, $barcode_config)
