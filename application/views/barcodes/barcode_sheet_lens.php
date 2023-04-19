@@ -67,18 +67,18 @@ border-spacing: 1px;
 			padding-top: 10px;
 		}
 		.barcode-item-name{
-			font-family: 'Tahoma';
+			font-family: 'Helvetica';
 			text-transform: uppercase;
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
-			padding-top:5px;
-			padding-left: 5px;
+			padding-top:3px;
+			
 		}
 		.barcode-item-unit_price{
 			font-family: 'Tahoma';
 			text-transform: uppercase;
 			font-size: 14px;
 			padding-top:10px;
-			padding-left: 5px;
+			
 			font-weight: bold;
 		}
 
