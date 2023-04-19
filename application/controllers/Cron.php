@@ -827,7 +827,7 @@ class Cron extends CI_Controller{
         echo 'Start Update Lens move 11 chars to 6 chars';
         // Bước 1. Lấy danh sách các loại mắt
         $items = $this->config->item('iKindOfLens');
-        $i = 0
+        $i = 0;
         foreach($items as $item)
         {
             //Bắt đầu
@@ -836,9 +836,9 @@ class Cron extends CI_Controller{
             $max = $this->Item->get_max_item_number_lens();
             echo $max;
             $lens = array();
-            foreach($lens as $lens)
+            foreach($lens as $len)
             {
-                if($lens['item_number_new'] != '')
+                if($len['item_number_new'] != '')
                 {
                     //$this->Item->update_lens();
                 }
