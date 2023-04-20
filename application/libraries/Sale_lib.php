@@ -1273,22 +1273,33 @@ class Sale_lib
 		$unit_price = $item_info->unit_price;
 		$total = $this->get_item_total($quantity, $price, 0);
 		//Item already exists and is not serialized, add to quantity
-
+		//$discounted_total = $this->get_item_total($quantity, $price, $discount, TRUE);
 		if(!$itemalreadyinsale || $item_info->is_serialized)
 		{
             $item = array(
 				'item_id'=>$item_id,
 				'item_number' => $item_info->item_number,
 				'item_name' => $item_info->name,
+				'name'=>$item_info->name,
 				'item_quantity' => $quantity,
 				'quantity' => $quantity,
 				'item_price' => $price,
 				'item_u_price'=>$unit_price,
+				'price'=>$price,
 				'item_category' => $item_info->category,
 				'line' => $insertkey,
+				'item_supplier_id'=>$item_info->supplier_id,
+				'description' => '',
+				'allow_alt_description' => $item_info->allow_alt_description,
+				'is_serialized' => $item_info->is_serialized,
+				'discount' => 0,
+				'serialnumber' => '',
+				'in_stock' => 0,
 				'total' => $this->get_item_total($quantity, $price,0),
+				'discounted_total' => 0,
 				'status' => 9 //Item từ kho (không cho sửa barcode)
 			);
+
 			//add to existing array
 			$items[$insertkey] = $item;
 		}
