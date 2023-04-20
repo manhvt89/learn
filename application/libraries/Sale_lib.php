@@ -1298,6 +1298,7 @@ class Sale_lib
 				'total' => $this->get_item_total($quantity, $price,0),
 				'discounted_total' => 0,
 				'stock_name' =>'CH',
+				'item_location' =>'',
 				'status' => 9 //Item từ kho (không cho sửa barcode)
 			);
 
