@@ -363,7 +363,7 @@ class Barcode_lib
 
 	public function get_font_name($font_file_name)
 	{
-		return substr($font_file_name, 0, -4);
+		return substr($font_file_name, 0, -4) != '' ? substr($font_file_name, 0, -4) : 'Tahoma';
 	}
 }
 
