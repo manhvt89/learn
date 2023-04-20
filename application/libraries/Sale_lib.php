@@ -1285,7 +1285,7 @@ class Sale_lib
 				'quantity' => $quantity,
 				'item_price' => $price,
 				'item_u_price'=>$unit_price,
-				'price'=>$price,
+				'price'=>$unit_price,
 				'item_category' => $item_info->category,
 				'line' => $insertkey,
 				'item_supplier_id'=>$item_info->supplier_id,
