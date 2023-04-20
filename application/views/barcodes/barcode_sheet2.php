@@ -58,23 +58,23 @@ border-spacing: 1px;
 			height: 12mm;
 			font-size: 25px;
 			background-color: gray;
-			font-family: 'Times New Roman', Times, serif;
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 		}
 
 		.store_name{
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
-			font-family: 'Tahoma';
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font']) ?>;
 			padding-top: 10px;
 		}
 		.barcode-item-name{
-			font-family: 'Tahoma';
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
 			padding-top:5px;
 			padding-left: 5px;
 		}
 		.barcode-item-unit_price{
-			font-family: 'Tahoma';
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
 			font-size: 14px;
 			padding-top:10px;
@@ -86,7 +86,8 @@ border-spacing: 1px;
 			font-size:8px;
 		}
 		.barcode-item-item_code{
-
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+			text-transform: uppercase;
 		}
 
 		@media print {
