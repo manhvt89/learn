@@ -32,13 +32,14 @@
 		}
 
 		.print-page-barcode {
-			width: 105mm;
+			width: 110mm;
 			/*
 outline: 1px dashed;
 border-spacing: 1px;
 */
 			/*width: 420px;*/
 			margin: auto;
+			padding: 2mm 0 0 2mm;
 		}
 
 		.category-barcode {
@@ -46,7 +47,7 @@ border-spacing: 1px;
 		}
 
 		.buttonpr {
-			width: 105mm;
+			width: 110mm;
 			margin: auto;
 			padding: 25px;
 			text-align: center;
