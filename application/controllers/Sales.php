@@ -1725,8 +1725,6 @@ class Sales extends Secure_Controller
 						
 						if(strpos($v['name'],$key) > 0)
 						{
-							//$this->receiving_lib->add_item($item_id, $quantity, $item_location);
-							//$this->receiving_lib->add_item($v['item_id'], trim($value), 1);
 							$this->sale_lib->add_item_by_itemID($v['item_id'], trim($value));
 						}
 						

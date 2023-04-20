@@ -1220,7 +1220,7 @@ class Sale_lib
 	public function add_item_by_itemID(&$item_id, $quantity = 1)
 	{
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id);
-		var_dump($item_info );
+		//var_dump($item_info );
 		
 		//make sure item exists		
 		if(empty($item_info))
@@ -1281,6 +1281,7 @@ class Sale_lib
 				'item_number' => $item_info->item_number,
 				'item_name' => $item_info->name,
 				'item_quantity' => $quantity,
+				'quantity' => $quantity,
 				'item_price' => $price,
 				'item_u_price'=>$unit_price,
 				'item_category' => $item_info->category,
