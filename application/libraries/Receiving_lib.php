@@ -189,17 +189,27 @@ class Receiving_lib
 
 	public function add_item($item_id, $quantity = 1, $item_location = NULL, $discount = 0, $price = NULL, $description = NULL, $serialnumber = NULL, $receiving_quantity = NULL, $include_deleted = FALSE)
 	{
-		//make sure item exists in database.
-		if(!$this->CI->Item->exists($item_id, $include_deleted))
-		{
-			//try to get item id given an item_number
-			$item_id = $this->CI->Item->get_item_id($item_id, $include_deleted);
+		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id);
 
-			if(!$item_id)
-			{
-				return FALSE;
-			}
+		//make sure item exists		
+		if(empty($item_info))
+		{
+			$item_id = -1;
+            return FALSE;			
 		}
+		
+		$item_id = $item_info->item_id;
+		//make sure item exists in database.
+		// if(!$this->CI->Item->exists($item_id, $include_deleted))
+		// {
+		// 	//try to get item id given an item_number
+		// 	$item_id = $this->CI->Item->get_item_id($item_id, $include_deleted);
+
+		// 	if(!$item_id)
+		// 	{
+		// 		return FALSE;
+		// 	}
+		// }
 
 		//Get items in the receiving so far.
 		$items = $this->get_cart();

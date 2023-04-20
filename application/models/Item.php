@@ -371,6 +371,7 @@ class Item extends CI_Model
 		$this->db->like('name', $search);
         $this->db->or_like('unit_price',$search);
 		$this->db->or_like('code',$search); //add by ManhVT 16.12.2022
+		$this->db->or_like('item_number_new',$search); //add by ManhVT 20.04.2023
 		$this->db->order_by('name', 'asc');
 		foreach($this->db->get()->result() as $row)
 		{
