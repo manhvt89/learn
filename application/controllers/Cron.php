@@ -938,7 +938,7 @@ class Cron extends CI_Controller{
         //echo $_str; die();
         foreach($_aProducts as $_oProduct)
         {
-            $item_number = $_oProduct->item_number;
+            $item_number = $_oProduct->item_number_new;
             $invalidated = $this->Item->item_number_exists($item_number);
             if($invalidated == true) // update
             {
@@ -955,7 +955,7 @@ class Cron extends CI_Controller{
                     }
                     if($bupdateNumberItem)
                     {
-                        $_oItem['item_number_new'] = $_oItem['item_number'];
+                        $_oItem['item_number_new'] = $_oProduct->item_number_new;
                         $_oItem['item_number'] = $_oProduct->item_number;
                     }
                     var_dump($_oItem);
