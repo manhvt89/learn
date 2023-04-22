@@ -94,6 +94,7 @@ class Item extends CI_Model
 					$this->db->or_like('company_name', $search);
 					$this->db->or_like('category', $search);
 					$this->db->or_like('code', $search); //add by ManhVT 16.12.2022
+					$this->db->or_like('item_number_new', $search); //add by ManhVT 22.04.2023
 				$this->db->group_end();
 			}
 			else
