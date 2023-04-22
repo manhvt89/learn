@@ -864,11 +864,12 @@ class Cron extends CI_Controller{
      * 02.03.2023
      * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho với danh mục đã chọn
      * Thực hiện đồng bộ toàn bộ sản phẩm với anh mục đã chọn;
+     * Danh mục hiện tại là các loại mắt bên tổng kho;
      * $category =0 -> x
      * $bCanUpdate: cho phép cập nhật không, true sẽ cho phép được cập nhật;
      * $bupdateCat: cho phép cập nhật category không, true cho phép cập nhật category giống tổng kho; nếu không chỉ cập nhật giá, tên sản phẩm;
      */
-    public function c($category=0, $bCanUpdate = false, $bupdateCat = false)
+    public function c($category=0, $bCanUpdate = false, $bupdateCat = false,$bupdateNumberItem = false)
     {
         echo $bCanUpdate;
         $message = ' Bắt đầu Synch SP '. date('d/m/Y h:m:s',time());
@@ -917,7 +918,7 @@ class Cron extends CI_Controller{
 
         $_aCategory = $this->get_categories(); 
 
-        var_dump($_aCategory);
+        //var_dump($_aCategory);
 
         $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
         //echo $lfile;exit();
@@ -951,6 +952,11 @@ class Cron extends CI_Controller{
                     if($bupdateCat)
                     {
                         $_oItem['category'] = $_oProduct->category;
+                    }
+                    if($bupdateNumberItem)
+                    {
+                        $_oItem['item_number_new'] = $_oItem['item_number'];
+                        $_oItem['item_number'] = $_oProduct->item_number;
                     }
                     var_dump($_oItem);
                     $this->Product->update_product($_oItem,$item_number);
