@@ -869,7 +869,7 @@ class Cron extends CI_Controller{
      * $bCanUpdate: cho phép cập nhật không, true sẽ cho phép được cập nhật;
      * $bupdateCat: cho phép cập nhật category không, true cho phép cập nhật category giống tổng kho; nếu không chỉ cập nhật giá, tên sản phẩm;
      */
-    public function c($category=0, $bCanUpdate = false, $bupdateCat = false,$bupdateNumberItem = false)
+    public function c($category=0, $bCanUpdate = false, $bupdateCat = false)
     {
         echo $bCanUpdate;
         $message = ' Bắt đầu Synch SP '. date('d/m/Y h:m:s',time());
@@ -938,7 +938,7 @@ class Cron extends CI_Controller{
         //echo $_str; die();
         foreach($_aProducts as $_oProduct)
         {
-            $item_number = $_oProduct->item_number_new;
+            $item_number = $_oProduct->item_number;
             $invalidated = $this->Item->item_number_exists($item_number);
             if($invalidated == true) // update
             {
@@ -952,11 +952,6 @@ class Cron extends CI_Controller{
                     if($bupdateCat)
                     {
                         $_oItem['category'] = $_oProduct->category;
-                    }
-                    if($bupdateNumberItem)
-                    {
-                        $_oItem['item_number_new'] = $_oProduct->item_number_new;
-                        $_oItem['item_number'] = $_oProduct->item_number;
                     }
                     var_dump($_oItem);
                     $this->Product->update_product($_oItem,$item_number);
@@ -1128,6 +1123,105 @@ class Cron extends CI_Controller{
             return $result->data;
         } else {
             return array();
+        }
+        
+    }
+
+     /**
+     * Thêm bới ManhVT
+     * 02.03.2023
+     * Thực hiện công việc tự động hóa lấy dữ liệu từ tổng kho với danh mục đã chọn
+     * Thực hiện đồng bộ toàn bộ sản phẩm với anh mục đã chọn;
+     * Danh mục hiện tại là các loại mắt bên tổng kho;
+     * $category =0 -> x
+     * $bCanUpdate: cho phép cập nhật không, true sẽ cho phép được cập nhật;
+     * $bupdateCat: cho phép cập nhật category không, true cho phép cập nhật category giống tổng kho; nếu không chỉ cập nhật giá, tên sản phẩm;
+     */
+    public function d($category=0, $bCanUpdate = false)
+    {
+        echo $bCanUpdate;
+        $message = ' Bắt đầu Synch SP '. date('d/m/Y h:m:s',time());
+        echo 	$message .PHP_EOL;
+        
+        $_aCategory = array(
+            "1.56 CHEMI",//0
+            "1.56 CHEMI Crystal U2", //1
+            "1.56 CHEMI Crystal U6", //2
+            "1.56 CHEMI ASP PHOTO GRAY",//3
+            "1.61 CHEMI Crystal U2",//4
+            "1.60 CHEMI Crystal U6",//5
+            "1.67 CHEMI Crystal U2",//6
+            "1.67 CHEMI Crystal U6",//7
+            "1.74 CHEMI Crystal U2",//8
+            "FREEFORM",//9
+            "1.56 KODAK Clean'N'CleAR".//10
+            "1.60 KODAK Clean'N'CleAR",//1
+            "1.67 KODAK Clean'N'CleAR",//12
+            "1.60 KODAK UV400 BLUE",//13
+            "1.60 HOYA NULUX SFT SV",//14
+            "1.67 HOYA NULUX SFT SV", //15       
+            "1.60 ESSILOR CRIZAL ALIZE",//16
+            "1.56 NAHAMI CRYSTAL COATED",//17
+            "1.60 NAHAMI SUPER HMC A+",//18
+            "1.67 NAHAMI SUPER HMC",//19
+            "1.60 U1 ECOVIS",//20
+            "1.56 KOREA TC",
+            "1.56 Đổi màu TC",
+            "1.56 ĐM PQ Korea",
+            "1.56 CR Korea",
+            "1.56 Polaroid CR Korea",//25
+            "1.60 U1 ECOVIS",
+            "1.56 TRÁNG CỨNG",
+            "ĐỔI MÀU KOREA",
+            "1.49 CR Korea",
+            "1.56 POLAROID KHÓI",//30
+            "1.56 POLAROID XANH",
+            "1.56 POLAROID TRÀ",
+            "1.56 KHÓI 1 MÀU CR",
+            "1.56 KHÓI 2 MÀU CR",
+            "1.56 TRÀ 1 MÀU CR",//35
+            "1.56 TRÀ 2 MÀU CR",
+            "1.56 XANH 1 MÀU CR"
+        );
+
+        $_aCategory = $this->get_categories(); 
+
+        //var_dump($_aCategory);
+
+        $lfile =  str_replace('/public/','/',FCPATH).'log-lens.txt';
+        //echo $lfile;exit();
+        $_flog=fopen($lfile, 'a');
+        fwrite($_flog, $message.PHP_EOL);
+        $cate = "1.56 CHEMI";
+        if(isset($_aCategory[$category]))
+        {
+            $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+        }
+        $_str =  str_replace(' ','_',$cate);
+        $_str =  str_replace("'",'',$_str);
+        //echo $_str; die();
+        //$_aLocalProducts = $this->Product->get_list_items_by_category_code($_str);
+        $_aProducts = $this->get_products_by_category($_str);
+        //var_dump($_aProducts);
+        //echo $_str; die();
+        foreach($_aProducts as $_oProduct)
+        {
+            $item_number = $_oProduct->item_number_new;
+            $invalidated = $this->Item->item_number_exists($item_number);
+            if($invalidated == true) // update
+            {
+                if($bCanUpdate) // Nếu update
+                {
+                    $_oItem['item_number_new'] = $_oProduct->item_number_new;
+                    $_oItem['item_number'] = $_oProduct->item_number;
+                    
+                    var_dump($_oItem);
+                    $this->Product->update_product($_oItem,$item_number);
+                }
+
+            } else{ // khong lam gi
+
+            }
         }
         
     }
