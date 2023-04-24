@@ -826,7 +826,8 @@ class Cron extends CI_Controller{
     {
         echo 'Start Update Lens move 11 chars to 6 chars';
         // Bước 1. Lấy danh sách các loại mắt
-        $items = $this->config->item('iKindOfLens');
+        //$items = $this->config->item('iKindOfLens');
+        $items = array('1.60 CHEMI Crystal U6');
         $i = 0;
         foreach($items as $item)
         {
@@ -842,19 +843,22 @@ class Cron extends CI_Controller{
             }
 
             $lens = $this->Item->get_list_items_by_category($item);
-            var_dump($lens);
+            //var_dump($lens);
             foreach($lens as $len)
             {
-                $i = $i+1;
+                var_dump($len['item_number_new']);
                 $_sItemNumber = 'M'.(sprintf("%'.05d", $i));
                 if($len['item_number_new'] == '')
                 {
+                    $len['item_number'];
                     //$this->Item->update_lens();
+                    $i = $i+1;
                     echo '.';
-                    $len['item_number_new'] = $len['item_number'];
-                    $len['item_number'] = $_sItemNumber;
-                    $this->Item->update_lens($len,$len['item_id']);
-                    //var_dump($len);
+                    $data = array();
+                    $data['item_number_new'] = $len['item_number'];
+                    $data['item_number'] = $_sItemNumber;
+                    $this->Item->update_lens($data,$len['item_id']);
+                    var_dump($data);
 
                 }
             }
