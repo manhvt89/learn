@@ -1195,7 +1195,7 @@ class Cron extends CI_Controller{
         $cate = "1.56 CHEMI";
         if(isset($_aCategory[$category]))
         {
-            $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+            $cate = vn_str_filter($_aCategory[$category]);//"1.56 KODAK Clean'N'CleAR";
         }
         $_str =  str_replace(' ','_',$cate);
         $_str =  str_replace("'",'',$_str);
