@@ -836,7 +836,7 @@ class Cron extends CI_Controller{
             // Lây danh sách Lens
             $max = $this->Item->get_max_item_number_lens();
             echo 'MAX: '.$max;
-            if($max != 0)
+            if($max != '0')
             {
                 $_iMax = substr($max,1);
                 $i = (int)$_iMax;
