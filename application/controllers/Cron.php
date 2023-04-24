@@ -847,12 +847,13 @@ class Cron extends CI_Controller{
             foreach($lens as $len)
             {
                 var_dump($len['item_number_new']);
-                $_sItemNumber = 'M'.(sprintf("%'.05d", $i));
+                
                 if($len['item_number_new'] == '')
                 {
                     $len['item_number'];
                     //$this->Item->update_lens();
                     $i = $i+1;
+                    $_sItemNumber = 'M'.(sprintf("%'.05d", $i));
                     echo '.';
                     $data = array();
                     $data['item_number_new'] = $len['item_number'];
