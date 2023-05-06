@@ -198,7 +198,8 @@ class Customer extends Person
 			
 		if(ctype_digit($search))
 		{
-			$this->db->like('phone_number',$search,'after');
+			//$this->db->like('phone_number',$search,'after');
+			$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
 		} else {
 			$this->db->like('CONCAT(last_name, " ", first_name)', $search);
 			$this->db->or_like('account_number', $search);
