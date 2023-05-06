@@ -242,7 +242,6 @@ class Customer extends Person
 		
 		//only return $limit suggestions
 		//if(count($suggestions > $limit))
-		
 		//if($suggestions > $limit)
 		$query = $this->db->last_query();
 		$explain_sql = 'EXPLAIN '.$query;
