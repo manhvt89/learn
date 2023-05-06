@@ -193,9 +193,9 @@ class Customer extends Person
 		$this->db->from('customers');
 		$this->db->join('people', 'customers.person_id = people.person_id');
 		$this->db->group_start();		
-			$this->db->like('first_name', $search);
-			$this->db->or_like('last_name', $search); 
-			$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+			//$this->db->like('first_name', $search);
+			//$this->db->or_like('last_name', $search); 
+			$this->db->like('CONCAT(last_name, " ", first_name)', $search);
 			$this->db->or_like('phone_number',$search);
 			$this->db->or_like('account_number', $search);
 		$this->db->group_end();
@@ -242,12 +242,12 @@ class Customer extends Person
 		
 		//only return $limit suggestions
 		//if(count($suggestions > $limit))
-		$query = $this->db->last_query();
+		/* $query = $this->db->last_query();
 		$explain_sql = 'EXPLAIN '.$query;
 		$explain = $this->db->query($explain_sql);
 		$explain_result = $explain->result_array();
 		echo $query;
-		var_dump($explain_result);
+		var_dump($explain_result); */
 		//if($suggestions > $limit)
 		if(count($suggestions) > $limit)
 		{
