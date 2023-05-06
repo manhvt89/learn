@@ -246,7 +246,7 @@ class Customer extends Person
 		$explain_sql = 'EXPLAIN '.$query;
 		$explain = $this->db->query($explain_sql);
 		$explain_result = $explain->result_array();
-
+		echo $query;
 		var_dump($explain_result);
 		//if($suggestions > $limit)
 		if(count($suggestions) > $limit)
