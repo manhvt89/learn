@@ -242,7 +242,12 @@ class Customer extends Person
 		
 		//only return $limit suggestions
 		//if(count($suggestions > $limit))
-		if($suggestions > $limit)
+		$query = $this->db->last_query();
+		$explain_sql = 'EXPLAIN '.$query;
+		$explain = $this->db->query($explain_sql);
+		var_dump($explain);
+		//if($suggestions > $limit)
+		if(count($suggestions) > $limit)
 		{
 			$suggestions = array_slice($suggestions, 0, $limit);
 		}
