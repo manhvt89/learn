@@ -307,8 +307,14 @@ class Customer extends Person
 					$this->db->where('account_number', $search);
 					
 				} else {
-					//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
-					$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+					$pattern2 = '/^VH\d+$/';
+					if (preg_match($pattern2, $search)) {
+						$this->db->where('account_number', $search);
+						
+					} else {
+						//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+						$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+					}
 				}
 			}
 			$this->db->group_end();
