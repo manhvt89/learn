@@ -290,19 +290,29 @@ class Customer extends Person
 	{
 		$this->db->from('customers');
 		$this->db->join('people', 'customers.person_id = people.person_id');
-		$this->db->group_start();
-		//	$this->db->like('first_name', $search);
-		//	$this->db->or_like('last_name', $search);
-			//$this->db->or_like('email', $search);
-		if(ctype_digit($search))
+		if($search != "")
 		{
-			//$this->db->like('phone_number',$search,'after');
-			$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
-		} else {
-			$this->db->or_like('account_number', $search);
-			$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+			$this->db->group_start();
+			//	$this->db->like('first_name', $search);
+			//	$this->db->or_like('last_name', $search);
+				//$this->db->or_like('email', $search);
+			if(ctype_digit($search))
+			{
+				//$this->db->like('phone_number',$search,'after');
+				$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
+			} else {
+				$pattern = '/^C\d+$/';
+				//$string = 'C1234';
+				if (preg_match($pattern, $search)) {
+					$this->db->where('account_number', $search);
+					
+				} else {
+					//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+					$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+				}
+			}
+			$this->db->group_end();
 		}
-		$this->db->group_end();
 		$this->db->where('deleted', 0);
 		$this->db->order_by($sort, $order);
 
@@ -311,7 +321,14 @@ class Customer extends Person
 			$this->db->limit($rows, $limit_from);
 		}
 
-		return $this->db->get();	
+		$return = $this->db->get();	
+		/*   $query = $this->db->last_query();
+		$explain_sql = 'EXPLAIN '.$query;
+		$explain = $this->db->query($explain_sql);
+		$explain_result = $explain->result_array();
+		echo $query;
+		var_dump($explain_result);  */
+		return $return;
 	}
 
 	public function get_info_by_uuic($sCuuid)
