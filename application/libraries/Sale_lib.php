@@ -1217,7 +1217,7 @@ class Sale_lib
 		$this->CI->session->unset_userdata('status');
 	}
 
-	public function add_item_by_itemID(&$item_id, $quantity = 1)
+	public function add_item_by_itemID(&$item_id, $quantity = 1,$item_location = 1)
 	{
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id);
 		//var_dump($item_info );
@@ -1276,6 +1276,13 @@ class Sale_lib
 		//$discounted_total = $this->get_item_total($quantity, $price, $discount, TRUE);
 		if(!$itemalreadyinsale || $item_info->is_serialized)
 		{
+			$stock_name = '';
+			if($item_location ==0)
+			{
+				$stock_name = 'CH';
+			} else {
+				$stock_name = $this->CI->Stock_location->get_location_name($item_location);
+			}
             $item = array(
 				'item_id'=>$item_id,
 				'item_number' => $item_info->item_number,
@@ -1297,8 +1304,8 @@ class Sale_lib
 				'in_stock' => 0,
 				'total' => $this->get_item_total($quantity, $price,0),
 				'discounted_total' => 0,
-				'stock_name' =>'CH',
-				'item_location' =>'',
+				'item_location' => $item_location,
+                'stock_name' => $stock_name,
 				'status' => 9 //Item từ kho (không cho sửa barcode)
 			);
 
