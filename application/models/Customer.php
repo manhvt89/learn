@@ -291,12 +291,17 @@ class Customer extends Person
 		$this->db->from('customers');
 		$this->db->join('people', 'customers.person_id = people.person_id');
 		$this->db->group_start();
-			$this->db->like('first_name', $search);
-			$this->db->or_like('last_name', $search);
-			$this->db->or_like('email', $search);
-			$this->db->or_like('phone_number', $search);
+		//	$this->db->like('first_name', $search);
+		//	$this->db->or_like('last_name', $search);
+			//$this->db->or_like('email', $search);
+		if(ctype_digit($search))
+		{
+			//$this->db->like('phone_number',$search,'after');
+			$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
+		} else {
 			$this->db->or_like('account_number', $search);
 			$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+		}
 		$this->db->group_end();
 		$this->db->where('deleted', 0);
 		$this->db->order_by($sort, $order);
