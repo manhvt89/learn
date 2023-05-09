@@ -198,11 +198,26 @@ class Customer extends Person
 			
 		if(ctype_digit($search))
 		{
-			//$this->db->like('phone_number',$search,'after');
-			$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
+			$this->db->like('phone_number',$search,'after');
+			//$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
 		} else {
-			$this->db->like('CONCAT(last_name, " ", first_name)', $search);
-			$this->db->or_like('account_number', $search);
+			$pattern = '/^C\d+$/';
+			//$string = 'C1234';
+			if (preg_match($pattern, $search)) {
+				$this->db->where('account_number', $search);
+				
+			} else {
+				$pattern2 = '/^VH\d+$/';
+				if (preg_match($pattern2, $search)) {
+					$this->db->where('account_number', $search);
+					
+				} else {
+					//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+					$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+				}
+			}
+			//$this->db->like('CONCAT(last_name, " ", first_name)', $search);
+			//$this->db->or_like('account_number', $search);
 		}
 		$this->db->group_end();
 		$this->db->where('deleted', 0);
@@ -296,6 +311,7 @@ class Customer extends Person
 			//	$this->db->like('first_name', $search);
 			//	$this->db->or_like('last_name', $search);
 				//$this->db->or_like('email', $search);
+			
 			if(ctype_digit($search))
 			{
 				//$this->db->like('phone_number',$search,'after');
