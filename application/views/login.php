@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<base href="<?php echo base_url();?>" />
-	<title><?php echo $this->config->item('company') . ' | OSPOS ' . $this->config->item('application_version')  . ' | ' .  $this->lang->line('login_login'); ?></title>
+	<title><?php echo $this->config->item('company') . ' | Phần mềm Phòng khám mắt ' . $this->config->item('application_version')  . ' | ' .  $this->lang->line('login_login'); ?></title>
 	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="<?php echo 'dist/bootswatch/' . (empty($this->config->item('theme')) ? 'flatly' : $this->config->item('theme')) . '/bootstrap.min.css' ?>"/>
 	<!-- start css template tags -->
@@ -12,30 +12,45 @@
 </head>
 
 <body>
-	<div id="logo" align="center"><img src="<?php echo base_url();?>/images/logo.png"></div>
-
-	<div id="login">
-		<?php echo form_open('login') ?>
-			<div id="container">
-				<div align="center" style="color:red"><?php echo validation_errors(); ?></div>
-				
-				<div id="login_form">
-					<div class="input-group">
-						<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-user"></span></span>
-						<input class="form-control" placeholder="<?php echo $this->lang->line('login_username')?>" name="username" type="username" size=20 autofocus></input>
-					</div>
-					
-					<div class="input-group">
-						<span class="input-group-addon input-sm"><span class="glyphicon glyphicon-lock"></span></span>
-						<input class="form-control" placeholder="<?php echo $this->lang->line('login_password')?>" name="password" type="password" size=20></input>
-					</div>
-					
-					<input class="btn btn-primary btn-block" type="submit" name="loginButton" value="Go"/>
+<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Hệ thống quản lý bán hàng</h2>
 				</div>
 			</div>
-		<?php echo form_close(); ?>
-		
-		<h1>Hệ thống quản lý bán hàng</h1>
-	</div>
+			<div class="row justify-content-center">
+				<div class="col-md-7 col-lg-5">
+					<div class="wrap">
+						<div class="img" style="background-image: url(<?php echo base_url();?>/images/logo.png);"></div>
+						<div class="login-wrap p-4 p-md-5">
+							<div class="d-flex">
+								<div class="w-100">
+								<div align="center" style="color:red"><?php echo validation_errors(); ?></div>
+								</div>		
+							</div>
+							<?php echo form_open('login') ?>
+								<div class="form-group mt-3">
+									<input id="username" class="form-control" required name="username" type="username" size=20 autofocus>
+									<label class="form-control-placeholder" for="username">Tên đăng nhập</label>
+								</div>
+								<div class="form-group">
+								<input id="password-field" type="password" class="form-control" required name="password" id="password"> 
+								<label class="form-control-placeholder" for="password">Mật khẩu</label>
+								<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+								</div>
+								<div class="form-group">
+									<button type="submit" class="form-control btn btn-primary rounded submit px-3" name="loginButton">Đăng nhập</button>
+								</div>
+							<?php echo form_close(); ?>
+		        </div>
+		      </div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	
 </body>
 </html>

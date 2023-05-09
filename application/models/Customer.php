@@ -314,8 +314,8 @@ class Customer extends Person
 			
 			if(ctype_digit($search))
 			{
-				//$this->db->like('phone_number',$search,'after');
-				$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
+				$this->db->like('phone_number',$search,'after');
+				//$this->db->where('MATCH (phone_number) AGAINST ("'.$search.'")', NULL, FALSE);
 			} else {
 				$pattern = '/^C\d+$/';
 				//$string = 'C1234';
