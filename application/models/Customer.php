@@ -212,8 +212,8 @@ class Customer extends Person
 					$this->db->where('account_number', $search);
 					
 				} else {
-					//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
-					$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+					$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+					//$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
 				}
 			}
 			//$this->db->like('CONCAT(last_name, " ", first_name)', $search);
@@ -328,8 +328,8 @@ class Customer extends Person
 						$this->db->where('account_number', $search);
 						
 					} else {
-						//$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
-						$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
+						$this->db->or_like('CONCAT(last_name, " ", first_name)', $search);
+						//$this->db->where('MATCH (last_name, first_name) AGAINST ("'.$search.'")',NULL,FALSE);
 					}
 				}
 			}
