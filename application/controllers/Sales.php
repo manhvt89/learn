@@ -1,7 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 require_once("Secure_Controller.php");
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Sales extends Secure_Controller
 {
 	public function __construct()
@@ -1605,10 +1606,13 @@ class Sales extends Secure_Controller
             {
 
                 $begin_quantity = 0;
+				//var_dump($row);
+				$link = '<a href="'.base_url('sales/payment/').$row['sale_uuid'].'">'.$row['code'].'</a>';
                 $summary_data[] = $this->xss_clean(array(
                     'id' => $row['sale_id'],
                     'customer_name' => $row['customer_name'],
-                    'code' => $row['code'],
+                    //'code' => $row['code'],
+					'code' => $link,
 					'sale_time'=>$row['sale_time'],
                     'remain_amount' => number_format($row['remain_amount'])
                 ));
@@ -1775,6 +1779,316 @@ class Sales extends Secure_Controller
 			//$this->form_validation->set_message('number_empty', 'Vui lòng kiểm tra lại dữ liệu tại dòng '. $_strTmp);
 		}
 		return TRUE;
+	}
+
+	public function export_rp_debits($customer_uuid='')
+	{
+		$this->load->model('reports/Debit_sales');
+        $model = $this->Debit_sales;
+      
+		$fileName = 'CongNo'.time().'.xlsx';
+		//$employeeData = $this->EmployeeModel->employeeList();
+		$styleArray = [
+			'font' => [
+				'bold' => true,
+				'size'=>19
+			],
+			'alignment' => [
+				'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+				'shrinkToFit'=> true,
+				'vertical'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+			],
+			'borders' => [
+				'top' => [
+					'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+				],
+			],
+			'fill' => [
+				'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+				'rotation' => 90,
+				'startColor' => [
+					'argb' => 'FFA0A0A0',
+				],
+				'endColor' => [
+					'argb' => 'FFFFFFFF',
+				],
+			],
+		];
+		
+		//$spreadsheet->getActiveSheet()->getStyle('A3')->applyFromArray($styleArray);
+		$spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+		foreach(range('A','H') as $columnID) {
+			$sheet->getColumnDimension($columnID)->setAutoSize(true);
+			
+		}
+		$sheet->getRowDimension('1')->setRowHeight(30);
+		$sheet->mergeCells('A1:H1');
+       	$sheet->setCellValue('A1', 'CÔNG NỢ');
+        $sheet->setCellValue('A2', 'Tên khách hàng');
+        $sheet->setCellValue('B2', '');
+        $sheet->setCellValue('A3', 'Địa chỉ');
+		$sheet->setCellValue('B3', '');
+		$sheet->setCellValue('A4', 'Số điện thoại');
+		$sheet->setCellValue('A5', 'Đến ngày');
+		$sheet->setCellValue('B5', date('d/m/Y',time()));
+		$sheet->getStyle('A1')->applyFromArray($styleArray);  
+		$sheet->mergeCells('A6:H6');
+		$sheet->mergeCells('E2:E6');
+		$sheet->mergeCells('B2:D2');
+		$sheet->mergeCells('B3:D3');
+		$sheet->mergeCells('B4:D4');
+		$sheet->mergeCells('B5:D5');
+		$index_row = 7;
+		/* foreach ($employeeData as $val){
+            $sheet->setCellValue('A' . $rows, $val['id']);
+            $sheet->setCellValue('B' . $rows, $val['name']);
+            $sheet->setCellValue('C' . $rows, $val['skills']);
+            $sheet->setCellValue('D' . $rows, $val['address']);
+	    $sheet->setCellValue('E' . $rows, $val['age']);
+            $sheet->setCellValue('F' . $rows, $val['designation']);
+            $rows++;
+        }  */
+        
+		if($customer_uuid != '')
+		{
+
+			$result = 1;
+			$customer_info = $this->Customer->get_info_by_uuic($customer_uuid);
+
+			if(!empty($customer_info))
+			{
+				$sheet->setCellValue('A2', 'Tên khách hàng');
+				$sheet->setCellValue('B2', $customer_info->last_name . ' ' .$customer_info->first_name);
+				$sheet->setCellValue('A3', 'Địa chỉ');
+				$sheet->setCellValue('B3', $customer_info->address_1 . ' '. $customer_info->address_2);
+				$sheet->setCellValue('A4', 'Số điện thoại');
+				$sheet->setCellValue('B4', $customer_info->phone_number);
+			}
+
+			//$headers = $this->xss_clean($model->_getDataColumns());
+			//var_dump($headers);
+			$report_data = $model->_getData($customer_uuid);
+			//var_dump($report_data); die();
+			$data = null;
+			if(!$report_data)
+			{
+				$result = 0;
+			}else{
+				$summary_data = array();
+				$details_data = array();
+				$i = 1;
+				$styleArrayHeader = [
+					'font' => [
+						'bold' => true,
+					],
+					'alignment' => [
+						'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+						'vertical'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					],
+					'borders' => [
+						'top' => [
+							'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+						],
+					],
+					'fill' => [
+						'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
+						'rotation' => 90,
+						'startColor' => [
+							'argb' => 'FFA0A0A0',
+						],
+						'endColor' => [
+							'argb' => 'FFFFFFFF',
+						],
+					],
+				];
+				$sheet->getStyle('A'.$index_row.':H'.$index_row)->applyFromArray($styleArrayHeader);  
+				$sheet->setCellValue('A'.$index_row, 'Ngày xuất');
+				$sheet->setCellValue('B'.$index_row, 'Mã hóa đơn');
+				$sheet->setCellValue('C'.$index_row, 'Tên sản phẩm');
+				$sheet->setCellValue('D'.$index_row, 'Mã sản phẩm');
+				$sheet->setCellValue('E'.$index_row, 'Giá');
+				$sheet->setCellValue('F'.$index_row, 'Chiết khấu');
+				$sheet->setCellValue('G'.$index_row, 'Số lượng');
+				$sheet->setCellValue('H'.$index_row, 'Thành tiền');
+				$index_row++;
+				$total_amount = 0;
+				$total_discount = 0;
+				$total = 0;
+				foreach($report_data['summary'] as $key => $row)
+				{
+
+					$begin_quantity = 0;
+					//var_dump($row);
+					
+					$code = $row['code'];
+					$sale_time = $row['sale_time'];
+						
+					foreach($report_data['details'][$key] as $drow)
+					{
+						//var_dump($drow);die();
+						$sheet->setCellValue('A'.$index_row, $sale_time);
+						$sheet->setCellValue('B'.$index_row, $code);
+						$sheet->setCellValue('C'.$index_row, $drow['item_name']);
+						$sheet->setCellValue('D'.$index_row, $drow['item_number']);
+						$sheet->setCellValue('E'.$index_row, $drow['item_unit_price']);
+						$sheet->setCellValue('F'.$index_row, $drow['discount_percent'].'%');
+						$sheet->setCellValue('G'.$index_row, number_format($drow['quantity_purchased']));
+						$sheet->setCellValue('H'.$index_row, ((100 - $drow['discount_percent'])/100)*$drow['item_unit_price'] * $drow['quantity_purchased']);
+						$_aStylePercent = [
+							'font' => [
+								'bold' => false,
+							],
+							'alignment' => [
+								'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+								'vertical'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+							],
+						];
+						$_aStyleNumber = [
+							'font' => [
+								'bold' => false,
+							],
+							'alignment' => [
+								'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+								'vertical'=>\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+							],
+							'numberFormat'=> [ 
+								'formatCode'=>"#,##0"
+							]
+						];
+						$sheet->getStyle('F'.$index_row)->applyFromArray($_aStylePercent);
+						$sheet->getStyle('E'.$index_row)->applyFromArray($_aStyleNumber);
+						$sheet->getStyle('G'.$index_row)->applyFromArray($_aStyleNumber);
+						$sheet->getStyle('H'.$index_row)->applyFromArray($_aStyleNumber);
+
+						$index_row++;
+						/* $_aTmp = array(
+							'item_name'=>$drow['item_name'], 
+							'item_number'=>$drow['item_number'], 
+							'quantity_purchased'=>number_format($drow['quantity_purchased']), 
+							'item_unit_price'=>to_currency($drow['item_unit_price']),
+							'total'=>to_currency($drow['item_unit_price'] * $drow['quantity_purchased']));
+						$details_data[$row['sale_id']][] = $this->xss_clean($_aTmp); */
+						$total_amount = $total_amount + $drow['quantity_purchased'];
+						$total_discount = $total_discount + $drow['discount_percent']*$drow['item_unit_price'] * $drow['quantity_purchased']/100;
+						$total = $total + ((100 - $drow['discount_percent'])/100)*$drow['item_unit_price'] * $drow['quantity_purchased'];
+					}
+					$i++;
+				}
+			}
+			$sheet->mergeCells('F2:G2');
+			$sheet->mergeCells('F3:G3');
+			$sheet->mergeCells('F4:G4');
+			$sheet->mergeCells('F5:G5');
+
+			$sheet->setCellValue('F5', 'Tổng nợ');
+			$sheet->setCellValue('F3', 'Tổng tiền hàng');
+			$sheet->setCellValue('F4', 'Tổng chiết khấu');
+			$sheet->setCellValue('F2', 'Tổng số lượng');
+			$sheet->setCellValue('H5', $total);
+			$sheet->setCellValue('H3', $total_discount + $total);
+			$sheet->setCellValue('H4', $total_discount);
+			$sheet->setCellValue('H2', $total_amount);
+			$sheet->getStyle('H2')->applyFromArray($_aStyleNumber);
+			$sheet->getStyle('H3')->applyFromArray($_aStyleNumber);
+			$sheet->getStyle('H4')->applyFromArray($_aStyleNumber);
+			$sheet->getStyle('H5')->applyFromArray($_aStyleNumber);
+
+			$styleArrayAll = [
+				'borders' => [
+					'allBorders' => [
+						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+						'color' => ['argb' => '182735'],
+					],
+				],
+			];
+
+			/* $styleArrayA3 = [
+				"alignment"=> [
+					"horizontal"=> "general", 
+					"indent"=> 0, 
+					"readOrder"=> 0, 
+					"shrinkToFit"=> false, 
+					"textRotation"=> 0, 
+					"vertical"=> "bottom", 
+					"wrapText"=> false ],
+				"borders"=> [ 
+					"bottom"=> [ 
+						"borderStyle"=> "none", 
+						"color"=> [ 
+							"argb"=> "FF000000" 
+						]
+					]
+					["diagonal"]=> array(2) { 
+						["borderStyle"]=> string(4) "none" 
+						["color"]=> array(1) { 
+							["argb"]=> string(8) "FF000000" 
+						} 
+					} 
+					["diagonalDirection"]=> int(0) 
+					["left"]=> array(2) { 
+						["borderStyle"]=> string(4) "none" 
+						["color"]=> array(1) { 
+							["argb"]=> string(8) "FF000000" 
+						} 
+					} 
+					["right"]=> array(2) { 
+						["borderStyle"]=> string(4) "none" 
+						["color"]=> array(1) { 
+							["argb"]=> string(8) "FF000000" 
+						} 
+					} 
+					["top"]=> array(2) { 
+						["borderStyle"]=> string(4) "none" 
+						["color"]=> array(1) { 
+							["argb"]=> string(8) "FF000000" 
+						} 
+					} 
+				] 
+				["fill"]=> array(2) { 
+					["fillType"]=> string(4) "none" 
+					["rotation"]=> float(0) 
+				} 
+				["font"]=> array(16) { 
+					["baseLine"]=> int(0) 
+					["bold"]=> bool(false) 
+					["chartColor"]=> NULL 
+					["color"]=> array(1) { 
+						["argb"]=> string(8) "FF000000" 
+					} 
+					["complexScript"]=> string(0) "" 
+					["eastAsian"]=> string(0) "" 
+					["italic"]=> bool(false) 
+					["latin"]=> string(0) "" 
+					["name"]=> string(7) "Calibri" 
+					["size"]=> int(11) 
+					["strikethrough"]=> bool(false) 
+					["strikeType"]=> string(0) "" 
+					["subscript"]=> bool(false) 
+					["superscript"]=> bool(false) 
+					["underline"]=> string(4) "none" 
+					["underlineColor"]=> NULL 
+				} 
+				["numberFormat"]=> array(1) { 
+					["formatCode"]=> string(7) "General" 
+				} 
+				["protection"]=> array(2) { 
+					["locked"]=> string(7) "inherit" ["hidden"]=> string(7) "inherit" 
+				} 
+				["quotePrefx"]=> bool(false)];
+ 			*/
+			//$styleArrayA3 = $spreadsheet->getActiveSheet()->getStyle('A3')->exportArray();
+			//var_dump($styleArrayA3);die();
+
+			$sheet->getStyle('A1:H'.$index_row)->applyFromArray($styleArrayAll);
+			//$json = array('result'=>$result,'data'=>$data);
+			//echo json_encode($json);
+		}
+
+		$writer = new Xlsx($spreadsheet);
+		$writer->save("uploads/".$fileName);
+		header("Content-Type: application/vnd.ms-excel");
+        redirect(base_url()."/uploads/".$fileName);
 	}
 }
 ?>

@@ -206,6 +206,7 @@ class Debit_sales extends Report
 				sales.remain_amount,
 				sales.paid_amount,
                 sales.code,
+                sales.sale_uuid as sale_uuid,
                 sales.sale_time,
 				CONCAT(customer_p.last_name, " ", customer_p.first_name) AS customer_name,
 				customer.company_name AS company_name,

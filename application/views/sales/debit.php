@@ -77,7 +77,7 @@ $(document).ready(function()
 </div>
 
 <div id="table_holder">
-	<table id="table" data-sort-order="desc" data-sort-name="sale_id"></table>
+	<table id="table" data-sort-order="desc" data-search="true" data-sort-name="sale_id"></table>
 </div>
 
 <div id="payment_summary">

@@ -122,6 +122,12 @@ if(isset($error))
 		<?=$customer_address?>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<a href="<?=base_url('/sales/export_rp_debits/').$customer_uuid?>">Xuất Excel</a>
+		</div>
+		
+	</div>
 </div>
 
 <div id="view_report_lens_category">
