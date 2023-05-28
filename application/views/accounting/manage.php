@@ -64,9 +64,9 @@ $(document).ready(function()
 <div id="payment_summary"></div>
 <div id="table_holder">
     <?php if($permission_admin==1): ?>
-        <table id="table" data-sort-order="desc" data-sort-name="created_time" data-search="false" ></table>
+        <table id="table" data-sort-order="desc" data-sort-name="created_time" data-search="false" data-page-list="[10, 25, 50, 100, 200,500]" ></table>
     <?php else : ?>
-        <table id="table" data-sort-order="desc" data-sort-name="created_time" data-search="false" data-show-columns="false"></table>
+        <table id="table" data-sort-order="desc" data-sort-name="created_time" data-search="false" data-page-list="[10, 25, 50, 100, 200, 500]" data-show-columns="false"></table>
     <?php endif; ?>
 </div>
 
