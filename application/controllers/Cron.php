@@ -927,7 +927,7 @@ class Cron extends CI_Controller{
         $cate = "1.56 CHEMI";
         if(isset($_aCategory[$category]))
         {
-            $cate = $_aCategory[$category];//"1.56 KODAK Clean'N'CleAR";
+            $cate = vn_str_filter($_aCategory[$category]);//"1.56 KODAK Clean'N'CleAR";
         }
         $_str =  str_replace(' ','_',$cate);
         $_str =  str_replace("'",'',$_str);
@@ -953,7 +953,7 @@ class Cron extends CI_Controller{
                     {
                         $_oItem['category'] = $_oProduct->category;
                     }
-                    var_dump($_oItem);
+                    //var_dump($_oItem);
                     $this->Product->update_product($_oItem,$item_number);
                 }
 
@@ -961,10 +961,14 @@ class Cron extends CI_Controller{
 
                 if($_oProduct->name != '')
                 {
+                    $_sProductCat = vn_str_filter($_oProduct->category);
+                    $_sProductCateCode =  str_replace(' ','_',$_sProductCat);
+                    $_sProductCateCode =  str_replace("'",'',$_sProductCateCode);
                     $item_data = array(
                         'name'					=> $_oProduct->name,
                         'description'			=> $_oProduct->description,
                         'category'				=> $_oProduct->category,
+                        'category_code'			=> $_sProductCateCode,
                         'cost_price'			=> $_oProduct->cost_price,
                         'unit_price'			=> $_oProduct->unit_price,
                         'reorder_level'			=> $_oProduct->reorder_level,

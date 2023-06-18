@@ -444,7 +444,7 @@ class Sales extends Secure_Controller
 	}
 
 
-	public function before_complete() // Xuất đơn hàng;
+	public function before_complete() // Xuất đơn hàng; Xuất hàng
 	{
 		$data = array();
 		$this->form_validation->set_rules('amount_tendered', 'lang:sales_amount_tendered', 'trim|required|callback_numeric_zero');
@@ -456,13 +456,13 @@ class Sales extends Secure_Controller
 			$amount_tendered = $this->input->post('amount_tendered');
 			$payment_type = $this->input->post('payment_type');
 			$payment_kind = $this->lang->line('sales_reserve_money');
-			$this->sale_lib->add_payment($payment_type, $amount_tendered,$payment_kind); // Thêm vào trả trước với loại thanh toán $type
+			$this->sale_lib->add_payment($payment_type, $amount_tendered,$payment_kind); // Thêm vào trả trước với loại thanh toán $type: Ngân hàng, Tiền mặt, ...
 		
 			$data['cart'] = $this->sale_lib->get_cart();
 			//var_dump($this->sale_lib->get_sale_id());
 			$_iSaleID = $this->sale_lib->get_sale_id();
-			$status = 1;
-			$data['status'] = $status; 
+			$status = 1; //Trạng thái Đơn hàng, xuất hàng
+			$data['status'] = $status;
 			$data['subtotal'] = $this->sale_lib->get_subtotal();
 			$data['discounted_subtotal'] = $this->sale_lib->get_subtotal(true);
 			$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(true, true);
@@ -581,7 +581,7 @@ class Sales extends Secure_Controller
 						);
 						$data['sale_id_num'] = $_iSaleID;
 					}
-					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
+					$data['sale_id'] = 'Bán ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 					$data['code'] = $sale_info['code'];
 					$data = $this->xss_clean($data);
@@ -711,11 +711,11 @@ class Sales extends Secure_Controller
 					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 					$sale_data = array(
-						'customer_id' => $sale_info['customer_id'],
-						'employee_id' => $sale_info['employee_id'],
+						'customer_id' => $sale_info['customer_id'], //update lại,
+						'employee_id' => $sale_info['employee_id'], //update lại,
 						'status' => 0,
 						'ctv_id' =>$ctv_id,
-						'sale_time'	=> date('Y-m-d H:i:s'),
+						///'updated_at'	=> time(), //Do't update
 					);
 					if($data['payments'][$this->lang->line('sales_paid_money')]) {
 						$success = $this->Sale->update($sale_id, $sale_data, $data['payments'][$this->lang->line('sales_paid_money')], $employee_id, $customer_id, $amount_change);
@@ -824,7 +824,7 @@ class Sales extends Secure_Controller
 					$this->load->view('sales/receipt', $data);
 				}
 
-				$this->sale_lib->clear_all();
+				$this->sale_lib->clear_all(); //CLEAR ALL DATA CART in SESSION
 			}
 		}else{
 			$data['error'] = 'Bạn không được Refresh lại web hoặc nhấn F5';

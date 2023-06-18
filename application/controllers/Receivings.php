@@ -410,6 +410,28 @@ class Receivings extends Secure_Controller
 		$data['cyls'] = $cyls;
 		$data['mysphs'] = $mysphs;
 		$data['hysphs'] = $hysphs;
+		
+		$columns = array();
+		$i = 0;
+		foreach($cyls as $v)
+		{
+			if($i == 0)
+			{
+				$_col = array(
+					'type'=>'text',
+					'readOnly'=>true
+				);
+			} else {
+				$_col = array(
+					'type'=>'number'
+					
+				);
+			}
+			$columns[] = $_col;
+			$i++;
+		}
+
+		$data['columns'] = json_encode($columns);
 		$this->form_validation->set_rules('myo101', 'myo101', 'callback_number_empty');
 		
 		if($this->form_validation->run() == FALSE)

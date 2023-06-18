@@ -307,6 +307,7 @@ class Accounting extends CI_Model
 				total.kind as kind,
 				total.code as code,
 				total.amount as amount,
+				total.payment_method,
 				total.type as type,				
 				CONCAT(people.last_name," ",people.first_name) as person,
 				CONCAT(people1.last_name," ",people1.first_name) as employee,
@@ -320,7 +321,7 @@ class Accounting extends CI_Model
 
 
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
-
+		//$this->db->where('payment_method',0);
 		if(!empty($search))
 		{
 
@@ -441,7 +442,7 @@ class Accounting extends CI_Model
 		$this->db->join('people AS customer_p', 'sales.customer_id = customer_p.person_id', 'left');
 		$this->db->join('customers AS customer', 'sales.customer_id = customer.person_id', 'left');
 
-		$this->db->where('DATE(sale_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
+		$this->db->where('DATE(payment_time) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		$this->db->group_by('payment_type');
 
 		$payments = $this->db->get()->result_array();

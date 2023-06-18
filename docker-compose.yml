@@ -32,7 +32,8 @@ services:
           - logs:/app/application/logs
           - ./conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
         environment:
-          - PHP_TIMEZONE=UTC
+          - TZ=Asia/Ho_Chi_Minh
+          - PHP_TIMEZONE=Asia/Ho_Chi_Minh
           - MYSQL_USERNAME=admin
           - MYSQL_PASSWORD=pointofsale
           - MYSQL_DB_NAME=ospos
@@ -56,3 +57,4 @@ services:
           - MYSQL_DATABASE=ospos
           - MYSQL_USER=admin
           - MYSQL_PASSWORD=pointofsale
+          - TZ=Asia/Ho_Chi_Minh

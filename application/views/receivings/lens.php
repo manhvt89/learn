@@ -13,41 +13,47 @@
 
 <div id="view_report_lens_category">
 	<table id="rp_inventory" class="table2excel" width="100%">
-		<tr id="_row_m_1">
-			<td style="padding: 0 9px 0 9px;"><b>SPH</b></td>
-			<td colspan="17"><b>CYL(-)</b></td>
-		</tr>
-		<tr id="_row_m_2">
+		<thead>
+			<tr id="_row_m_1">
+				<td style="padding: 0 9px 0 9px;">SPH</td>
+				<td colspan="25">CYL(-)</td>
+			</tr>
+			<tr id="_row_m_2">
+				<?php 
+					foreach($cyls  as $cyl):
+						?>
+					<td><?php echo $cyl ?></td>
+						<?php
+					endforeach;
+				?>
+				
+			</tr>
+		</thead>
+		<tbody>
+			
 			<?php 
-				foreach($cyls  as $cyl):
-					?>
-				<td><b><?php echo $cyl ?></b></td>
-					<?php
+				foreach($mysphs as $key=>$sph):
+					if($key > 0)
+					{
+						$tr = '<tr id="_row_myo_'.$key.'">';
+						$tr = $tr . '<td>'.$sph.'</td>';
+						foreach($cyls as $k=>$cyl):
+							if($k > 0)
+							{
+								if($k < 10)
+								{
+									$k = '0'.$k;
+								}
+								//$tr = $tr . '<td>'.'<input type="text" name="myo'.$key.$k.'" value="'.set_value('myo'.$key.$k).'">'.'</td>';
+								$tr = $tr . '<td></td>';
+							}
+						endforeach;
+						$tr = $tr . '</tr>';
+						echo $tr;
+					}
 				endforeach;
 			?>
-			
-		</tr>
-		<?php 
-			foreach($mysphs as $key=>$sph):
-				if($key > 0)
-				{
-					$tr = '<tr id="_row_myo_'.$key.'">';
-					$tr = $tr . '<td><b>'.$sph.'</b></td>';
-					foreach($cyls as $k=>$cyl):
-						if($k > 0)
-						{
-							if($k < 10)
-							{
-								$k = '0'.$k;
-							}
-							$tr = $tr . '<td>'.'<input type="text" name="myo'.$key.$k.'" value="'.set_value('myo'.$key.$k).'">'.'</td>';
-						}
-					endforeach;
-					$tr = $tr . '</tr>';
-					echo $tr;
-				}
-			endforeach;
-		?>
+		</tbody>
 	</table>
 	<table id="rp_inventory_hyo" class="table2excel" width="100%">
 		
@@ -110,6 +116,13 @@
 		});
 
 	});
-
+	jspreadsheet(document.getElementById('rp_inventory'),{
+		columns:<?=$columns?>,
+		updateTable: function(el, cell, x, y, source, value, id) {
+        if (x == 0) {
+            cell.classList.add('readonly');
+        }
+    } 
+	});
 </script>
 <?php $this->load->view("partial/footer"); ?>

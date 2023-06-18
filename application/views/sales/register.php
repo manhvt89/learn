@@ -617,7 +617,10 @@ if (isset($success))
 				</tr>
 				<tr>
 					<th style="width: 55%;"><?php echo $this->lang->line('sales_amount_due_1');?></th>
-					<th style="width: 45%; text-align: right;"><?php echo to_currency($amount_due); ?></th>
+					<th style="width: 45%; text-align: right;">
+						<?php echo to_currency($amount_due); ?>
+						<input type="hidden" name="hd_amount_due" id="hd_amount_due" value="<?=number_format($amount_due,0,',','')?>" />
+					</th>
 				</tr>
 			</table>
 
@@ -672,6 +675,8 @@ if (isset($success))
 										<?php endif;?>
 									</td>
 								</tr>
+								<?php if($this->sale_lib->get_edit() == 2):?>
+								<?php else : ?>
 								<tr>
 									<td><?php echo $this->lang->line('sales_payment');?></td>
 									<td>
@@ -684,11 +689,12 @@ if (isset($success))
 										<?php echo form_input(array('name'=>'amount_tendered', 'id'=>'amount_tendered', 'class'=>'form-control input-sm', 'value'=>'', 'size'=>'5', 'tabindex'=>++$tabindex)); ?>
 									</td>
 								</tr>
+								<?php endif; ?>
 							</table>
 						<?php echo form_close(); ?>
 						<?php if($this->sale_lib->get_edit() == 2):?>
 							<?php if(empty($payments['Thanh toán'])): ?>
-							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Xuất hàng</div>
+							<div class='btn btn-sm btn-success pull-left' id='add_before_complete_button' tabindex='<?php echo ++$tabindex; ?>'><span class="glyphicon glyphicon-credit-card">&nbsp</span>Cập nhật</div>
 							<?php endif; ?>
 						<?php else : ?>
 							<?php if($this->sale_lib->get_edit() == 0) : ?>
@@ -968,6 +974,13 @@ $(document).ready(function()
 
 	$("#add_before_complete_button").click(function()
 	{
+		var payment_list = $('#payment_contents tr');
+		console.log(payment_list.length);
+		if(payment_list.length != 0)
+		{
+			alert('Bạn cần xóa hết các mục đã thanh toán');
+			return false;
+		}
 		if($('#customer').length > 0){
 			if($('#customer').val() != '') {
 				alert($('#customer').val());
@@ -1001,10 +1014,46 @@ $(document).ready(function()
 
 	$("#add_payment_button").click(function()
 	{
-		$('#add_payment_form').submit();
+		var paymentMethod = $("#payment_types").val();
+			var totalAmount = parseFloat($("#hd_amount_due").val());
+			var paymentAmount = parseFloat($(this).val());
+			console.log(totalAmount);
+			console.log(paymentAmount);
+			if ((paymentMethod == "Chuyển khoản" || paymentMethod == "Thanh toán thẻ") && paymentAmount > totalAmount) {
+				alert("Số tiền thanh toán không thể lớn hơn tổng tiền hàng.");
+				$(this).val(totalAmount.toFixed(0));
+				return false;
+			} else {
+				$('#add_payment_form').submit();
+			}
     });
 
-	$("#payment_types").change(check_payment_type_giftcard).ready(check_payment_type_giftcard);
+	//$("#payment_types").change(check_payment_type_giftcard).ready(check_payment_type_giftcard);
+	$("#payment_types").change(function(){
+		
+		var paymentMethod = $(this).val();
+        var totalAmount = parseFloat($("#hd_amount_due").val());
+		if (paymentMethod == "Chuyển khoản" || paymentMethod == "Thanh toán thẻ" || paymentMethod == "Tiền mặt") {
+            $("#amount_tendered").val(totalAmount.toFixed(0));
+        } else {
+            $("#amount_tendered").val("");
+        }
+		console.log(paymentMethod);
+	});
+	$("#payment_types").val("Tiền mặt");
+	$("#amount_tendered").val(0);
+	// Kiểm tra và cập nhật số tiền thanh toán nếu vượt quá tổng tiền hàng
+	$("#amount_tendered").change(function() {
+                var paymentMethod = $("#payment_types").val();
+                var totalAmount = parseFloat($("#hd_amount_due").val());
+                var paymentAmount = parseFloat($(this).val());
+				console.log(totalAmount);
+				console.log(paymentAmount);
+                if ((paymentMethod == "Chuyển khoản" || paymentMethod == "Thanh toán thẻ") && paymentAmount > totalAmount) {
+                    alert("Số tiền thanh toán không thể lớn hơn tổng tiền hàng.");
+                    $(this).val(totalAmount.toFixed(0));
+                }
+            });
 
 	$("#cart_contents input").keypress(function(event)
 	{
@@ -1018,7 +1067,18 @@ $(document).ready(function()
 	{
 		if( event.which == 13 )
 		{
-			$('#add_payment_form').submit();
+			var paymentMethod = $("#payment_types").val();
+			var totalAmount = parseFloat($("#hd_amount_due").val());
+			var paymentAmount = parseFloat($(this).val());
+			console.log(totalAmount);
+			console.log(paymentAmount);
+			if ((paymentMethod == "Chuyển khoản" || paymentMethod == "Thanh toán thẻ") && paymentAmount > totalAmount) {
+				alert("Số tiền thanh toán không thể lớn hơn tổng tiền hàng.");
+				$(this).val(totalAmount.toFixed(0));
+				return false;
+			} else {
+				$('#add_payment_form').submit();
+			}
 		}
 	});
 	
