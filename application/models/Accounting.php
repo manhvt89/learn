@@ -384,6 +384,7 @@ class Accounting extends CI_Model
 		$this->db->from('total as total');
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		$this->db->where('type',0); // Thu
+		$this->db->where('payment_method',0); // Tiền mặt
 
 		$income_amount = $this->db->get()->result_array();
 
@@ -400,6 +401,7 @@ class Accounting extends CI_Model
 		$this->db->from('total as total');
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		$this->db->where('type',1); //Chi
+		$this->db->where('payment_method',0); // Tiền mặt
 		$payout_amount = $this->db->get()->result_array();
 
 		$payout = $payout_amount[0]['amount'];
@@ -415,6 +417,7 @@ class Accounting extends CI_Model
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		$this->db->where('type',1); //Chi
 		$this->db->where('kind',1); // Nội bộ
+		$this->db->where('payment_method',0); // Tiền mặt
 		$payout_amount_nb = $this->db->get()->result_array();
 
 		$payout_nb = $payout_amount_nb[0]['amount'];
@@ -424,6 +427,7 @@ class Accounting extends CI_Model
 		$this->db->where('DATE(FROM_UNIXTIME(total.created_time)) BETWEEN ' . $this->db->escape($filters['start_date']) . ' AND ' . $this->db->escape($filters['end_date']));
 		$this->db->where('type',1); //Chi
 		$this->db->where('sale_id >',0);
+		$this->db->where('payment_method',0); // Tiền mặt
 		$payout_customer = $this->db->get()->result_array();
 		//var_dump($payout_customer);
 		$payout_c = $payout_customer[0]['pc'];
