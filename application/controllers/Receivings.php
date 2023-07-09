@@ -59,7 +59,7 @@ class Receivings extends Secure_Controller
 
 		$this->_reload();
 	}
-	
+
 	public function set_comment()
 	{
 		$this->receiving_lib->set_comment($this->input->post('comment'));
@@ -69,12 +69,12 @@ class Receivings extends Secure_Controller
 	{
 		$this->receiving_lib->set_print_after_sale($this->input->post('recv_print_after_sale'));
 	}
-	
+
 	public function set_reference()
 	{
 		$this->receiving_lib->set_reference($this->input->post('recv_reference'));
 	}
-	
+
 	public function add()
 	{
 		$data = array();
@@ -126,7 +126,7 @@ class Receivings extends Secure_Controller
 
 		$this->_reload($data);
 	}
-	
+
 	public function edit($receiving_id)
 	{
 		$data = array();
@@ -136,18 +136,18 @@ class Receivings extends Secure_Controller
 		{
 			$data['suppliers'][$supplier->person_id] = $this->xss_clean($supplier->first_name . ' ' . $supplier->last_name);
 		}
-	
+
 		$data['employees'] = array();
 		foreach ($this->Employee->get_all()->result() as $employee)
 		{
 			$data['employees'][$employee->person_id] = $this->xss_clean($employee->first_name . ' '. $employee->last_name);
 		}
-	
+
 		$receiving_info = $this->xss_clean($this->Receiving->get_info($receiving_id)->row_array());
 		$data['selected_supplier_name'] = !empty($receiving_info['supplier_id']) ? $receiving_info['company_name'] : '';
 		$data['selected_supplier_id'] = $receiving_info['supplier_id'];
 		$data['receiving_info'] = $receiving_info;
-	
+
 		$this->load->view('receivings/form', $data);
 	}
 
@@ -157,12 +157,12 @@ class Receivings extends Secure_Controller
 
 		$this->_reload();
 	}
-	
-	public function delete($receiving_id = -1, $update_inventory = TRUE) 
+
+	public function delete($receiving_id = -1, $update_inventory = TRUE)
 	{
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$receiving_ids = $receiving_id == -1 ? $this->input->post('ids') : array($receiving_id);
-	
+
 		if($this->Receiving->delete_list($receiving_ids, $employee_id, $update_inventory))
 		{
 			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('receivings_successfully_deleted') . ' ' .
@@ -185,9 +185,9 @@ class Receivings extends Secure_Controller
 	public function complete()
 	{
 		$data = array();
-		
+
 		$data['cart'] = $this->receiving_lib->get_cart();
-	
+
 		$data['total'] = $this->receiving_lib->get_total();
 		$data['quantity'] = $this->receiving_lib->get_quantity();
 		$data['receipt_title'] = $this->lang->line('receivings_receipt');
@@ -204,7 +204,7 @@ class Receivings extends Secure_Controller
 			$data['amount_tendered'] = $this->input->post('amount_tendered');
 			$data['amount_change'] = to_currency($data['amount_tendered'] - $data['total']);
 		}
-		
+
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$employee_info = $this->Employee->get_info($employee_id);
 		$data['employee'] = $employee_info->first_name . ' ' . $employee_info->last_name;
@@ -221,7 +221,7 @@ class Receivings extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
@@ -240,7 +240,7 @@ class Receivings extends Secure_Controller
 		}
 		else
 		{
-			$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['receiving_id']);				
+			$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['receiving_id']);
 		}
 
 		$data['print_after_sale'] = $this->receiving_lib->is_print_after_sale();
@@ -252,7 +252,7 @@ class Receivings extends Secure_Controller
 
 	public function requisition_complete()
 	{
-		if($this->receiving_lib->get_stock_source() != $this->receiving_lib->get_stock_destination()) 
+		if($this->receiving_lib->get_stock_source() != $this->receiving_lib->get_stock_destination())
 		{
 			foreach($this->receiving_lib->get_cart() as $item)
 			{
@@ -260,17 +260,17 @@ class Receivings extends Secure_Controller
 				$this->receiving_lib->add_item($item['item_id'], $item['quantity'], $this->receiving_lib->get_stock_destination());
 				$this->receiving_lib->add_item($item['item_id'], -$item['quantity'], $this->receiving_lib->get_stock_source());
 			}
-			
+
 			$this->complete();
 		}
-		else 
+		else
 		{
 			$data['error'] = $this->lang->line('receivings_error_requisition');
 
-			$this->_reload($data);	
+			$this->_reload($data);
 		}
 	}
-	
+
 	public function receipt($receiving_id)
 	{
 		$receiving_info = $this->Receiving->get_info($receiving_id)->row_array();
@@ -299,7 +299,7 @@ class Receivings extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
@@ -310,7 +310,7 @@ class Receivings extends Secure_Controller
 		$data['print_after_sale'] = FALSE;
 
 		$data = $this->xss_clean($data);
-		
+
 		$this->load->view("receivings/receipt", $data);
 
 		$this->receiving_lib->clear_all();
@@ -324,7 +324,7 @@ class Receivings extends Secure_Controller
 		$data['mode'] = $this->receiving_lib->get_mode();
 		$data['stock_locations'] = $this->Stock_location->get_allowed_locations('receivings');
 		$data['show_stock_locations'] = count($data['stock_locations']) > 1;
-		if($data['show_stock_locations']) 
+		if($data['show_stock_locations'])
 		{
 			$data['modes']['requisition'] = $this->lang->line('receivings_requisition');
 			$data['stock_source'] = $this->receiving_lib->get_stock_source();
@@ -349,25 +349,25 @@ class Receivings extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
 				$data['supplier_location'] = '';
 			}
 		}
-		
+
 		$data['print_after_sale'] = $this->receiving_lib->is_print_after_sale();
 
 		$data = $this->xss_clean($data);
 
 		$this->load->view("receivings/receiving", $data);
 	}
-	
+
 	public function save($receiving_id = -1)
 	{
 		$newdate = $this->input->post('date');
-		
+
 		$date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $newdate);
 
 		$receiving_data = array(
@@ -377,7 +377,7 @@ class Receivings extends Secure_Controller
 			'comment' => $this->input->post('comment'),
 			'reference' => $this->input->post('reference') != '' ? $this->input->post('reference') : NULL
 		);
-	
+
 		if($this->Receiving->update($receiving_data, $receiving_id))
 		{
 			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('receivings_successfully_updated'), 'id' => $receiving_id));
@@ -398,7 +398,7 @@ class Receivings extends Secure_Controller
 	public function lens()
 	{
 		$data = array();
-		
+
         $data['item_count'] = $this->config->item('KindOfLens');
 		//var_dump($data['item_count']);
 		$data['page_title'] = 'NHẬP MẮT KÍNH';
@@ -406,34 +406,13 @@ class Receivings extends Secure_Controller
 		$cyls = $this->config->item('cyls');
 		$mysphs = $this->config->item('mysphs');
 		$hysphs = $this->config->item('hysphs');
-		
+
 		$data['cyls'] = $cyls;
 		$data['mysphs'] = $mysphs;
 		$data['hysphs'] = $hysphs;
-		
-		$columns = array();
-		$i = 0;
-		foreach($cyls as $v)
-		{
-			if($i == 0)
-			{
-				$_col = array(
-					'type'=>'text',
-					'readOnly'=>true
-				);
-			} else {
-				$_col = array(
-					'type'=>'number'
-					
-				);
-			}
-			$columns[] = $_col;
-			$i++;
-		}
 
-		$data['columns'] = json_encode($columns);
-		$this->form_validation->set_rules('myo101', 'myo101', 'callback_number_empty');
-		
+		$this->form_validation->set_rules('hhmyo', 'hhmyo', 'callback_number_empty');
+
 		if($this->form_validation->run() == FALSE)
 		{
 			$this->load->view("receivings/lens", $data);
@@ -446,45 +425,43 @@ class Receivings extends Secure_Controller
 			//echo $category;
 			// For Myo
 			$_aTmp = array();
-			foreach($mysphs  as $key=>$sph)
+
+			$_strMyo =  $this->input->post('hhmyo');
+			$_aaMyo = json_decode($_strMyo,true);
+			//var_dump($_aaMyo);
+			foreach($_aaMyo  as $key=>$_aSPH)
 			{
-				if($key > 0)
+				$key = $key + 1;
+				$sph = $mysphs[$key];
+				foreach($_aSPH as $k=>$value)
 				{
-					foreach($cyls as $k=>$cyl)
+					if($k > 0)
 					{
-						if($k > 0)
+						if($value != "")
 						{
-							if($k < 10)
-							{
-								$k = '0'.$k;
-							}
-							if($this->input->post('myo'.$key.$k) != "" && is_numeric($this->input->post('myo'.$key.$k)))
-							{
-								$_aTmp['S-'.$sph.' C-'.$cyl] = $this->input->post('myo'.$key.$k);
-							}
-						}	
+							$cyl = $cyls[$k];
+							$_aTmp['S-'.$sph.' C-'.$cyl] = $value;
+						}
 					}
 				}
 			}
 
 			// For Hyo
-			foreach($hysphs  as $key=>$sph)
+			$_strHyo =  $this->input->post('hhhyo');
+			$_aaHyo = json_decode($_strHyo,true);
+			foreach($_aaHyo  as $key=>$_aSPH)
 			{
-				if($key > 0)
+				$key = $key + 1;
+				$sph = $hysphs[$key];
+				foreach($_aSPH as $k=>$value)
 				{
-					foreach($cyls as $k=>$cyl)
+					if($k > 0)
 					{
-						if($k > 0)
+						if($value != "")
 						{
-							if($k < 10)
-							{
-								$k = '0'.$k;
-							}
-							if($this->input->post('hyo'.$key.$k) != "" && is_numeric($this->input->post('hyo'.$key.$k)))
-							{
-								$_aTmp['S+'.$sph.' C-'.$cyl] = $this->input->post('hyo'.$key.$k);
-							}
-						}	
+							$cyl = $cyls[$k];
+							$_aTmp['S+'.$sph.' C-'.$cyl] = $value;
+						}
 					}
 				}
 			}
@@ -496,14 +473,14 @@ class Receivings extends Secure_Controller
 				{
 					foreach($_aALens as $k=>$v)
 					{
-						
+
 						if(strpos($v['name'],$key) > 0)
 						{
 							//$this->receiving_lib->add_item($item_id, $quantity, $item_location);
 							//$this->receiving_lib->add_item($v['item_id'], trim($value), 1);
 							$this->purchase_lib->add_item_by_itemID($v['item_id'], trim($value));
 						}
-						
+
 					}
 				}
 
@@ -512,7 +489,7 @@ class Receivings extends Secure_Controller
 			} else{
 				$this->load->view("receivings/lens", $data);
 			}
-			
+
 		}
 		//$this->load->view("receivings/lens", $data);
 	}
@@ -524,11 +501,11 @@ class Receivings extends Secure_Controller
 		//var_dump($_POST['hyo101']);die();
 		foreach($_POST as $key=>$value)
 		{
-			
+
 			if(substr($key,0,3) == 'myo' || substr($key,0,3) == 'hyo')
 			{
 				if($value != ''){
-					
+
 					if(is_numeric($value))
 					{
 						$_aTmp[$key] = TRUE;

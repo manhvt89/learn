@@ -26,10 +26,10 @@ class Sales extends Secure_Controller
 			redirect('/sales/manage');
 		}
 	}
-	
+
 	public function manage()
 	{
-		
+
 		$data['table_headers'] = get_sales_manage_table_headers();
 
 		// filters that will be loaded in the multiselect dropdown
@@ -48,11 +48,11 @@ class Sales extends Secure_Controller
 		} else {
 			$data['is_created'] = 0;
 		}
-		
+
 		$this->load->view('sales/manage', $data);
-		
+
 	}
-	
+
 	public function get_row($row_id=0)
 	{
 		if($row_id == 0)
@@ -135,7 +135,7 @@ class Sales extends Secure_Controller
 		}
 		$suggestions = array_merge($suggestions, $this->Item->get_search_suggestions($search, array('search_custom' => FALSE, 'is_deleted' => FALSE), TRUE));
 		$suggestions = array_merge($suggestions, $this->Item_kit->get_search_suggestions($search));
-		
+
 		$suggestions = $this->xss_clean($suggestions);
 
 		echo json_encode($suggestions);
@@ -144,9 +144,9 @@ class Sales extends Secure_Controller
 	public function suggest_search()
 	{
 		$search = $this->input->post('term') != '' ? $this->input->post('term') : NULL;
-		
+
 		$suggestions = $this->xss_clean($this->Sale->get_search_suggestions($search));
-		
+
 		echo json_encode($suggestions);
 	}
 
@@ -169,11 +169,11 @@ class Sales extends Secure_Controller
 
 			// apply customer default discount to items that have 0 discount
 			if($discount_percent != '')
-			{	
+			{
 				$this->sale_lib->apply_customer_discount($discount_percent);
 			}
 			$cust_totals = $this->Customer->get_totals($customer_id);
-			if (!empty($cust_totals)) {		
+			if (!empty($cust_totals)) {
 
 				$this->sale_lib->set_customer_total($cust_totals->total);
 			} else{
@@ -194,11 +194,11 @@ class Sales extends Secure_Controller
 
 			// apply customer default discount to items that have 0 discount
 			if($discount_percent != '')
-			{	
+			{
 				$this->sale_lib->apply_customer_discount($discount_percent);
 			}
 			$cust_totals = $this->Customer->get_totals($customer_id);
-			if (!empty($cust_totals)) {		
+			if (!empty($cust_totals)) {
 
 				$this->sale_lib->set_customer_total($cust_totals->total);
 			} else{
@@ -215,7 +215,7 @@ class Sales extends Secure_Controller
 		{
 			$mode = $this->input->post('mode');
 			$this->sale_lib->set_mode($mode);
-		} 
+		}
 		elseif($this->Stock_location->is_allowed_location($stock_location, 'sales'))
 		{
 			$this->sale_lib->set_sale_location($stock_location);
@@ -223,27 +223,27 @@ class Sales extends Secure_Controller
 
 		$this->_reload();
 	}
-	
-	public function set_comment() 
+
+	public function set_comment()
 	{
 		$this->sale_lib->set_comment($this->input->post('comment'));
 	}
-	
+
 	public function set_invoice_number()
 	{
 		$this->sale_lib->set_invoice_number($this->input->post('sales_invoice_number'));
 	}
-	
+
 	public function set_invoice_number_enabled()
 	{
 		$this->sale_lib->set_invoice_number_enabled($this->input->post('sales_invoice_number_enabled'));
 	}
-	
+
 	public function set_print_after_sale()
 	{
 		$this->sale_lib->set_print_after_sale($this->input->post('sales_print_after_sale'));
 	}
-	
+
 	public function set_email_receipt()
 	{
  		$this->sale_lib->set_email_receipt($this->input->post('email_receipt'));
@@ -279,7 +279,7 @@ class Sales extends Secure_Controller
 				$payment_type = $payment_type . ':' . $giftcard_num;
 				$current_payments_with_giftcard = isset($payments[$payment_type]) ? $payments[$payment_type]['payment_amount'] : 0;
 				$cur_giftcard_value = $this->Giftcard->get_giftcard_value($giftcard_num);
-				
+
 				if(($cur_giftcard_value - $current_payments_with_giftcard) <= 0)
 				{
 					$data['error'] = $this->lang->line('giftcards_remaining_balance', $giftcard_num, to_currency($cur_giftcard_value));
@@ -321,7 +321,7 @@ class Sales extends Secure_Controller
 	public function add()
 	{
 		$data = array();
-		
+
 		$discount = 0;
 
 		// check if any discount is assigned to the selected customer
@@ -387,14 +387,14 @@ class Sales extends Secure_Controller
 			exit();
 		}
 		$data = array();
-		
+
 		$this->form_validation->set_rules('price', 'lang:items_price', 'required|callback_numeric');
 		$this->form_validation->set_rules('quantity', 'lang:items_quantity', 'required|callback_numeric');
 		$this->form_validation->set_rules('discount', 'lang:items_discount', 'required|callback_numeric');
 
 		$description = $this->input->post('description');
 		$serialnumber = $this->input->post('serialnumber');
-		
+
 		$price = parse_decimals($this->input->post('price'));
 		$quantity = parse_decimals($this->input->post('quantity'));
 		$discount = parse_decimals($this->input->post('discount'));
@@ -457,7 +457,7 @@ class Sales extends Secure_Controller
 			$payment_type = $this->input->post('payment_type');
 			$payment_kind = $this->lang->line('sales_reserve_money');
 			$this->sale_lib->add_payment($payment_type, $amount_tendered,$payment_kind); // Thêm vào trả trước với loại thanh toán $type: Ngân hàng, Tiền mặt, ...
-		
+
 			$data['cart'] = $this->sale_lib->get_cart();
 			//var_dump($this->sale_lib->get_sale_id());
 			$_iSaleID = $this->sale_lib->get_sale_id();
@@ -515,7 +515,7 @@ class Sales extends Secure_Controller
 					$new_payments = $data['payments'][$this->lang->line('sales_paid_money')];
 				} else {
 					$new_payments = null;
-				} 
+				}
 				foreach ($new_payments as $item) {
 					$payment['payment_amount'] = $payment['payment_amount'] + $item['payment_amount'];
 				}
@@ -527,7 +527,7 @@ class Sales extends Secure_Controller
 				$kxv_id = 0;
 				$doctor_id = 0;
 				if ($test_id == 0) {
-					
+
 				} else {
 					//echo $test_id;die();
 					$test_info = $this->Testex->get_info($test_id);
@@ -708,7 +708,7 @@ class Sales extends Secure_Controller
 				if ($sale_id > 0) {
 					//update - payment, and sale status from 1 to 0
 					$data['sale_id_num'] = $sale_id;
-					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
+					$data['sale_id'] = 'Bán ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 					$sale_data = array(
 						'customer_id' => $sale_info['customer_id'], //update lại,
@@ -742,7 +742,7 @@ class Sales extends Secure_Controller
 																0,
 																0,
 																$this->sale_lib->get_paid_points());
-					$data['sale_id'] = 'POS ' . $data['sale_id_num'];
+					$data['sale_id'] = 'Bán ' . $data['sale_id_num'];
 					$sale_info = $this->Sale->get_info($data['sale_id_num'])->row_array();
 				}
 				$data['code'] = $sale_info['code'];
@@ -764,7 +764,7 @@ class Sales extends Secure_Controller
 
 					/*
 					** Thêm barcode vào đơn hàng
-					** QRCode vào đơn hàng					
+					** QRCode vào đơn hàng
 					*/
 					$_bIsBarcode = TRUE;
 					$_bIsQRcode = TRUE;
@@ -772,12 +772,12 @@ class Sales extends Secure_Controller
 					if ($this->config->item('qrcode') == 0) {
 						$_bIsQRcode = false;
 					} else {
-						
+
 					}
 					if ($this->config->item('barcode') == 0) {
 						$_bIsBarcode = false;
 					} else {
-						
+
 					}
 
 
@@ -801,15 +801,15 @@ class Sales extends Secure_Controller
 						$config['black']        = array(255,255,255);
 						$config['white']        = array(255,255,255);
 						$this->ciqrcode->initialize($config);
-				
+
 						/* QR Data  */
 						$params['data']     = $qr_url_data;
 						$params['level']    = 'L';
 						$params['size']     = 10;
 						$params['savename'] = FCPATH.$config['imagedir']. $save_name;
-						
+
 						//$this->ciqrcode->generate($params);
-					
+
 						$data['qrcode_string'] = $this->ciqrcode->generate($params);
 						$data['url_string'] = $qr_url_data;
 						$data['footer_string'] = 'Quét mã QR để nhận quà';
@@ -857,7 +857,7 @@ class Sales extends Secure_Controller
 			$filename = sys_get_temp_dir() . '/' . $this->lang->line('sales_invoice') . '-' . str_replace('/', '-' , $sale_data['invoice_number']) . '.pdf';
 			if(file_put_contents($filename, pdf_create($html)) !== FALSE)
 			{
-				$result = $this->email_lib->sendEmail($to, $subject, $text, $filename);	
+				$result = $this->email_lib->sendEmail($to, $subject, $text, $filename);
 			}
 
 			$message = $this->lang->line($result ? 'sales_invoice_sent' : 'sales_invoice_unsent') . ' ' . $to;
@@ -885,7 +885,7 @@ class Sales extends Secure_Controller
 			$subject = $this->lang->line('sales_receipt');
 
 			$text = $this->load->view('sales/receipt_email', $sale_data, TRUE);
-			
+
 			$result = $this->email_lib->sendEmail($to, $subject, $text);
 
 			$message = $this->lang->line($result ? 'sales_receipt_sent' : 'sales_receipt_unsent') . ' ' . $to;
@@ -958,9 +958,9 @@ class Sales extends Secure_Controller
 	}
 
 	private function _load_customer_data($customer_id, &$data, $totals = FALSE)
-	{	
+	{
 		$customer_info = array();
-		
+
 		if($customer_id != -1)
 		{
 			//$customer_info = $this->Customer->get_info($customer_id);
@@ -996,9 +996,9 @@ class Sales extends Secure_Controller
 				$data['phone_number'] = '';
 				//$data['points'] = $customer_info->points; get from session
 				$data['points'] = $this->sale_lib->get_points();
-				
+
 				$data['customer_location'] = '';
-				
+
 				$data['customer_account_number'] = '';
 				$data['customer_discount_percent'] = '';
 			}
@@ -1098,7 +1098,7 @@ class Sales extends Secure_Controller
 	}
 
 	private function _reload($data = array())
-	{		
+	{
 		$data['sale_id'] = $this->sale_lib->get_sale_id();
 		$data['cart'] = $this->sale_lib->get_cart();
 		$data['quantity'] = $this->sale_lib->get_quantity();
@@ -1145,13 +1145,13 @@ class Sales extends Secure_Controller
 				'location_id' => 'all',
 				'start_date' => date('Y-m-d'),
 				'end_date' => date('Y-m-d'));
-			// 
+			//
 			$tests = $this->Testex->search($search, $filters, $limit, $offset, $sort, $order)->result_array();
 			$_tests = array();
 			$seenIds = array();
 			foreach ($tests as $_test) {
 				$_iCustomerId = $_test['customer_id'];
-				
+
 				// Kiểm tra xem customer_id đã xuất hiện trước đó hay chưa
 				if (!in_array($_iCustomerId, $seenIds)) {
 					// Nếu chưa xuất hiện, thêm khách hàng vào mảng kết quả và đánh dấu là đã xuất hiện
@@ -1163,7 +1163,7 @@ class Sales extends Secure_Controller
 		}
 		//svar_dump($data['tests']); //die();
 		//var_dump($data['detail_tests']);
-		
+
 		$data = $this->xss_clean($data);
 
 		$this->load->view("sales/register", $data);
@@ -1179,7 +1179,7 @@ class Sales extends Secure_Controller
 			$sale_id = $sale_info->sale_id;
 		}
 		$data = $this->_load_sale_data($sale_id);
-	
+
 		$qr_url_data = base_url('/verify/confirm/').$data['sale_uuid'];
 		$hex_data   = bin2hex($qr_url_data);
         $save_name  = $hex_data.'.png';
@@ -1198,15 +1198,15 @@ class Sales extends Secure_Controller
         $config['black']        = array(255,255,255);
         $config['white']        = array(255,255,255);
         $this->ciqrcode->initialize($config);
-  
+
         /* QR Data  */
         $params['data']     = $qr_url_data;
         $params['level']    = 'L';
         $params['size']     = 10;
         $params['savename'] = FCPATH.$config['imagedir']. $save_name;
-        
+
         //$this->ciqrcode->generate($params);
-       
+
 		$data['qrcode_string'] = $this->ciqrcode->generate($params);
 		$data['url_string'] = $qr_url_data;
 		$data['footer_string'] = 'Quét mã QR để nhận quà';
@@ -1245,11 +1245,11 @@ class Sales extends Secure_Controller
 			{
 				$employee->$property = $this->xss_clean($value);
 			}
-			
+
 			$data['employees'][$employee->person_id] = $employee->first_name . ' ' . $employee->last_name;
 		}
 
-		$sale_info = $this->xss_clean($this->Sale->get_info($sale_id)->row_array());	
+		$sale_info = $this->xss_clean($this->Sale->get_info($sale_id)->row_array());
 		$data['selected_customer_name'] = $sale_info['customer_name'];
 		$data['selected_customer_id'] = $sale_info['customer_id'];
 		$data['sale_info'] = $sale_info;
@@ -1261,13 +1261,13 @@ class Sales extends Secure_Controller
 			{
 				$payment->$property = $this->xss_clean($value);
 			}
-			
+
 			$data['payments'][] = $payment;
 		}
-		
+
 		// don't allow gift card to be a payment option in a sale transaction edit because it's a complex change
 		$data['payment_options'] = $this->xss_clean($this->Sale->get_payment_options(FALSE));
-		
+
 		$this->load->view('sales/form', $data);
 	}
 
@@ -1351,7 +1351,7 @@ class Sales extends Secure_Controller
 	}
 
 	public function suspend()
-	{	
+	{
 		$cart = $this->sale_lib->get_cart();
 		$payments = $this->sale_lib->get_payments();
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
@@ -1385,15 +1385,15 @@ class Sales extends Secure_Controller
 
 		$this->_reload($data);
 	}
-	
+
 	public function suspended()
-	{	
+	{
 		$data = array();
 		$data['suspended_sales'] = $this->xss_clean($this->Sale_suspended->get_all()->result_array());
 
 		$this->load->view('sales/suspended', $data);
 	}
-	
+
 	public function unsuspend()
 	{
 		$suspended_sale_id = $this->input->post('suspended_sale_id');
@@ -1419,7 +1419,7 @@ class Sales extends Secure_Controller
 		}
 		$this->_reload($data);
 	}
-	
+
 	public function check_invoice_number()
 	{
 		$sale_id = $this->input->post('sale_id');
@@ -1505,7 +1505,7 @@ class Sales extends Secure_Controller
 
 	public function pending()
 	{
-		
+
 		$data['table_headers'] = get_sales_manage_table_headers();
 
 		// filters that will be loaded in the multiselect dropdown
@@ -1524,9 +1524,9 @@ class Sales extends Secure_Controller
 		} else {
 			$data['is_created'] = 0;
 		}
-		
+
 		$this->load->view('sales/pending', $data);
-		
+
 	}
 	/**
 	 * Summary of payment
