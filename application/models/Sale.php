@@ -486,6 +486,10 @@ class Sale extends CI_Model
 			// add new payments
 			foreach($payments as $payment)
 			{
+				if($payment['payment_amount'] == 0) //Số tiền bằng 0 thì không thực hiện ghi vào db
+				{
+					continue;
+				}
 				$sales_payments_data = array(
 					'sale_id' => $sale_id,
 					'payment_type' => $payment['payment_type'],
@@ -1320,6 +1324,7 @@ class Sale extends CI_Model
 	//public function save($items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$points=0,$sale_id = FALSE)
 	public function edit(&$sale_id, $items, $customer_id, $employee_id, $comment, $invoice_number, $payments,$amount_change,$suspended_sale_id=null, $ctv_id = 0 ,$status = 0,$test_id=0, $kxv_id = 0,$doctor_id=0,$update_inventory=TRUE,$points=0)
 	{
+		
 		// Chỉnh sửa đơn hàng gồm: Các sản phẩm; và đã tạm ứng tiền;
 		// Chú ý hoạt động chỉnh sửa chỉ có thể chỉnh sửa trong thời gian là ngày hiện tại;
 	
