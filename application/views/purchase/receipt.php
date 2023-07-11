@@ -29,6 +29,7 @@ if (isset($error_message))
 			<?php endif;?>
 		<?php elseif($completed == 3): ?>
 			<div class='btn btn-sm btn-info pull-right' id='barcode_button'><span class="glyphicon glyphicon-import">&nbsp</span>In Barcode</div>
+			<div class='btn btn-sm btn-info pull-right' id='excel_export_button'><span class="glyphicon glyphicon-import">&nbsp</span>Xuất Excel</div>
 			<div class='btn btn-sm btn-info pull-right' id='import_button'><span class="glyphicon glyphicon-import">&nbsp</span>Nhập kho</div>		
 		<?php elseif($completed == 4): ?>
 			<div class='btn btn-sm btn-info pull-right' id='barcode_button'><span class="glyphicon glyphicon-import">&nbsp</span>In Barcode</div>
@@ -168,7 +169,13 @@ $(document).ready(function()
 		
     });
 
-	
+	$("#excel_export_button").click(function()
+    {	
+		$('#action_form').attr('action', '<?php echo site_url($controller_name . "/export"); ?>');
+		$('#action_form').attr('method', 'get');
+		$('#action_form').submit();
+
+    });
 	
 });
 
