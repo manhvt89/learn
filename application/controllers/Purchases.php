@@ -67,7 +67,7 @@ class Purchases extends Secure_Controller
 
 		$this->_reload();
 	}
-	
+
 	public function set_comment()
 	{
 		$this->purchase_lib->set_comment($this->input->post('comment'));
@@ -77,12 +77,12 @@ class Purchases extends Secure_Controller
 	{
 		$this->purchase_lib->set_print_after_sale($this->input->post('recv_print_after_sale'));
 	}
-	
+
 	public function set_reference()
 	{
 		$this->purchase_lib->set_reference($this->input->post('recv_reference'));
 	}
-	
+
 	public function add()
 	{
 		$data = array();
@@ -126,7 +126,7 @@ class Purchases extends Secure_Controller
 
 		$this->_reload($data);
 	}
-	
+
 	public function edit($receiving_id)
 	{
 		$data = array();
@@ -136,18 +136,18 @@ class Purchases extends Secure_Controller
 		{
 			$data['suppliers'][$supplier->person_id] = $this->xss_clean($supplier->first_name . ' ' . $supplier->last_name);
 		}
-	
+
 		$data['employees'] = array();
 		foreach ($this->Employee->get_all()->result() as $employee)
 		{
 			$data['employees'][$employee->person_id] = $this->xss_clean($employee->first_name . ' '. $employee->last_name);
 		}
-	
+
 		$receiving_info = $this->xss_clean($this->Receiving->get_info($receiving_id)->row_array());
 		$data['selected_supplier_name'] = !empty($receiving_info['supplier_id']) ? $receiving_info['company_name'] : '';
 		$data['selected_supplier_id'] = $receiving_info['supplier_id'];
 		$data['receiving_info'] = $receiving_info;
-	
+
 		$this->load->view('receivings/form', $data);
 	}
 
@@ -157,12 +157,12 @@ class Purchases extends Secure_Controller
 		$this->purchase_lib->set_check(0);
 		$this->_reload();
 	}
-	
-	public function delete($receiving_id = -1, $update_inventory = TRUE) 
+
+	public function delete($receiving_id = -1, $update_inventory = TRUE)
 	{
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$receiving_ids = $receiving_id == -1 ? $this->input->post('ids') : array($receiving_id);
-	
+
 		if($this->Receiving->delete_list($receiving_ids, $employee_id, $update_inventory))
 		{
 			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('receivings_successfully_deleted') . ' ' .
@@ -188,7 +188,7 @@ class Purchases extends Secure_Controller
 		//$comment = $this->input->post('comment');
 		//$data['print_after_sale'] = $this->input->post('recv_print_after_sale');
 		$data = array();
-		
+
 		$data['cart'] = $this->purchase_lib->get_cart();
 
 		$data['total'] = $this->purchase_lib->get_total();
@@ -227,7 +227,7 @@ class Purchases extends Secure_Controller
 			}
 		}
 		$_purchase_id = 0;
-		if ($purchase_id == 0) {	
+		if ($purchase_id == 0) {
 			$name = "Đơn nhập ngày " . date('d/m/Y hms', time());
 			$comment = '';
 			$data['reference'] = '';
@@ -249,7 +249,7 @@ class Purchases extends Secure_Controller
 			$data['purchase_id'] = 'POID ' . $_purchase_id;
 		}
 		$data['completed'] = $completed;
-		
+
 		if ($data['purchase_id'] == 'POID -1') {
 			$_purchase_id = 0;
 			$data['purchase_uuid'] = 0;
@@ -265,7 +265,7 @@ class Purchases extends Secure_Controller
 		}
 
 		$data['print_after_sale'] = 0;
-		
+
 
 		$this->load->view("purchase/receipt",$data);
 
@@ -274,7 +274,7 @@ class Purchases extends Secure_Controller
 
 	public function requisition_complete()
 	{
-		if($this->purchase_lib->get_stock_source() != $this->purchase_lib->get_stock_destination()) 
+		if($this->purchase_lib->get_stock_source() != $this->purchase_lib->get_stock_destination())
 		{
 			foreach($this->purchase_lib->get_cart() as $item)
 			{
@@ -282,20 +282,20 @@ class Purchases extends Secure_Controller
 				$this->purchase_lib->add_item($item['item_id'], $item['quantity'], $this->purchase_lib->get_stock_destination());
 				$this->purchase_lib->add_item($item['item_id'], -$item['quantity'], $this->purchase_lib->get_stock_source());
 			}
-			
+
 			$this->complete();
 		}
-		else 
+		else
 		{
 			$data['error'] = $this->lang->line('receivings_error_requisition');
 
-			$this->_reload($data);	
+			$this->_reload($data);
 		}
 	}
-	
+
 	public function receipt($purchase_id)
 	{
-		//$purchase_info = $this->Purchase->get_info($purchase_id)->row_array();		
+		//$purchase_info = $this->Purchase->get_info($purchase_id)->row_array();
 		$purchase_info = $this->Purchase->get_info_uuid($purchase_id)->row_array();
 		//var_dump($purchase_info);
 		$this->purchase_lib->copy_entire_purchase($purchase_info['id']);
@@ -304,7 +304,7 @@ class Purchases extends Secure_Controller
 		$data['total'] = $this->purchase_lib->get_total();
 		$data['receipt_title'] = $this->lang->line('receivings_receipt');
 		$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), strtotime($purchase_info['purchase_time']));
-		
+
 		$data['purchase_id'] = 'PO ' . $purchase_info['id'];
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['purchase_id']);
 		$employee_info = $this->Employee->get_info($purchase_info['employee_id']);
@@ -323,7 +323,7 @@ class Purchases extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
@@ -334,7 +334,7 @@ class Purchases extends Secure_Controller
 		$data['print_after_sale'] = 0;
 
 		$data = $this->xss_clean($data);
-		
+
 		$this->load->view("purchase/receipt", $data);
 
 		$this->purchase_lib->clear_all();
@@ -347,7 +347,7 @@ class Purchases extends Secure_Controller
 		$data['check'] = $this->purchase_lib->get_check();
 		//$data['modes'] = array('receive' => $this->lang->line('receivings_receiving'), 'return' => $this->lang->line('receivings_return'));
 		//$data['mode'] = 1;
-		
+
 		$data['total'] = $this->purchase_lib->get_total();
 		$data['comment'] = '';
 		//$data['reference'] = $this->purchase_lib->get_reference();
@@ -366,7 +366,7 @@ class Purchases extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
@@ -380,11 +380,11 @@ class Purchases extends Secure_Controller
 
 		$this->load->view("purchase/purchase", $data);
 	}
-	
+
 	public function save($receiving_id = -1)
 	{
 		$newdate = $this->input->post('date');
-		
+
 		$date_formatter = date_create_from_format($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), $newdate);
 
 		$receiving_data = array(
@@ -394,7 +394,7 @@ class Purchases extends Secure_Controller
 			'comment' => $this->input->post('comment'),
 			'reference' => $this->input->post('reference') != '' ? $this->input->post('reference') : NULL
 		);
-	
+
 		if($this->Receiving->update($receiving_data, $receiving_id))
 		{
 			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('receivings_successfully_updated'), 'id' => $receiving_id));
@@ -415,19 +415,19 @@ class Purchases extends Secure_Controller
 	public function lens()
 	{
 		$data = array();
-		
+
         $data['item_count'] = $this->config->item('KindOfLens');
 		$data['page_title'] = 'NHẬP MẮT KÍNH';
 
 		$cyls = $this->config->item('cyls');
 		$mysphs = $this->config->item('mysphs');
 		$hysphs = $this->config->item('hysphs');
-		
+
 		$data['cyls'] = $cyls;
 		$data['mysphs'] = $mysphs;
 		$data['hysphs'] = $hysphs;
 		$this->form_validation->set_rules('myo101', 'myo101', 'callback_number_empty');
-		
+
 		if($this->form_validation->run() == FALSE)
 		{
 			$this->load->view("receivings/lens", $data);
@@ -456,7 +456,7 @@ class Purchases extends Secure_Controller
 							{
 								$_aTmp['S-'.$sph.' C-'.$cyl] = $this->input->post('myo'.$key.$k);
 							}
-						}	
+						}
 					}
 				}
 			}
@@ -478,7 +478,7 @@ class Purchases extends Secure_Controller
 							{
 								$_aTmp['S+'.$sph.' C-'.$cyl] = $this->input->post('hyo'.$key.$k);
 							}
-						}	
+						}
 					}
 				}
 			}
@@ -495,7 +495,7 @@ class Purchases extends Secure_Controller
 							//$this->purchase_lib->add_item($item_id, $quantity, $item_location);
 							$this->purchase_lib->add_item($v['item_id'], trim($value), 1);
 						}
-						
+
 					}
 				}
 
@@ -504,7 +504,7 @@ class Purchases extends Secure_Controller
 			} else{
 				$this->load->view("receivings/lens", $data);
 			}
-			
+
 		}
 		//$this->load->view("receivings/lens", $data);
 	}
@@ -516,11 +516,11 @@ class Purchases extends Secure_Controller
 		//var_dump($_POST['hyo101']);die();
 		foreach($_POST as $key=>$value)
 		{
-			
+
 			if(substr($key,0,3) == 'myo' || substr($key,0,3) == 'hyo')
 			{
 				if($value != ''){
-					
+
 					if(is_numeric($value))
 					{
 						$_aTmp[$key] = TRUE;
@@ -556,19 +556,19 @@ class Purchases extends Secure_Controller
 	}
 	public function do_excel_import()
 	{
-		
+
 		$this->load->helper('file');
 
         /* Allowed MIME(s) File */
         $file_mimes = array(
-            'application/octet-stream', 
-            'application/vnd.ms-excel', 
-            'application/x-csv', 
-            'text/x-csv', 
-            'text/csv', 
-            'application/csv', 
-            'application/excel', 
-            'application/vnd.msexcel', 
+            'application/octet-stream',
+            'application/vnd.ms-excel',
+            'application/x-csv',
+            'text/x-csv',
+            'text/csv',
+            'application/csv',
+            'application/excel',
+            'application/vnd.msexcel',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         );
 		//var_dump(extension_loaded('zip'));
@@ -606,7 +606,7 @@ class Purchases extends Secure_Controller
 					break;
 				}
 			}
-
+			//echo $_iMaxColumn++;die();
 			if ($_iMaxColumn == 6) // Chỉ xử  lý định dạng 6 cột; không có barcode tự sinh bacode
 			{
 				$_iLogedUserID = $this->Employee->get_logged_in_employee_info()->person_id;
@@ -616,7 +616,7 @@ class Purchases extends Secure_Controller
 				$_sLastDate = substr($_sLastBarcode, 0, 6);
 				$_sDate = date('dmy'); //070223 - 07.02.23
 				$_iBegin = 0; // Số bắt đầu chạy
-				$_iWork = 0; 
+				$_iWork = 0;
 				$_iEnd = '';
 				if($_sLastDate == $_sDate)
 				{
@@ -626,7 +626,7 @@ class Purchases extends Secure_Controller
 				$_sBarcode = '';
 				for($i = 1; $i < count($sheet_data); $i++) {
 					//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
-					
+
 					if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
 					$_iWork++;
 					//$_sBarcode = '';
@@ -647,7 +647,7 @@ class Purchases extends Secure_Controller
 							'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
 							'quanlity' => $sheet_data[$i]['5']
 						);
-						
+						//var_dump($data);die();
 						$this->purchase_lib->add_item($data);
 					}
 
@@ -661,10 +661,10 @@ class Purchases extends Secure_Controller
 							'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
 							'quanlity' => $sheet_data[$i]['5']
 						);
-						
+
 						$this->purchase_lib->add_item($data);
 					}
-					
+
 				}
 				//$_iEnd = $_iBegin + $_iWork;
 				if($_iEnd != '')
@@ -677,13 +677,13 @@ class Purchases extends Secure_Controller
 			}
 			elseif($_iMaxColumn == 7) // Xử lý định dạng 7 cột
 			{
-				
-				
+
+
 				for($i = 1; $i < count($sheet_data); $i++) {
 					//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
 					if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
-		
-					
+
+
 					$data = array(
 						'item_number'       => $sheet_data[$i]['0'],
 						'item_name'      => $sheet_data[$i]['1'],
@@ -692,7 +692,7 @@ class Purchases extends Secure_Controller
 						'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
 						'quanlity' => $sheet_data[$i]['5']
 					);
-					
+
 					$this->purchase_lib->add_item($data);
 					$array_data[] = $data;
 				}
@@ -767,7 +767,7 @@ class Purchases extends Secure_Controller
 						echo json_encode(array('success' => TRUE, 'message' => 'Các barcode hợp lệ'));
 					}
 				}
-				
+
 			} else {
 				$this->purchase_lib->set_check(1); // đã kiểm tra hợp lê
 				echo json_encode(array('success' => TRUE, 'message' => 'Các barcode hợp lệ'));
@@ -777,32 +777,32 @@ class Purchases extends Secure_Controller
 	}
 
 	public function manage()
-	{		
+	{
 		$data['table_headers'] = get_purchases_manage_table_headers();
 
 		// filters that will be loaded in the multiselect dropdown
-		
+
 		$data['filters'] = array('new' => 'Mới tạo',
 									'edit'=>'Đã chỉnh sửa',
 									'cancel'=>'Yêu cầu sửa',
 									'waiting'=>'Yêu cầu duyệt',
 									'approved'=>'Đã duyệt',
 									'imported'=>'Nhập kho'
-									);		
+									);
 
 		if ($this->Employee->has_grant('purchases_index')) {
 			$data['is_created'] = 1;
 		} else {
 			$data['is_created'] = 0;
 		}
-		
+
 		$this->load->view('purchase/manage', $data);
-		
+
 	}
 
 	public function search()
 	{
-		
+
 		$search = $this->input->get('search');
 		$limit  = $this->input->get('limit');
 		$offset = $this->input->get('offset');
@@ -831,7 +831,7 @@ class Purchases extends Secure_Controller
 		$purchases = $this->Purchase->search($search, $filters, $limit, $offset, $sort, $order);
 		$total_rows = $this->Purchase->get_found_rows($search, $filters);
 		//$sales = $this->Sale->search($search, $filters, $limit, $offset, $sort, $order, $this->logedUser_type, $this->logedUser_id);
-		//$total_rows = $this->Sale->get_found_rows($search, $filters, $this->logedUser_type, $this->logedUser_id);		
+		//$total_rows = $this->Sale->get_found_rows($search, $filters, $this->logedUser_type, $this->logedUser_id);
 		$data_rows = array();
 		foreach($purchases->result() as $item)
 		{
@@ -892,7 +892,7 @@ class Purchases extends Secure_Controller
 			{
 				$this->receiving_lib->add_item($item['item_id'],$item['item_quantity'],1);
 			}
-			
+
 			redirect(base_url("receivings"));
 		}
 	}
@@ -912,7 +912,7 @@ class Purchases extends Secure_Controller
 		$data['total'] = $this->purchase_lib->get_total();
 		$data['receipt_title'] = $this->lang->line('receivings_receipt');
 		$data['transaction_time'] = date($this->config->item('dateformat') . ' ' . $this->config->item('timeformat'), strtotime($purchase_info['purchase_time']));
-		
+
 		$data['purchase_id'] = 'PO ' . $purchase_info['id'];
 		$data['barcode'] = $this->barcode_lib->generate_receipt_barcode($data['purchase_id']);
 		$employee_info = $this->Employee->get_info($purchase_info['employee_id']);
@@ -935,19 +935,19 @@ class Purchases extends Secure_Controller
 			$data['supplier_address'] = $supplier_info->address_1;
 			if(!empty($supplier_info->zip) or !empty($supplier_info->city))
 			{
-				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;				
+				$data['supplier_location'] = $supplier_info->zip . ' ' . $supplier_info->city;
 			}
 			else
 			{
 				$data['supplier_location'] = '';
 			}
 		}
-		//var_dump($data['cart']); 
+		//var_dump($data['cart']);
 		//$this->purchase_lib->clear_all();
 		$data['print_after_sale'] = 0;
 
 		$data = $this->xss_clean($data);
-		
+
 		$this->load->view("purchase/purchase", $data);
 	}
 
@@ -956,7 +956,7 @@ class Purchases extends Secure_Controller
 		$purchase_uuid = $this->input->post('purchase_uuid');
 		$purchase_info = $this->Purchase->get_info_uuid($purchase_uuid)->row_array();
 		if (!empty($purchase_info)) {
-			
+
 			//var_dump($purchase_info);
 			// to load data to the cart;
 			$this->printbarcode_lib->clear_all();
@@ -1020,7 +1020,7 @@ class Purchases extends Secure_Controller
 			];
 			$sheet->getRowDimension(1)->setRowHeight(30);
 			$sheet->getCell('A1')->getStyle()->applyFromArray($styleArray);
-			
+
 			$sheet->setCellValue('A1', 'Đơn nhập hàng (PO): '.$sale_info->code);
 			$i = 2;
 			$sheet->setCellValue("A$i", 'Barcode');

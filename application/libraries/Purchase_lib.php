@@ -79,7 +79,7 @@ class Purchase_lib
 
 		return $this->CI->session->userdata('purchase_stock_source');
 	}
-	
+
 	public function get_name()
 	{
 		// avoid returning a NULL that results in a 0 in the comment if nothing is set/available
@@ -87,33 +87,33 @@ class Purchase_lib
 
 		return empty($comment) ? '' : $comment;
 	}
-	
+
 	public function set_name($comment)
 	{
 		$this->CI->session->set_userdata('purchase_name', $comment);
 	}
-	
+
 	public function clear_name()
 	{
 		$this->CI->session->unset_userdata('purchase_name');
 	}
-   
+
 	public function get_reference()
 	{
 		return $this->CI->session->userdata('purchase_reference');
 	}
-	
-	
+
+
 	public function set_stock_source($stock_source)
 	{
 		$this->CI->session->set_userdata('purchase_stock_source', $stock_source);
 	}
-	
+
 	public function clear_stock_source()
 	{
 		$this->CI->session->unset_userdata('purchase_stock_source');
 	}
-	
+
 	public function get_stock_destination()
 	{
 		if(!$this->CI->session->userdata('purchase_stock_destination'))
@@ -128,7 +128,7 @@ class Purchase_lib
 	{
 		$this->CI->session->set_userdata('purchase_stock_destination', $stock_destination);
 	}
-	
+
 	public function clear_stock_destination()
 	{
 		$this->CI->session->unset_userdata('purchase_stock_destination');
@@ -169,7 +169,7 @@ class Purchase_lib
 		$unit_price = trim($_aItem['unit_price']);
 		$quantity = trim($_aItem['quanlity']);
 		$category = trim($_aItem['category']);
-	
+
 		$status = isset($_aItem['status'])? trim($_aItem['status']):0 ;
 		$_iMaxKey = 0;
 		//Get items in the receiving so far.
@@ -187,11 +187,11 @@ class Purchase_lib
 				$status = 1;
 			}
 		}
-		
+
 		$_cItems = $this->get_cart();
 		//var_dump($_cItems);
 		$_iIsOnCart = 0;
-		$_iEditLine = 0; 
+		$_iEditLine = 0;
 		foreach($_cItems as $k=>$v)
 		{
 			if($k >= $_iMaxKey)
@@ -210,9 +210,9 @@ class Purchase_lib
 		if($_iIsOnCart == 1)
 		{
 			$_aEditItem = $_cItems[$_iEditLine];
-			
+
 			$_aEditItem['item_quantity'] = $quantity;
-			
+
 			$_cItems[$_iEditLine] = $_aEditItem;
 
 		} else {
@@ -242,14 +242,14 @@ class Purchase_lib
 	{
 		$item_info = $this->CI->Item->get_info_by_id_or_number($item_id);
 		//var_dump($item_info );
-		
-		//make sure item exists		
+
+		//make sure item exists
 		if(empty($item_info))
 		{
 			$item_id = -1;
-            return FALSE;			
+            return FALSE;
 		}
-		
+
 		$item_id = $item_info->item_id;
 		$item_number = $item_info->item_number;
 		// Serialization and Description
@@ -352,7 +352,7 @@ class Purchase_lib
 	}
 	/**
 	 * Summary of set_check
-	 * @param mixed $check = 0: chưa kiểm tra; 1: đã kiểm tra 
+	 * @param mixed $check = 0: chưa kiểm tra; 1: đã kiểm tra
 	 * @return void
 	 */
 	public function set_check($check)
@@ -381,8 +381,8 @@ class Purchase_lib
 		if(preg_match("/(RECV|KIT)/", $pieces[0]))
 		{
 			$receiving_id = $pieces[1];
-		} 
-		else 
+		}
+		else
 		{
 			$receiving_id = $this->CI->Receiving->get_receiving_by_reference($receipt_receiving_id)->row()->receiving_id;
 		}
@@ -404,7 +404,7 @@ class Purchase_lib
 		//KIT #
 		$pieces = explode(' ',$external_item_kit_id);
 		$item_kit_id = $pieces[1];
-		
+
 		foreach($this->CI->Item_kit_items->get_info($item_kit_id) as $item_kit_item)
 		{
 			$this->add_item($item_kit_item['item_id'],$item_kit_item['quantity'], $item_location);
@@ -418,7 +418,7 @@ class Purchase_lib
 
 		foreach($this->CI->Purchase->get_purchase_items($purchase_id)->result() as $row)
 		{
-			
+
 			$_aItem['item_number'] = $row->item_number;
 			$_aItem['item_name'] = $row->item_name;
 			$_aItem['cost_price'] = $row->item_price;
@@ -431,7 +431,7 @@ class Purchase_lib
 			} else {
 				$_aItem['status'] = 1;
 			}
-			
+
 			//var_dump($_aItem);
 			if ($full == 0) {
 				$this->add_item($_aItem, $row->item_id);
@@ -455,9 +455,6 @@ class Purchase_lib
 
 	public function get_item_total($quantity, $price, $discount_percentage)
 	{
-		$quantity = number_format($quantity,2);
-		$price = number_format($price,2);
-		$discount_percentage = number_format($discount_percentage,2);
 
 		$total = bcmul($quantity, $price);
 		if($discount_percentage == 0)
@@ -478,7 +475,7 @@ class Purchase_lib
 		{
 			$total = bcadd($total, $this->get_item_total($item['item_quantity'], $item['item_price'], 0));
 		}
-		
+
 		return $total;
 	}
 
