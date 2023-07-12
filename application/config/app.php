@@ -143,7 +143,7 @@ $config['exclude_module'] = array(
 ** config qrcode; = 0 don't active qrcode; 
 ** = 1: Active module qrcode;
 */
-$config['qrcode'] = 1;
+$config['qrcode'] = 0;
 $config['barcode'] = 1;
 
 /*
@@ -196,8 +196,22 @@ $config['caPOStatus'] = array(
     1=>'Yêu cầu sửa lại', // Có thể sửa
     2=>'Đang chờ phê duyệt',
     3=>'Đã phê duyệt',
-    4=>'Đã nhập hàng'
+    4=>'Đã gửi đến nhà cung cấp',
+    5=>'Đang nhập',
+    6=>'Đã nhập xong 100%'
 );
+//Trạng thái Test
+$config['caTestStatus'] = array(
+    1=>'Mới tạo',
+    2=>'Đã có thông tin bệnh',
+    3=>'Đã mua hàng'
+);
+// Trạng thái đơn hàng
+$config['caOSStatus'] = array(
+    1=>'Mới tạo', // Tạo mới đơn hàng và xuất hàng
+    2=>'Hoàn thành'
+);
+
 
 $config['default_city'] = 'Hà Nội';
 

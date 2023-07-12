@@ -358,6 +358,15 @@ class Test extends Secure_Controller
         }else{
 
         }
+		$data['is_create'] = $this->Employee->has_grant('test_index');
+		if($this->Employee->has_grant('sales_index')) {
+			$data['table_headers'] = get_test_manage_table_headers(1);
+		}else{
+			$data['table_headers'] = get_test_manage_table_headers();
+		}
+			// filters that will be loaded in the multiselect dropdown
+		$data['filters'] = null;
+		//$this->load->view('test/manage', $data);
         $data = $this->xss_clean($data);
 		$this->load->view("test/register", $data);
 	}

@@ -52,6 +52,24 @@ if (isset($success))
 	<?php else: ?>
 		<ul id="error_message_box" class="error_message_box">Chưa nhập thông tin khách hàng</ul>
 	<?php endif; ?>
+	<!-- Display table -->
+	<div id="toolbar">
+		<div class="pull-left form-inline" role="toolbar">
+			<!--
+			<button id="delete" class="btn btn-default btn-sm print_hide">
+				<span class="glyphicon glyphicon-trash">&nbsp</span><?php echo $this->lang->line("common_delete");?>
+			</button>
+			-->
+			<?php echo form_input(array('name'=>'daterangepicker', 'class'=>'form-control input-sm', 'id'=>'daterangepicker')); ?>
+			<?php if($filters != null): ?>
+			<?php echo form_multiselect('filters[]', $filters, '', array('id'=>'filters', 'data-none-selected-text'=>$this->lang->line('common_none_selected_text'), 'class'=>'selectpicker show-menu-arrow', 'data-selected-text-format'=>'count > 1', 'data-style'=>'btn-default btn-sm', 'data-width'=>'fit')); ?>
+			<?php endif; ?>
+		</div>
+	</div>
+
+	<div id="table_holder">
+		<table id="table" data-sort-order="desc" data-sort-name="test_time"></table>
+	</div>
 </div>
 <!-- Overall Test -->
 
@@ -169,6 +187,9 @@ if (isset($success))
 	<?php endif; ?>
 </div>
 <?php $this->load->view('partial/print_prescription.php',array('selected_printer'=>'precription_printer')); ?>
+<div class="row">
+
+</div>
 <script type="text/javascript">
 
 
@@ -254,30 +275,49 @@ $(document).ready(function()
 
 	dialog_support.init("a.modal-dlg, button.modal-dlg");
 
-	table_support.handle_submit = function(resource, response, stay_open)
-	{
-		if(response.success) {
-			if (resource.match(/customers$/))
-			{
-				$("#customer").val(response.id);
-				$("#select_customer_form").submit();
+	// Display table
+	// when any filter is clicked and the dropdown window is closed
+	$('#filters').on('hidden.bs.select', function(e) {
+		table_support.refresh();
+	});
+	
+	// load the preset datarange picker
+	<?php $this->load->view('partial/daterangepicker'); ?>
+
+	$("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
+		table_support.refresh();
+	});
+
+	<?php $this->load->view('partial/bootstrap_tables_locale'); ?>
+
+	table_support.init({
+		resource: '<?php echo site_url($controller_name);?>',
+		headers: <?php echo $table_headers; ?>,
+		pageSize: <?php echo $this->config->item('lines_per_page'); ?>,
+		uniqueId: 'test_id',
+		onLoadSuccess: function(response) {
+			if($("#table tbody tr").length > 1) {
+				$("#table tbody tr:last td:first").html("");
 			}
-			else
-			{
-				var $stock_location = $("select[name='stock_location']").val();
-				$("#item_location").val($stock_location);
-				$("#item").val(response.id);
-				if (stay_open)
-				{
-					$("#add_item_form").ajaxSubmit();
-				}
-				else
-				{
-					$("#add_item_form").submit();
-				}
+		},
+		queryParams: function() {
+			return $.extend(arguments[0], {
+				start_date: start_date,
+				end_date: end_date,
+				filters: $("#filters").val() || [""]
+			});
+		},
+		columns: {
+			'test_time':{
+				'vertical-align': 'middle'
+			},
+			'customer_name':{
+				align:'right'
 			}
 		}
-	}
+	});
+
+	
 });
 
 </script>
