@@ -570,5 +570,78 @@ class Employee extends Person
 		return $success;
 
 	}
+	// Đăng nhập với token dùng 1 lần.
+	// Sau khi đăng nhập thành công, đổi token khác; 
+	// Chuyển đến trang url
+	public function token($token, $url)
+	{
+		$query = $this->db->get_where('employees', array('username' => $token, 'deleted' => 0), 1);
+
+		if($query->num_rows() == 1)
+		{
+			$row = $query->row();
+
+			$this->session->set_userdata('person_id', $row->person_id);
+			$this->session->set_userdata('type', $row->type);
+
+			$_oTheLoginedUser = $this->get_info($this->session->userdata('person_id')); //get user object to put session
+
+			$this->session->set_userdata('theUser', $_oTheLoginedUser); // Put the logined user to the session
+
+			$_grants = $this->Module->get_grants_of_the_user($this->session->userdata('person_id'));
+			$_aoGrants = $_grants->result();
+			$this->session->set_userdata('grants', $_aoGrants); // Put the _aoGrants to the session
+			$_aoAllowed_Modules = $this->Module->get_allowed_modules($this->session->userdata('person_id'))->result();
+			//var_dump($_aoAllowed_Modules);die();
+			if(empty($_aoAllowed_Modules))
+			{
+				$this->session->set_userdata('allowedmodules', array()); // Put the empty of array to the session
+			} else{
+				$_aoAllowedmodules = array();
+				foreach ($_aoAllowed_Modules as $key=>$allowed_module) {
+
+
+					if ($allowed_module->permission_key == $allowed_module->module_key.'_index' ) 
+					{
+						$_aoAllowedmodules[] = $allowed_module;
+					}
+				}
+				$this->session->set_userdata('allowedmodules', $_aoAllowedmodules); // Put the _aoAllowed_Modules to the session
+			}
+
+			$_aoRolesOfTheUser = $this->Module->get_roles_of_the_user($this->session->userdata('person_id'))->result();
+			//var_dump($_aoRolesOfTheUser);die();
+			if(empty($_aoRolesOfTheUser))
+			{
+				$this->session->set_userdata('RolesOfTheUser', array()); // Put the empty of array to the session
+			} else {
+				$this->session->set_userdata('RolesOfTheUser', $_aoRolesOfTheUser); // Put the _aoAllowed_Modules to the session
+			}
+
+			$_aoRoles = $this->Module->get_roles()->result();
+			if(empty($_aoRoles))
+			{
+				$this->session->set_userdata('Roles', array()); // Put the empty of array to the session
+			} else {
+				$this->session->set_userdata('Roles', $_aoRoles); // Put the _aoRoles to the session
+			}
+
+			$_aoAllGrants = $this->Module->get_grants()->result();
+			//var_dump($_aoAllGrants);
+			if(empty($_aoAllGrants))
+			{
+				$this->session->set_userdata('AllGrants', array()); // Put the empty of array to the session
+			} else {
+				$this->session->set_userdata('AllGrants', $_aoAllGrants); // Put the _aoAllGrants to the session
+			}
+
+			$this->db->update('employees', array('password' => $password_hash));
+
+			redirect(base_url($url));
+			// compare passwords depending on the hash version
+		}
+
+		redirect(base_url('login'));
+	}
 }
 ?>
