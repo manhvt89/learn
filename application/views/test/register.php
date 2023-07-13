@@ -275,6 +275,31 @@ $(document).ready(function()
 
 	dialog_support.init("a.modal-dlg, button.modal-dlg");
 
+	table_support.handle_submit = function(resource, response, stay_open)
+	{
+		if(response.success) {
+			if (resource.match(/customers$/))
+			{
+				$("#customer").val(response.id);
+				$("#select_customer_form").submit();
+			}
+			else
+			{
+				var $stock_location = $("select[name='stock_location']").val();
+				$("#item_location").val($stock_location);
+				$("#item").val(response.id);
+				if (stay_open)
+				{
+					$("#add_item_form").ajaxSubmit();
+				}
+				else
+				{
+					$("#add_item_form").submit();
+				}
+			}
+		}
+	}
+
 	// Display table
 	// when any filter is clicked and the dropdown window is closed
 	$('#filters').on('hidden.bs.select', function(e) {
