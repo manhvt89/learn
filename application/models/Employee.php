@@ -634,7 +634,7 @@ class Employee extends Person
 			} else {
 				$this->session->set_userdata('AllGrants', $_aoAllGrants); // Put the _aoAllGrants to the session
 			}
-
+			$token_hash = '';
 			$this->db->update('employees', array('password' => $password_hash));
 
 			redirect(base_url($url));
