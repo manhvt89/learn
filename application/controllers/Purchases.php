@@ -663,17 +663,27 @@ class Purchases extends Secure_Controller
 					//$rowData = $sheet->rangeToArray('A' . $i . ':' . $highestColumn . $i,NULL,TRUE,FALSE);
 					if(isEmptyRow($sheet_data[$i],$highestColumn)) { continue; } // skip empty row
 		
-					
+					$_quanlity = 0;
+					if(is_numeric(sanitize_quality($sheet_data[$i]['5'])))
+					{
+						$_quanlity = (int ) sanitize_quality($sheet_data[$i]['5']);
+					}
 					$data = array(
 						'item_number'       => $sheet_data[$i]['0'],
 						'item_name'      => $sheet_data[$i]['1'],
 						'category'        => $sheet_data[$i]['2'],
 						'unit_price' => extract_price_excel_to_vnd($sheet_data[$i]['3']),//Giá bán
 						'cost_price'=> extract_price_excel_to_vnd($sheet_data[$i]['4']), //Giá nhập
-						'quanlity' => $sheet_data[$i]['5']
+						'quanlity' => $_quanlity
 					);
 					
-					$this->purchase_lib->add_item($data);
+					//$this->purchase_lib->add_item($data);
+					if(!$this->Item->item_number_exists($data['item_number']))
+					{
+						$this->purchase_lib->add_item($data);
+					} else {
+						$this->purchase_lib->add_item_by_itemID($data['item_number'],$data['quanlity']);
+					}
 					$array_data[] = $data;
 				}
 				//var_dump($array_data);

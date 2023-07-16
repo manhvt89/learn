@@ -752,6 +752,21 @@ function vn_str_filter ($str){
 return $str;
 }
 
+function generate_token($n=20)
+{
+    $result = bin2hex(random_bytes($n));
+    return $result;
+}
 
+function sanitize_quality($input) {
+    // Xóa khoảng trắng ở đầu và cuối chuỗi
+    $input = trim($input);
+
+    // Xóa khoảng trắng trong chuỗi
+    $input = str_replace(' ', '', $input);
+
+    // Trả về giá trị đã được chuẩn hóa
+    return $input;
+}
 
 ?>
