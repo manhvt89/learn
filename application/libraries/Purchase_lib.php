@@ -144,6 +144,10 @@ class Purchase_lib
 		$quantity = 0;
 		foreach ($items as $item)
 		{
+			if(!is_numeric($item['item_quantity']))
+			{
+				$item['item_quantity'] = 0;
+			}
 			$quantity = $quantity + $item['item_quantity'];
 		}
 		$this->set_quantity($quantity);
@@ -455,6 +459,10 @@ class Purchase_lib
 
 	public function get_item_total($quantity, $price, $discount_percentage)
 	{
+		if(!is_numeric($quantity))
+		{
+			$quantity = 0;
+		}
 		$total = bcmul($quantity, $price);
 		$discount_fraction = bcdiv($discount_percentage, 100);
 		$discount_amount = bcmul($total, $discount_fraction);

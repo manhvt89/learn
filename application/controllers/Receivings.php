@@ -471,6 +471,10 @@ class Receivings extends Secure_Controller
 				$this->purchase_lib->clear_all();
 				foreach($_aTmp as $key=>$value)
 				{
+					if(!is_numeric($value))
+					{
+						$value = 0;
+					}
 					foreach($_aALens as $k=>$v)
 					{
 
