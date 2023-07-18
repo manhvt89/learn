@@ -573,9 +573,10 @@ class Employee extends Person
 	// Đăng nhập với token dùng 1 lần.
 	// Sau khi đăng nhập thành công, đổi token khác; 
 	// Chuyển đến trang url
-	public function token($token, $url)
+	public function token($token, $url='home')
 	{
-		$query = $this->db->get_where('employees', array('username' => $token, 'deleted' => 0), 1);
+		//$this->session->sess_destroy();
+		$query = $this->db->get_where('employees', array('token' => $token, 'deleted' => 0), 1);
 
 		if($query->num_rows() == 1)
 		{
@@ -634,14 +635,21 @@ class Employee extends Person
 			} else {
 				$this->session->set_userdata('AllGrants', $_aoAllGrants); // Put the _aoAllGrants to the session
 			}
-			$token_hash = '';
-			$this->db->update('employees', array('password' => $password_hash));
+			$token_hash = generate_token();
+			$this->db->where('person_id', $row->person_id);
+			$this->db->update('employees', array('token' => $token_hash));
 
 			redirect(base_url($url));
 			// compare passwords depending on the hash version
 		}
 
 		redirect(base_url('login'));
+	}
+
+	public function goout()
+	{
+		$this->session->set_userdata('person_id',0);
+		$this->session->set_userdata('theUser',array());
 	}
 }
 ?>
