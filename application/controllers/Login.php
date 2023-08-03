@@ -81,7 +81,7 @@ class Login extends CI_Controller
 		// Nếu đang đăng nhập, logout ra khỏi hệ thống
 		if($this->Employee->is_logged_in())
 		{
-			//$this->Employee->goout();
+			$this->Employee->goout();
 		} 
 		// Đăng nhập lại.
 		$this->Employee->token($token);
