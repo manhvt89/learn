@@ -209,7 +209,8 @@ class Test extends Secure_Controller
 
             $employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
             $employee_info = $this->Employee->get_info($employee_id);
-            $data['employee'] = $employee_info->last_name[0] . ' ' . $employee_info->first_name;
+            //$data['employee'] = $employee_info->last_name[0] . ' ' . $employee_info->first_name;
+			$data['employee'] = $employee_info->last_name . ' ' . $employee_info->first_name;
             $data['company_info'] = implode("\n", array(
                 $this->config->item('address'),
                 $this->config->item('phone'),
