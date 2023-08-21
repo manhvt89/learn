@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 use emberlabs\Barcode\BarcodeBase;
+use Hbgl\Barcode\Code128Encoder;
 require APPPATH.'/views/barcodes/BarcodeBase.php';
 require APPPATH.'/views/barcodes/Code39.php';
 require APPPATH.'/views/barcodes/Code128.php';
@@ -174,23 +175,25 @@ class Barcode_lib
 
 	public function _display_barcode($item, $barcode_config) // @gong
 	{
-		//var_dump($item);die();
 		$item['unit_price'] = $item['price'];
 		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='print-barcode_1'>";
-		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		/*
 		$barcode = $this->generate_barcode($item, $barcode_config);
-		
-		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
-		//$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . " - <b class='category-barcode'>".$item['item_category']."</b></div>";
+		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div></tr>";
+		*/
+		if($item['item_number'] != '') {
+			$display_table .= "<div align='center' style='font-size:34px; line-height: 34px;' class='LibreBarcode128'>" . Code128Encoder::encode($item['item_number']) . "</div>";
+		}
+		$display_table .= "<div align='center'><b style='font-size:11px;'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</b> </div>";
+		$display_table .= "<div align='center'><b style='font-size:12px;'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</b>- <span class='category-barcode'>".$item['item_category']."</span></div>";
 		$display_table .= "</div>";
 
 		$display_table .= "<div class='print-barcode_2'>";
 		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
 		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
-		$display_table .= "<div align='center' class='store_address'>".$barcode_config['store_address']."</div>";
-		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div>";
-		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_third_row']."'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div align='center'>".$barcode_config['store_address']."</div>";
 		$display_table .= "</div>";
 		
 		return $display_table;

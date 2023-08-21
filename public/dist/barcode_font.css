@@ -67,3 +67,12 @@
     font-family: 'Oswald-SemiBold';
     src: url('../fonts/Oswald-SemiBold.ttf') format('truetype');
 }
+
+@font-face {
+    font-family: 'BarcodeFont';
+    src: url('../fonts/LibreBarcode128Text-Regular.ttf') format('truetype');
+}
+
+.LibreBarcode128 {
+    font-family: 'BarcodeFont' !important;
+}
