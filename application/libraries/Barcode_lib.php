@@ -177,23 +177,24 @@ class Barcode_lib
 	{
 		$item['unit_price'] = $item['price'];
 		$barcode_config['barcode_width'] = 0;
-		$display_table = "<div class='print-barcode_1'>";
-		$display_table .= "<div align='center'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table = "<div class='print-barcode_1' style='width:50mm; height:20mm'>";
+		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . " </div>";
+		
 		/*
 		$barcode = $this->generate_barcode($item, $barcode_config);
 		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div></tr>";
 		*/
+		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "</div>";
+
+		$display_table .= "<div class='print-barcode_2' style='width:50mm; height:20mm'>";
+		
+		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
+		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
+		$display_table .= "<div class='store_address' align='center'>".$barcode_config['store_address']."</div>";
 		if($item['item_number'] != '') {
 			$display_table .= "<div align='center' style='font-size:34px; line-height: 34px;' class='LibreBarcode128'>" . Code128Encoder::encode($item['item_number']) . "</div>";
 		}
-		$display_table .= "<div align='center'><b style='font-size:11px;'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</b> </div>";
-		$display_table .= "<div align='center'><b style='font-size:12px;'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</b>- <span class='category-barcode'>".$item['item_category']."</span></div>";
-		$display_table .= "</div>";
-
-		$display_table .= "<div class='print-barcode_2'>";
-		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
-		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
-		$display_table .= "<div align='center'>".$barcode_config['store_address']."</div>";
 		$display_table .= "</div>";
 		
 		return $display_table;
