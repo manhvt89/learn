@@ -98,7 +98,7 @@ border-spacing: 1px;
 		}
 		.LibreBarcode128{
 			font-size: 10mm;
-			padding-bottom: 2mm;
+			padding-bottom: 1mm;
 		}
 
 		@media print {
