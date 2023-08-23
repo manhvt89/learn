@@ -94,6 +94,10 @@ border-spacing: 1px;
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
 		}
+		.LibreBarcode128{
+			font-size: 10mm;
+			padding-bottom: 2mm;
+		}
 
 		@media print {
 			.pagebreak {
