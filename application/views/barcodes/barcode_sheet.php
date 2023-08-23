@@ -25,6 +25,7 @@
 			border-spacing: 1px;
 			margin: 0 auto;
 			height: 20mm;
+			border: green 1px solid;
 		}
 
 		.print-barcode_1 {
@@ -34,6 +35,7 @@
 			height: 20mm;
 			text-align: center;
 			margin: 0 auto;
+			border: green 1px solid;
 		}
 
 		.print-page-barcode {
