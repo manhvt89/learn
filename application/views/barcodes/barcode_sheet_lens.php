@@ -73,7 +73,13 @@ border-spacing: 1px;
 			text-transform: uppercase;
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
 			padding-top:3mm;
+			line-height: <?php echo $barcode_config['barcode_font_size']; ?>px;
 			
+		}
+		.barcode-item-line-2-name{
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+			text-transform: uppercase;
+			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;	
 		}
 		.barcode-item-unit_price{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;

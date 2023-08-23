@@ -226,10 +226,39 @@ class Barcode_lib
 
 	public function _display_barcode_lens($item, $barcode_config)
 	{
+		if(empty($item) || empty($barcode_config))
+		{
+			return '';
+		}
+		//$barcode_config['barcode_width'] = 145;
+		$barcode_config['barcode_width'] = 0;
+		$display_table = "<div class='' style='width:100%; '>";
+		$_aNames = explode(' ',$item['name']); 
+		//var_dump($_aNames);
+		$_iLength = count($_aNames);
+		if($_iLength < 3 )
+		{
+			return '';
+		}
+		$_sLastName = $_aNames[$_iLength -2].' '.$_aNames[$_iLength - 1];
+		$_sFirstname = '';
+		for($i = 0; $i < $_iLength - 2 ; $i++)
+		{
+			$_sFirstname = $_sFirstname .' ' .$_aNames[$i];
+		}
+		$_sFirstname = trim($_sFirstname); //clear blank
+		
+		//$display_table .= "<div style='width:100%; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div style='width:100%; font-size:10px; padding-bottom: 0px;' align='center'>" . $_sFirstname . "</div>";
+		$display_table .= "<div style='width:100%; font-size:12px; padding-bottom: 3px;' align='center'>" . $_sLastName . "</div>";
+		
 		//$barcode_config['barcode_width'] = 145;
 		$barcode_config['barcode_width'] = 0;
 		$display_table = "<div class='' style='width:100%; height:25mm'>";
-		$display_table .= "<div style='width:100%; padding-bottom: 1px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		//$display_table .= "<div style='width:100%; padding-bottom: 1px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div style='width:100%; padding-bottom: 0px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $_sFirstname. "</div>";
+		$display_table .= "<div style='width:100%; padding-bottom: 3px;' align='center' class='barcode-item-line-2-".$barcode_config['barcode_first_row']."'>" . $_sLastName. "</div>";
+		
 		/*
 		$barcode = $this->generate_barcode($item, $barcode_config);
 		$display_table .= "<div style='width:100%; font-size:9px;' align='center'><img src='data:image/png;base64,$barcode' /></div>";
