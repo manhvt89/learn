@@ -72,14 +72,14 @@ border-spacing: 1px;
 			text-transform: uppercase;
 			font-size: <?php echo ($barcode_config['barcode_font_size'] - 2); ?>px;
 			padding-top:5px;
-			padding-left: 5px;
+			padding-left: 0px;
 		}
 		.barcode-item-unit_price{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
 			font-size: 14px;
 			padding-top:10px;
-			padding-left: 5px;
+			padding-left: 0px;
 			font-weight: bold;
 		}
 
