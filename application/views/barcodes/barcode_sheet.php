@@ -19,17 +19,20 @@
 		}
 
 		.print-barcode_2 {
-			width: 50mm;
+			width: 48mm;
 			transform: rotate(180deg);
 			padding-bottom: 5px;
 			border-spacing: 1px;
+			margin: 0 auto;
 		}
 
 		.print-barcode_1 {
-			width: 50mm;
+			width: 48mm;
 			/*outline: 1px dashed;*/
 			border-spacing: 1px;
 			height: 18mm;
+			text-align: center;
+			margin: 0 auto;
 		}
 
 		.print-page-barcode {
@@ -73,6 +76,7 @@ border-spacing: 1px;
 			font-size: <?php echo ($barcode_config['barcode_font_size'] - 2); ?>px;
 			padding-top:5px;
 			padding-left: 0px;
+			width:48mm;
 		}
 		.barcode-item-unit_price{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;

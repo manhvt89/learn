@@ -177,7 +177,7 @@ class Barcode_lib
 	{
 		$item['unit_price'] = $item['price'];
 		$barcode_config['barcode_width'] = 0;
-		$display_table = "<div class='print-barcode_1' style='width:50mm; height:20mm'>";
+		$display_table = "<div class='print-barcode_1'>";
 		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout($barcode_config['barcode_first_row'], $item, $barcode_config) . " </div>";
 		
 		/*
@@ -187,7 +187,7 @@ class Barcode_lib
 		$display_table .= "<div align='center' class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
 		$display_table .= "</div>";
 
-		$display_table .= "<div class='print-barcode_2' style='width:50mm; height:20mm'>";
+		$display_table .= "<div class='print-barcode_2'>";
 		
 		$display_table .= "<div class='store_name' align='center'><b>".$barcode_config['store_name']."</b></div>";
 		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";

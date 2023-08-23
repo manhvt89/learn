@@ -746,7 +746,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
 {
     $CI =& get_instance();
     
-    $_sHtml = '<div style=" width: 102mm; margin:auto; ">';
+    $_sHtml = '<div style=" width: 105mm; margin:auto; ">';
     $_sHtml = $_sHtml . '<div class="print-page-barcode">';
 	
     if (!empty($items)) {
@@ -759,7 +759,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
 						
 				}
 				if($count % $columns == 0){
-                    $_sHtml = $_sHtml . '<div class="2" style=" width: 50mm; height:44mm; text-align: center;float: left; margin:0mm 0mm 0mm 0mm;">';
+                    $_sHtml = $_sHtml . '<div class="2" style=" width: 50mm; height:44mm; text-align: center;float: left; margin:0mm 0mm 0mm 2mm;">';
 					$_sHtml = $_sHtml . $CI->barcode_lib->_display_barcode($item, $barcode_config);
 					$_sHtml = $_sHtml .'</div>';
 				} else {
