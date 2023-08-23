@@ -77,14 +77,16 @@ border-spacing: 1px;
 			padding-top:5px;
 			padding-left: 0px;
 			width:48mm;
+			text-align: center;
 		}
 		.barcode-item-unit_price{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
-			font-size: 14px;
+			font-size: <?php echo ($barcode_config['barcode_font_size'] - 2); ?>px;
 			padding-top:10px;
 			padding-left: 0px;
 			font-weight: bold;
+			text-align: center;
 		}
 
 		.store_address{
