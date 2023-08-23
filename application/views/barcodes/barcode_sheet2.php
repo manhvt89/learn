@@ -68,7 +68,7 @@ border-spacing: 1px;
 		.store_name{
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font']) ?>;
-			padding-top: 10px;
+			padding-top: 1mm;
 		}
 		.barcode-item-name{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
