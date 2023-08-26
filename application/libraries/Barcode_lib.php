@@ -193,7 +193,7 @@ class Barcode_lib
 		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
 		$display_table .= "<div class='store_address' align='center'>".$barcode_config['store_address']."</div>";
 		if($item['item_number'] != '') {
-			$display_table .= "<div align='center' class='LibreBarcode128'>" . Code128Encoder::encode($item['item_number']) . "</div>";
+			$display_table .= "<div align='center' class='LibreBarcode128'>" . htmlentities(Code128Encoder::encode($item['item_number'])) . "</div>";
 		}
 		$display_table .= "</div>";
 		
@@ -264,7 +264,7 @@ class Barcode_lib
 		$display_table .= "<div style='width:100%; font-size:9px;' align='center'><img src='data:image/png;base64,$barcode' /></div>";
 		*/
 		if($item['item_number'] != '') {
-			$display_table .= "<div align='center' style='font-size:39px; line-height: 39px;' class='LibreBarcode128'>" . Code128Encoder::encode($item['item_number']) . "</div>";
+			$display_table .= "<div align='center' style='font-size:39px; line-height: 39px;' class='LibreBarcode128'>" . htmlentities(Code128Encoder::encode($item['item_number'])) . "</div>";
 		}
 		$display_table .= "<div style='width:100%;' align='center' class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
 		//$display_table .= "<tr><td align='center'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</td></tr>";
