@@ -25,7 +25,7 @@
 			border-spacing: 1px;
 			margin: 0 auto;
 			height: 20mm;
-			border: green 1px solid;
+			border: red 1px dashed;
 		}
 
 		.print-barcode_1 {
@@ -35,7 +35,7 @@
 			height: 20mm;
 			text-align: center;
 			margin: 0 auto;
-			border: green 1px solid;
+			border: red 1px dashed;
 		}
 
 		.print-page-barcode {
@@ -117,6 +117,9 @@ border-spacing: 1px;
 			}
 			#register_wrapper {
 				display: none;
+			}
+			.print-barcode_1, .print-barcode_2{
+				border: red 0px solid;
 			}
 		}
 </style>
