@@ -763,7 +763,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
 					$_sHtml = $_sHtml . $CI->barcode_lib->_display_barcode($item, $barcode_config);
 					$_sHtml = $_sHtml .'</div>';
 				} else {
-					$_sHtml = $_sHtml . '<div class="1" style=" width: 50mm; height:40mm; text-align: center;float: left; margin:0mm 0mm 0mm 2mm;">';
+					$_sHtml = $_sHtml . '<div class="1" style=" width: 50mm; height:40mm; text-align: center;float: left; margin:0mm 0mm 0mm 3mm;">';
 					$_sHtml = $_sHtml . $CI->barcode_lib->_display_barcode($item, $barcode_config); 
 					$_sHtml = $_sHtml .'</div>';
 
