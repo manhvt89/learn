@@ -232,7 +232,7 @@ class Barcode_lib
 		}
 		//$barcode_config['barcode_width'] = 145;
 		$barcode_config['barcode_width'] = 0;
-		$display_table = "<div class='' style='width:100%; '>";
+		$display_table = "<div class='123' style='width:100%; '>";
 		$_aNames = explode(' ',$item['name']); 
 		//var_dump($_aNames);
 		$_iLength = count($_aNames);
@@ -249,12 +249,12 @@ class Barcode_lib
 		$_sFirstname = trim($_sFirstname); //clear blank
 		
 		//$display_table .= "<div style='width:100%; font-size:9px; padding-bottom: 5px;' align='center'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
-		$display_table .= "<div style='width:100%; font-size:10px; padding-bottom: 0px;' align='center'>" . $_sFirstname . "</div>";
-		$display_table .= "<div style='width:100%; font-size:12px; padding-bottom: 3px;' align='center'>" . $_sLastName . "</div>";
+		//$display_table .= "<div style='width:100%; font-size:10px; padding-bottom: 0px;' align='center'>" . $_sFirstname . "</div>";
+		//$display_table .= "<div style='width:100%; font-size:12px; padding-bottom: 3px;' align='center'>" . $_sLastName . "</div>";
 		
 		//$barcode_config['barcode_width'] = 145;
 		$barcode_config['barcode_width'] = 0;
-		$display_table = "<div class='' style='width:100%; height:25mm'>";
+		$display_table = "<div class='' style='width:100%; height:22mm'>";
 		//$display_table .= "<div style='width:100%; padding-bottom: 1px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $this->manage_display_layout_lens($barcode_config['barcode_first_row'], $item, $barcode_config) . "</div>";
 		$display_table .= "<div style='width:100%; padding-bottom: 0px;' align='center' class='barcode-item-".$barcode_config['barcode_first_row']."'>" . $_sFirstname. "</div>";
 		$display_table .= "<div style='width:100%; padding-bottom: 3px;' align='center' class='barcode-item-line-2-".$barcode_config['barcode_first_row']."'>" . $_sLastName. "</div>";
