@@ -166,6 +166,9 @@ if (isset($success))
 								$item['quantity'] = trim($item['quantity']);
 								if(is_numeric($item['quantity'])) {
 									echo form_input(array('name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity'])));
+								} else {
+									$item['quantity'] = 0;
+									echo form_input(array('name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity'])));
 								}
 								?>
 							</td>
