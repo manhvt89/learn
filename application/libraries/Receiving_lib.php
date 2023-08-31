@@ -180,8 +180,8 @@ class Receiving_lib
 		$quantity = 0;
 		foreach ($items as $item)
 		{
-			$item['item_quantity'] = trim($item['item_quantity']);
-			if(is_numeric($item['item_quantity'])) {
+			$item['quantity'] = trim($item['quantity']);
+			if(is_numeric($item['quantity'])) {
 
 				$quantity = $quantity + $item['quantity'];
 			}
