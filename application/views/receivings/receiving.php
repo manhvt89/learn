@@ -162,7 +162,13 @@ if (isset($success))
 							}
 							?>
 							
-							<td><?php echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']))); ?></td>
+							<td><?php 
+								$item['quantity'] = trim($item['quantity']);
+								if(is_numeric($item['quantity'])) {
+									echo form_input(array('name' => 'quantity', 'class' => 'form-control input-sm', 'value' => to_quantity_decimals($item['quantity'])));
+								}
+								?>
+							</td>
 							<?php
 							if ($item['receiving_quantity'] > 1) 
 							{
@@ -193,7 +199,15 @@ if (isset($success))
 							<?php
 							}
 							?>
-							<td><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+							<td>
+								<?php
+									$item['quantity'] = trim($item['quantity']);
+									if(!is_numeric($item['quantity'])) {
+										echo 'Lỗi';
+									} else {
+										echo to_currency($item['price'] * $item['quantity'] - $item['price'] * $item['quantity'] * $item['discount'] / 100);
+									}?>
+							</td>
 							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('receivings_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
 						</tr>
 						<tr>
