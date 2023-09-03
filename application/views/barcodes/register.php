@@ -25,7 +25,11 @@ if (isset($success))
 	<?php echo form_open('items'."/add_barcodes", array('id'=>'mode_form', 'class'=>'form-horizontal panel panel-default')); ?>
 		<div class="panel-body form-group">
 			<ul>
-			<li class="pull-right">
+				<li class="pull-right">
+						<?php echo anchor($controller_name."/barcode2", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Tạo barcode gọng 2',
+									array('class'=>'btn btn-primary btn-sm','target'=>"_blank", 'id'=>'sales_takings_button', 'title'=>'Tạo barcode gọng 2')); ?>
+				</li>
+				<li class="pull-right">
 						<?php echo anchor($controller_name."/barcode", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . 'Tạo barcode gọng',
 									array('class'=>'btn btn-primary btn-sm','target'=>"_blank", 'id'=>'sales_takings_button', 'title'=>'Tạo barcode gọng')); ?>
 				</li>

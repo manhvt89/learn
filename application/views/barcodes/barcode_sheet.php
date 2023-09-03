@@ -9,42 +9,127 @@
 	<link rel="stylesheet" rev="stylesheet" href="<?php echo base_url();?>dist/barcode_print.css" />
 </head>
 <style>
+	.barcode-print-area {
+			background-color: transparent;
+			outline: 1px dashed;
+			width: 188.9px;
+			height: 151.2px;
+			margin: 0px 3px 0px 3px;
+			/*transform: rotate(45deg);*/
+		}
+
+		.print-barcode_2 {
+			width: 48mm;
+			transform: rotate(180deg);
+			padding-bottom: 0px;
+			border-spacing: 1px;
+			margin: 0 auto;
+			height: 20mm;
+			border: red 1px dashed;
+		}
+
+		.print-barcode_1 {
+			width: 48mm;
+			/*outline: 1px dashed;*/
+			border-spacing: 1px;
+			height: 20mm;
+			text-align: center;
+			margin: 0 auto;
+			border: red 1px dashed;
+		}
+
+		.print-page-barcode {
+			width: 105mm;
+			/*
+outline: 1px dashed;
+border-spacing: 1px;
+*/
+			/*width: 420px;*/
+			margin: auto;
+		}
+
+		.category-barcode {
+			transform: rotate(90deg);
+		}
+
+		.buttonpr {
+			width: 105mm;
+			margin: auto;
+			padding: 25px;
+			text-align: center;
+		}
+
+		.bt-print-barcode {
+			width: 40mm;
+			margin: auto;
+			height: 12mm;
+			font-size: 25px;
+			background-color: gray;
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+		}
+
+		.store_name{
+			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font']) ?>;
+			padding-top: 1mm;
+		}
+		.barcode-item-name{
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+			text-transform: uppercase;
+			font-size: <?php echo ($barcode_config['barcode_font_size'] - 2); ?>px;
+			padding-top:5px;
+			padding-left: 0px;
+			width:48mm;
+			text-align: center;
+		}
+		.barcode-item-unit_price{
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+			text-transform: uppercase;
+			font-size: <?php echo ($barcode_config['barcode_font_size'] - 2); ?>px;
+			padding-top:10px;
+			padding-left: 0px;
+			font-weight: bold;
+			text-align: center;
+		}
+
+		.store_address{
+			font-size:8px;
+		}
+		.barcode-item-item_code{
+			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
+			text-transform: uppercase;
+		}
+		.LibreBarcode128{
+			font-size: 10mm;
+			padding-bottom: 1mm;
+		}
+
+		@media print {
+			.pagebreak {
+				clear: both;
+				page-break-after: always;
+			}
+			.buttonpr {
+				display: none;
+			}
+			body {
+				margin: 0;
+			}
+			#register_wrapper {
+				display: none;
+			}
+			.print-barcode_1, .print-barcode_2{
+				border: red 0px solid;
+			}
+		}
 </style>
 
-<body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?>
+<body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="buttonpr no-print">
 				<button onclick="window.print()" class="bt-print-barcode">Print</button>
 	  </div>
-	  <div class="print-page-barcode">
-		<?php
-		if (!empty($items)) {
-			$count = 0;
-	        $columns = 2;
-			foreach ($items as $item) {
-				if ($count % $columns == 0 and $count != 0) {
-					?>
-							<div class="pagebreak"></div>
-							<?php
-				}
-				if($count % $columns == 0){
-			?>
-					<div class="2" style=" width: 50mm; text-align: center;float: left; margin:0mm 0mm 0mm 1mm;">
-							<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
-					</div>
-			<?php } else { ?>
-					<div class="1" style=" width: 50mm; text-align: center;float: left; margin:0mm 0mm 0mm 2mm;">
-					<?php echo $this->barcode_lib->_display_barcode($item, $barcode_config); ?>
-					</div>
-
-				<?php	} ?>
-			<?php
-				$count++;
-			}
-		} else { ?>
-		Hiện tại chưa có sản phẩm nào để in barcode, vui lòng chọn sản phẩm để in.
-		<?php }?>
-	  </div>
+	  <?php print_barcode($items,$this->config->item('GBarcode')['template'],$barcode_config);?>
 </body>
 
 </html>

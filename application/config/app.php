@@ -200,7 +200,7 @@ $config['caPOStatus'] = array(
     5=>'Đang nhập',
     6=>'Đã nhập xong 100%'
 );
-//Trạng thái Test
+//Trạng thái phiếu khám mắt
 $config['caTestStatus'] = array(
     1=>'Mới tạo',
     2=>'Đã có thông tin bệnh',
@@ -212,7 +212,35 @@ $config['caOSStatus'] = array(
     2=>'Hoàn thành'
 );
 
-
 $config['default_city'] = 'Hà Nội';
+
+/**
+ *  BEGIN BARCODE CONFIG
+ */
+
+/**
+ * G2X105
+ * G1X75
+ */
+$config['GBarcode'] = array(
+    'template'=>'G2X105'
+);
+
+$config['G1Barcode'] = [
+    /*'template'=>'G2X2X105'*/ //ẩn
+];
+/**
+ * M3X105
+ * M2X75
+ */
+$config['MBarcode'] = array(
+    'template'=>'M3X105'
+);
+$config['Phone_Barcode'] = ''; //Số điện thoại: 0904642141
+$config['Slogan_Barcode'] = ''; //Số điện thoại
+$config['Location_Barcode'] = 'Cơ sở 1'; //Cơ sở 1
+/**
+ * END BARCODE CONFIG
+ */
 
         

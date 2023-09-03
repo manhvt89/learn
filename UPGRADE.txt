@@ -467,28 +467,6 @@ INSERT INTO `ospos_user_roles` (`id`, `role_id`, `user_id`) VALUES
 /*!40000 ALTER TABLE `ospos_user_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
-DROP TABLE IF EXISTS `ospos_user_roles`;
-CREATE TABLE `ospos_user_roles` (
-  `id` int(10) NOT NULL,
-  `role_id` int(10) NOT NULL DEFAULT 0,
-  `user_id` int(10) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-ALTER TABLE `ospos_user_roles` ADD PRIMARY KEY( `id`); 
-ALTER TABLE `ospos_user_roles` CHANGE `id` `id` INT(10) NOT NULL AUTO_INCREMENT;
-
-
-INSERT INTO `ospos_user_roles` (`role_id`, `user_id`) VALUES
-('1', '1');
-
-INSERT INTO `ospos_roles` (`name`, `display_name`,`code`, `created_at`, `updated_at`, `deleted_at`,`status`,`description`) VALUES
-('admin', 'admin', 'ADM', 1671459570, 1671459570, 1671459570,1,'Admin Role'),
-('Bán hàng', 'Bán hàng', 'SALE', 1671459570, 1671459570, 1671459570,1,'Bán hàng'),
-('Thu ngân', 'Thu ngân', 'thungan', 1671459570, 1671459570, 1671459570,1,'Thu ngân'),
-('Thủ kho', 'Thủ kho', 'thukho', 1671459570, 1671459570, 1671459570,1,'Thủ kho'),
-('Quản lý', 'Quản lý', 'MGR', 1671459570, 1671459570, 1671459570,1,'Quản lý của hàng'),
-('Kỹ thuật', 'Kỹ thuật', 'KTV', 1671459570, 1671459570, 1671459570,1,'Kỹ thuật viên'),
-('Khúc xạ', 'Khúc xạ', 'KXV', 1671459570, 1671459570, 1671459570,1,'Khúc xạ viên'),
-('Nhà đầu tư', 'Nhà đầu tư', 'NDT', 1671459570, 1671459570, 1671459570,1,'Nhà đầu tư');
 
 DROP TABLE IF EXISTS `ospos_fields`;
 CREATE TABLE `ospos_fields` (

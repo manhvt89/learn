@@ -40,7 +40,7 @@ class Secure_Controller extends CI_Controller
 			if(!$model->has_module_grant($module_id, $logged_in_employee_info->person_id) || 
 				(isset($submodule_id) && !$model->has_module_grant($submodule_id, $logged_in_employee_info->person_id)))
 			{
-				redirect('no_access/' . $module_id . '/' . $submodule_id);
+				//redirect('no_access/' . $module_id . '/' . $submodule_id);
 			}
 			//Thêm bởi ManhjVT: Nếu không có quyền manager (_index) thì không thể hiển thị menu list all
 			//$_aoAllowed_Modules = $this->Module->get_allowed_modules($logged_in_employee_info->person_id)->result();
