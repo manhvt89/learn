@@ -8,6 +8,7 @@ application/sessions/*
 application/logs/*
 application/uploads/*
 public/license/.licenses
+public/index.php
 public/bower_components
 *.patch
 patches/
