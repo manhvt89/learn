@@ -64,11 +64,11 @@ class Accounting extends CI_Model
 
 	public function auto_create_daily_total(){
 		if(!$this->exists()){
-			$yesterday_totol_data = $this->get_daily_total_info('yesterday'); // Lấy bản ghi ngày hôm qua
-			if($yesterday_totol_data)
+			$yesterday_total_data = $this->get_daily_total_info('yesterday'); // Lấy bản ghi ngày hôm qua
+			if($yesterday_total_data)
 			{
 
-				$_LastDate = $yesterday_totol_data['created_time'];
+				$_LastDate = $yesterday_total_data['created_time'];
 
 				$filters['start_date'] = date('Y-m-d', $_LastDate);
 				$filters['end_date'] = date('Y-m-d', $_LastDate);
