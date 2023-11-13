@@ -75,4 +75,5 @@
 
 .LibreBarcode128 {
     font-family: 'BarcodeFont' !important;
+    white-space: pre;
 }
