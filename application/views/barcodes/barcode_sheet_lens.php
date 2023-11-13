@@ -74,19 +74,19 @@ border-spacing: 1px;
 			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
 			padding-top:3mm;
 			line-height: <?php echo $barcode_config['barcode_font_size']; ?>px;
-
+			
 		}
 		.barcode-item-line-2-name{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
 			text-transform: uppercase;
-			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;
+			font-size: <?php echo $barcode_config['barcode_font_size']; ?>px;	
 		}
 		.barcode-item-unit_price{
 			font-family: <?=$this->barcode_lib->get_font_name($barcode_config['barcode_font'])?>;
-			text-transform: uppercase;
+			text-transform: uppercase;		
 			font-size: 14px;
 			padding-top:10px;
-
+			
 			font-weight: bold;
 		}
 
@@ -115,17 +115,17 @@ border-spacing: 1px;
 		}
 </style>
 
-<body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?>
+<body class=<?php echo "font_".$this->barcode_lib->get_font_name($barcode_config['barcode_font']); ?> 
       style="font-size:<?php echo $barcode_config['barcode_font_size']; ?>px">
 	  <div class="buttonpr no-print">
 	  	<button onclick="window.print()" class="bt-print-barcode">Print</button>
 	  </div>
 	  <div class="print-page-barcode">
-	<?php
+	<?php 
 	if (!empty($items)) {
 		$count = 0;
 	  	foreach($items as $item)
-		{
+		{ 
 			if ($count % 3 == 0 and $count != 0)
 			{
 					?>
@@ -136,12 +136,12 @@ border-spacing: 1px;
 			<div class="2" style=" width: 35mm; text-align: center;float: left; margin:0px; ">
 				<?php echo $this->barcode_lib->_display_barcode_lens($item, $barcode_config); ?>
 			</div>
-		<?php ++$count;
-		}
+		<?php ++$count; 
+		} 
 	} else { ?>
 		Hiện tại chưa có sản phẩm nào để in barcode, vui lòng chọn sản phẩm để in.
 	<?php }?>
-
+	
 	  </div>
 </body>
 
