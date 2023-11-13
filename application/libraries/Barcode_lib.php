@@ -221,7 +221,7 @@ class Barcode_lib
 		//$display_table .= "<div class='headline' align='center'>Chăm sóc đôi mắt bạn</div>";
 		$display_table .= "<div class='store_address' align='center'>".$barcode_config['store_address']."</div>";
 		if($item['item_number'] != '') {
-			$display_table .= "<div align='center' class='code128-encoder_display'>" . htmlentities(Code128Encoder::encode($item['item_number'])) . "</div>";
+			$display_table .= "<div align='center' class='LibreBarcode128'>" . htmlspecialchars(Code128Encoder::encode($item['item_number'])) . "</div>";
 		}
 		$display_table .= "</div>";
 		
