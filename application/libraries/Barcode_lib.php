@@ -205,7 +205,7 @@ class Barcode_lib
 			$display_table .= "<div align='center' class='LibreBarcode128'>" . htmlspecialchars(Code128Encoder::encode($item['item_number'])) . "</div>";
 		}
 		$display_table .= "</div>";
-		strlen($display_table);
+		echo strlen($display_table);
 		return $display_table;
 	}
 
