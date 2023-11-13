@@ -106,8 +106,8 @@ border-spacing: 1px;
 		}
 
 		.code128-encoder_display {
-		font-family: 'Libre Barcode 128 Text', cursive;
-		font-size: 4em;
+		font-family: 'Libre Barcode 128 Text';
+		font-size: 39px;
 		text-align: center;
 		white-space: pre;
 		}
