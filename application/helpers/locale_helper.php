@@ -802,7 +802,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
 		    $_sHtml = $_sHtml . 'Hiện tại chưa có sản phẩm nào để in barcode, vui lòng chọn sản phẩm để in.';
 		}
     $_sHtml = $_sHtml .'</div>';
-    echo $_sHtml;
+    echo htmlspecialchars($_sHtml);
 }
 
 function print_barcode_gong_1x75($items,$barcode_config)
