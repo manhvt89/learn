@@ -211,6 +211,8 @@ class Barcode_lib
 		$display_table .= "<div align='center'><img src='data:image/png;base64,$barcode' /></div></tr>";
 		*/
 		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_second_row']."'>" . $this->manage_display_layout($barcode_config['barcode_second_row'], $item, $barcode_config) . "</div>";
+		$display_table .= "<div class='barcode-item-".$barcode_config['barcode_third_row']."'>" . $this->manage_display_layout($barcode_config['barcode_third_row'], $item, $barcode_config) . "</div>";
+		
 		$display_table .= "</div>";
 
 		$display_table .= "<div class='print-barcode_2'>";
@@ -305,14 +307,14 @@ class Barcode_lib
 	private function manage_display_layout($layout_type, $item, $barcode_config)
 	{
 		$result = '';
-		
+		//var_dump($layout_type);
 		if($layout_type == 'name')
 		{
 			$result = $item['name'];
 		}
-		elseif($layout_type == 'category' && isset($item['category']))
+		elseif($layout_type == 'category' && isset($item['item_category']))
 		{
-			$result = $item['category'];
+			$result = $item['item_category'];
 		}
 		elseif($layout_type == 'cost_price' && isset($item['cost_price']))
 		{
