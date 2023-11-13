@@ -105,6 +105,13 @@ border-spacing: 1px;
 			padding-bottom: 1mm;
 		}
 
+		.code128-encoder_display {
+		font-family: 'Libre Barcode 128 Text', cursive;
+		font-size: 4em;
+		text-align: center;
+		white-space: pre;
+		}
+
 		@media print {
 			.pagebreak {
 				clear: both;
