@@ -795,6 +795,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
 					$_sHtml = $_sHtml .'</div>';
 
 				} 
+                /*
                 $lfile =  '/www/wwwroot/qlch.kinhmatviethan.com/learn/public/barcode.txt';
                 //echo $lfile;exit();
                 $_flog=fopen($lfile, 'a');
@@ -802,6 +803,7 @@ function print_barcode_gong_2x105($items,$barcode_config)
                 fwrite($_flog, ''.PHP_EOL);
                 fwrite($_flog, $CI->barcode_lib->_display_barcode($item, $barcode_config));
                 fclose($_flog);
+                */
 				$count++;
 			}
 		} else { 
