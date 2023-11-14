@@ -102,8 +102,10 @@ class Employee extends Person
 
 		if(parent::save($person_data, $employee_id))
 		{
+			echo 'manhvt1';
 			if(!$employee_id || !$this->exists($employee_id))
 			{
+				echo 'manhvt2';
 				$employee_data['person_id'] = $employee_id = $person_data['person_id'];
 				$success = $this->db->insert('employees', $employee_data);
 			}
