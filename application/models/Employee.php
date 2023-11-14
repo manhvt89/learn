@@ -86,10 +86,13 @@ class Employee extends Person
 	/*
 	Inserts or updates an employee
 	*/
-	public function save_employee(&$person_data, &$employee_data, &$grants_data, $employee_id = FALSE)
+	public function save_employee(&$person_data, &$employee_data, &$employee_data, $employee_data = FALSE)
 	{
 		$success = FALSE;
-
+		var_dump($person_data);
+		var_dump($employee_data);
+		var_dump($employee_data);
+		var_dump($employee_data);die();
 		//Run these queries as a transaction, we want to make sure we do all or nothing
 		$this->db->trans_start();
 
