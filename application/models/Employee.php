@@ -107,9 +107,8 @@ class Employee extends Person
 			{
 				//echo 'manhvt2';
 				$employee_data['person_id'] = $employee_id = $person_data['person_id'];
-				$success = $this->db->insert('employees1', $employee_data);
-				var_dump($employee_data);
-				die();
+				$success = $this->db->insert('employees', $employee_data);
+				
 			}
 			else
 			{
