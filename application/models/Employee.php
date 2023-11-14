@@ -114,7 +114,7 @@ class Employee extends Person
 				$this->db->where('person_id', $employee_id);
 				$success = $this->db->update('employees', $employee_data);
 			}
-
+			var_dump($success);
 			//We have either inserted or updated a new employee, now lets set permissions. 
 			if($success)
 			{
