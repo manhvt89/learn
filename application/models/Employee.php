@@ -94,6 +94,7 @@ class Employee extends Person
 		//var_dump($grants_data);
 		//var_dump($employee_id);//die();
 		//Run these queries as a transaction, we want to make sure we do all or nothing
+		echo 'manhvt';
 		$this->db->trans_start();
 
 		if(parent::save($person_data, $employee_id))
