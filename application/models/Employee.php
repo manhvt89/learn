@@ -102,19 +102,19 @@ class Employee extends Person
 
 		if(parent::save($person_data, $employee_id))
 		{
-			echo 'manhvt1';
+			//echo 'manhvt1';
 			if(!$employee_id || !$this->exists($employee_id))
 			{
-				echo 'manhvt2';
+				//echo 'manhvt2';
 				$employee_data['person_id'] = $employee_id = $person_data['person_id'];
-				$success = $this->db->insert('employees', $employee_data);
+				$success = $this->db->insert('employees1', $employee_data);
 			}
 			else
 			{
 				$this->db->where('person_id', $employee_id);
 				$success = $this->db->update('employees', $employee_data);
 			}
-			var_dump($success);
+			//var_dump($success);
 			//We have either inserted or updated a new employee, now lets set permissions. 
 			if($success)
 			{
