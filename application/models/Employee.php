@@ -92,7 +92,7 @@ class Employee extends Person
 		var_dump($person_data);
 		var_dump($employee_data);
 		var_dump($employee_data);
-		var_dump($employee_data);die();
+		var_dump($employee_data);//die();
 		//Run these queries as a transaction, we want to make sure we do all or nothing
 		$this->db->trans_start();
 
