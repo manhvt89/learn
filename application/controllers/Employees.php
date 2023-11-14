@@ -168,7 +168,7 @@ class Employees extends Persons
 		{
 			$employee_data = array('username' => $this->input->post('username'));
 		}
-		//echo $employee_id;die();
+		
 		if($this->Employee->save_employee($person_data, $employee_data, $roles_data, $employee_id))
 		{
 			$person_data = $this->xss_clean($person_data);
