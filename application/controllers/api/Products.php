@@ -28,6 +28,10 @@ class Products extends RESTController {
         {
             $time = 0;
         }
+        if($time== 0)
+        {
+            $time = -1;
+        }
         $items = $this->product->get_list_items_from_time($time);
         if(!empty($items)){
             //set the response and exit
