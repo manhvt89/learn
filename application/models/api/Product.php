@@ -577,6 +577,19 @@ class Product extends CI_Model
 		return $this->db->get()->result();
 	}
 
+	public function get_list_items_from_time($time = 0)
+	{
+		$this->db->from('items');
+		$this->db->where('items.deleted', 0);
+		$this->db->where('items.updated_time >', $time);
+		$this->db->where('items.name !=', '');
+
+		// order by name of item
+		$this->db->order_by('items.item_id', 'asc');
+		return $this->db->get()->result();
+	}
+	
+
 	public function get_list_items_by_category_code($category_code)
 	{
 		$this->db->from('items');

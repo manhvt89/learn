@@ -22,13 +22,13 @@ class Products extends RESTController {
      * Ngày 01.03.2023
      *
      */
-    public function products_get($id=null)
+    public function products_get($time=null)
     {
-        if($id== null)
+        if($time== null)
         {
-            $id = 0;
+            $time = 0;
         }
-        $items = $this->product->get_list_items_from_id($id);
+        $items = $this->product->get_list_items_from_time($time);
         if(!empty($items)){
             //set the response and exit
             $this->response([
